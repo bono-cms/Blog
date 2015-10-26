@@ -1,7 +1,6 @@
 <?php
 
-use Krystal\Form\Widget\CheckBoxWidget;
-use Krystal\Form\HtmlHelper;
+use Krystal\Form\Element;
 
 ?>
 
@@ -11,60 +10,54 @@ use Krystal\Form\HtmlHelper;
 		<li role="presentation"><a href="#menu" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-list"></i> <?php $this->show('Item in menu'); ?></a></li>
 	</ul>
 	
-	
 	<div class="tab-content">
 		<div class="tab-pane fade in active" id="page" role="tabpanel">
 			<div class="well clearfix">
 				
-				<input type="hidden" name="category[id]" value="<?php echo $category->getId(); ?>" />
-				<input type="hidden" name="category[web_page_id]" value="<?php echo $category->getWebPageId(); ?>" />
-				<input type="hidden" name="web_page_id" value="<?php echo $category->getWebPageId(); ?>" />
-				
+                <?php echo Element::hidden('category[id]', $category->getId()); ?>
+                <?php echo Element::hidden('category[web_page_id]', $category->getWebPageId()); ?>
+                <?php echo Element::hidden('web_page_id', $category->getWebPageId()); ?>
+                
 				<div class="form-group clearfix">
 					<label class="col-lg-2 control-label"><?php $this->show('Title'); ?></label>
 					<div class="col-lg-10">
 						<div class="input-group">
-							<input type="text" name="category[title]" class="form-control" data-input="title" placeholder="<?php $this->show('Category title'); ?>" value="<?php echo $category->getTitle(); ?>" />
+                            <?php echo Element::text('category[title]', $category->getTitle(), array('class' => 'form-control', 'data-input' => 'title', 'placeholder' => $this->translate('Category title'))); ?>
 							<span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
 						</div>
 					</div>
 				</div>
 				
-				
 				<div class="form-group clearfix">
 					<label class="col-lg-2 control-label"><?php $this->show('Description'); ?></label>
 					<div class="col-lg-10">
-						<textarea name="category[description]"><?php echo $category->getDescription(); ?></textarea>
+                        <?php echo Element::textarea('category[description]', $category->getDescription()); ?>
 					</div>
 				</div>
 				
-				
 				<div class="options">
-					
 					<div class="form-group clearfix">
 						<label class="col-lg-2 control-label"><?php $this->show('Enable SEO'); ?></label>
 						<div class="col-lg-10">
-							<?php echo CheckBoxWidget::render(array('name' => 'category[seo]', 'class' => 'form-control'), $category->getSeo()); ?>
+                            <?php echo Element::checkbox('category[seo]', $category->getSeo(), array('class' => 'form-control')); ?>
 						</div>
 					</div>
-					
 					
 					<div class="form-group clearfix">
 						<label class="col-lg-2 control-label"><?php $this->show('Order'); ?></label>
 						<div class="col-lg-10">
 							<div class="input-group">
-								<input type="number" name="category[order]" class="form-control" placeholder="<?php $this->show('Category order'); ?>" value="<?php echo $category->getOrder(); ?>" />
+                                <?php echo Element::number('category[order]', $category->getOrder(), array('class' => 'form-control', 'placeholder' => $this->translate('Category order'))); ?>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
 							</div>
 						</div>
 					</div>
 					
-					
 					<div class="form-group clearfix">
 						<label class="col-lg-2 control-label"><?php $this->show('Slug'); ?></label>
 						<div class="col-lg-10">
 							<div class="input-group">
-								<input type="text" name="category[slug]" class="form-control" data-input="slug" placeholder="<?php $this->show('URL slug for this category. By default is taken from a title'); ?>" value="<?php echo $category->getSlug(); ?>" />
+                                <?php echo Element::text('category[slug]', $category->getSlug(), array('class' => 'form-control', 'data-input' => 'slug', 'placeholder' => $this->translate('URL slug for this category. By default is taken from a title'))); ?>
 								<span class="input-group-addon">
 									<a href="#" data-button="slug"><i class="glyphicon glyphicon-refresh" data-toggle="tooltip" title="<?php $this->show('Refresh the slug'); ?>"></i></a>
 								</span>
@@ -72,27 +65,23 @@ use Krystal\Form\HtmlHelper;
 						</div>
 					</div>
 					
-					
 					<div class="form-group clearfix">
 						<label class="col-lg-2 control-label"><?php echo $this->translate('Keywords'); ?></label>
 						<div class="col-lg-10">
 							<div class="input-group">
-								<input type="text" name="category[keywords]" class="form-control" placeholder="<?php $this->show('Keywords used for search engines'); ?>" value="<?php echo $category->getKeywords(); ?>" />
+                                <?php echo Element::text('category[keywords]', $category->getKeywords(), array('class' => 'form-control', 'placeholder' => $this->translate('Keywords used for search engines'))); ?>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-tags"></i></span>
 							</div>
 						</div>
 					</div>
 					
-					
 					<div class="form-group clearfix">
 						<label class="col-lg-2 control-label"><?php $this->show('Meta-Description'); ?></label>
 						<div class="col-lg-10">
-							<textarea name="category[meta_description]" class="form-control" placeholder="<?php $this->show('Meta description for search engines'); ?>"><?php echo $category->getMetaDescription(); ?></textarea>
+                            <?php echo Element::textarea('category[meta_description]', $category->getMetaDescription(), array('class' => 'form-control', 'placeholder' => $this->translate('Meta description for search engines'))); ?>
 						</div>
 					</div>
-					
 				</div>
-				
 			</div>
 			
 			<?php if (!$category->getId()): ?>
@@ -105,12 +94,10 @@ use Krystal\Form\HtmlHelper;
 			
 			<button data-button="options" class="btn btn-primary"><i class="glyphicon glyphicon-open"></i> <?php $this->show('More options'); ?></button>
 			<button data-button="cancel" class="btn btn-default"><i class="glyphicon glyphicon-open"></i> <?php $this->show('Cancel'); ?></button>
-			
 		</div>
 		
 		<div class="tab-pane fade" id="menu" role="tabpanel">
 			<?php $this->loadBlock('menu-widget'); ?>
 		</div>
-		
 	</div>
 </form>

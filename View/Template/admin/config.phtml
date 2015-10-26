@@ -1,10 +1,16 @@
+<?php
+
+use Krystal\Form\Element;
+
+?>
+
 <form>
 	<div class="well clearfix">
 		<div class="form-group clearfix">
 			<label class="col-lg-2 control-label"><?php $this->show('Per page count'); ?></label>
 			<div class="col-lg-10">
 				<div class="input-group date">
-					<input type="number" min="1" name="config[per_page_count]" class="form-control" value="<?php echo $config->getPerPageCount(); ?>" />
+                    <?php echo Element::number('config[per_page_count]', $config->getPerPageCount(), array('class' => 'form-control', 'min' => '1')); ?>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
 				</div>
 				<span class="help-block"><?php $this->show('How many posts you want to be displayed per page in each category?'); ?></span>
