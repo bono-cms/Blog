@@ -4,7 +4,7 @@ use Krystal\Form\Element;
 
 ?>
 
-<form>
+<form data-group="category">
 	<ul class="nav nav-tabs" role="tablist">
 		<li role="presentation" class="active"><a href="#page" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Category'); ?></a></li>
 		<li role="presentation"><a href="#menu" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-list"></i> <?php $this->show('Item in menu'); ?></a></li>
@@ -85,15 +85,15 @@ use Krystal\Form\Element;
 			</div>
 			
 			<?php if (!$category->getId()): ?>
-			<button data-button="add" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Add'); ?></button>
+			<button data-button="add" data-back-url="<?php echo $this->url('Blog:Admin:Category:Edit@indexAction'); ?>" data-url="<?php echo $this->url('Blog:Admin:Category:Add@addAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Add'); ?></button>
 			
 			<?php else: ?>
 			
-			<button data-button="save" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save'); ?></button>
+			<button data-button="save" data-url="<?php echo $this->url('Blog:Admin:Category:Edit@updateAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save'); ?></button>
 			<?php endif; ?>
 			
 			<button data-button="options" class="btn btn-primary"><i class="glyphicon glyphicon-open"></i> <?php $this->show('More options'); ?></button>
-			<button data-button="cancel" class="btn btn-default"><i class="glyphicon glyphicon-open"></i> <?php $this->show('Cancel'); ?></button>
+			<button data-button="cancel" data-url="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>" class="btn btn-default"><i class="glyphicon glyphicon-open"></i> <?php $this->show('Cancel'); ?></button>
 		</div>
 		
 		<div class="tab-pane fade" id="menu" role="tabpanel">

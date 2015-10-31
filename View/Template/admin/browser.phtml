@@ -17,8 +17,8 @@ use Krystal\Form\Element;
 		 <li class="dropdown-header"><?php $this->show('Actions'); ?></li>
 		 
 		 <?php if (!empty($posts)):?>
-		 <li><a href="#" data-button="save-changes"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
-		 <li><a href="#" data-button="remove-selected"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
+		 <li><a href="#" data-button="save-changes" data-url="<?php echo $this->url('Cms:Admin:Browser@saveAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
+		 <li><a href="#" data-button="remove-selected" data-url="<?php echo $this->url('Cms:Admin:Browser@deleteSelectedAction'); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
 		 <?php else: ?>
 		 
 		 <li class="disabled"><a><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
