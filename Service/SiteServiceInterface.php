@@ -13,10 +13,10 @@ namespace Blog\Service;
 
 interface SiteServiceInterface
 {
-	/**
-	 * Returns an array of categories with count of posts
-	 * 
-	 * @return array
-	 */
-	public function getAllCategoriesWithCount();
+    /**
+     * Returns an array of categories with count of posts
+     * 
+     * @return array
+     */
+    public function getAllCategoriesWithCount();
 }

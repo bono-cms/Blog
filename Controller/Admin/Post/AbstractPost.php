@@ -16,71 +16,71 @@ use Krystal\Validate\Pattern;
 
 abstract class AbstractPost extends AbstractAdminController
 {
-	/**
-	 * Returns prepared and configured validator
-	 * 
-	 * @param array $input Raw input data
-	 * @return \Krystal\Validate\ValidatorChain
-	 */
-	final protected function getValidator(array $input)
-	{
-		return $this->validatorFactory->build(array(
-			'input' => array(
-				'source' => $input,
-				'definition' => array(
-					'title' => new Pattern\Title(),
-					'introduction' => new Pattern\IntroText(),
-					'full' => new Pattern\FullText(),
-					'date' => new Pattern\DateFormat('m/d/Y')
-				)
-			)
-		));
-	}
+    /**
+     * Returns prepared and configured validator
+     * 
+     * @param array $input Raw input data
+     * @return \Krystal\Validate\ValidatorChain
+     */
+    final protected function getValidator(array $input)
+    {
+        return $this->validatorFactory->build(array(
+            'input' => array(
+                'source' => $input,
+                'definition' => array(
+                    'title' => new Pattern\Title(),
+                    'introduction' => new Pattern\IntroText(),
+                    'full' => new Pattern\FullText(),
+                    'date' => new Pattern\DateFormat('m/d/Y')
+                )
+            )
+        ));
+    }
 
-	/**
-	 * Returns template path
-	 * 
-	 * @return string
-	 */
-	final protected function getTemplatePath()
-	{
-		return 'post.form';
-	}
+    /**
+     * Returns template path
+     * 
+     * @return string
+     */
+    final protected function getTemplatePath()
+    {
+        return 'post.form';
+    }
 
-	/**
-	 * Return shared variables
-	 * 
-	 * @param array $overrides
-	 * @return array
-	 */
-	final protected function getWithSharedVars(array $overrides)
-	{
-		$this->view->getBreadcrumbBag()->add(array(
-			array(
-				'name' => 'Blog',
-				'link' => 'Blog:Admin:Browser@indexAction'
-			),
-			array(
-				'name' => $overrides['title'],
-				'title' => '#'
-			)
-		));
+    /**
+     * Return shared variables
+     * 
+     * @param array $overrides
+     * @return array
+     */
+    final protected function getWithSharedVars(array $overrides)
+    {
+        $this->view->getBreadcrumbBag()->add(array(
+            array(
+                'name' => 'Blog',
+                'link' => 'Blog:Admin:Browser@indexAction'
+            ),
+            array(
+                'name' => $overrides['title'],
+                'title' => '#'
+            )
+        ));
 
-		$vars = array(
-			'categories' => $this->getCategoryManager()->fetchList(),
-		);
+        $vars = array(
+            'categories' => $this->getCategoryManager()->fetchList(),
+        );
 
-		return array_replace_recursive($vars, $overrides);
-	}
+        return array_replace_recursive($vars, $overrides);
+    }
 
-	/**
-	 * Loads shared plugins
-	 * 
-	 * @return void
-	 */
-	final protected function loadSharedPlugins()
-	{
-		$this->view->getPluginBag()->appendScript($this->getWithAssetPath('/admin/post.form.js'))
-								   ->load(array($this->getWysiwygPluginName(), 'datepicker'));
-	}
+    /**
+     * Loads shared plugins
+     * 
+     * @return void
+     */
+    final protected function loadSharedPlugins()
+    {
+        $this->view->getPluginBag()->appendScript($this->getWithAssetPath('/admin/post.form.js'))
+                                   ->load(array($this->getWysiwygPluginName(), 'datepicker'));
+    }
 }

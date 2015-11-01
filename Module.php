@@ -19,28 +19,28 @@ use Blog\Service\SiteService;
 
 final class Module extends AbstractCmsModule
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getServiceProviders()
-	{
-		$postMapper = $this->getMapper('/Blog/Storage/MySQL/PostMapper');
-		$categoryMapper = $this->getMapper('/Blog/Storage/MySQL/CategoryMapper');
+    /**
+     * {@inheritDoc}
+     */
+    public function getServiceProviders()
+    {
+        $postMapper = $this->getMapper('/Blog/Storage/MySQL/PostMapper');
+        $categoryMapper = $this->getMapper('/Blog/Storage/MySQL/CategoryMapper');
 
-		$webPageManager = $this->getWebPageManager();
-		$historyManager = $this->getHistoryManager();
+        $webPageManager = $this->getWebPageManager();
+        $historyManager = $this->getHistoryManager();
 
-		$postManager = new PostManager($postMapper, $categoryMapper, $webPageManager, $historyManager);
-		$categoryManager = new CategoryManager($categoryMapper, $postMapper, $webPageManager, $historyManager, $this->getMenuWidget());
+        $postManager = new PostManager($postMapper, $categoryMapper, $webPageManager, $historyManager);
+        $categoryManager = new CategoryManager($categoryMapper, $postMapper, $webPageManager, $historyManager, $this->getMenuWidget());
 
-		$siteService = new SiteService($categoryMapper, $postMapper, $webPageManager);
+        $siteService = new SiteService($categoryMapper, $postMapper, $webPageManager);
 
-		return array(
-			'siteService' => $siteService,
-			'configManager' => $this->getConfigService(),
-			'taskManager' => new TaskManager($postMapper),
-			'postManager' => $postManager,
-			'categoryManager' => $categoryManager
-		);
-	}
+        return array(
+            'siteService' => $siteService,
+            'configManager' => $this->getConfigService(),
+            'taskManager' => new TaskManager($postMapper),
+            'postManager' => $postManager,
+            'categoryManager' => $categoryManager
+        );
+    }
 }

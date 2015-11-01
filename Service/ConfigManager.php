@@ -16,12 +16,12 @@ use Krystal\Security\Filter;
 
 final class ConfigManager extends AbstractConfigManager
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function populate()
-	{
-		$entity = $this->getEntity();
-		$entity->setPerPageCount(Filter::escape($this->get('per_page_count'), 10));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function populate()
+    {
+        $entity = $this->getEntity();
+        $entity->setPerPageCount(Filter::escape($this->get('per_page_count'), 10));
+    }
 }

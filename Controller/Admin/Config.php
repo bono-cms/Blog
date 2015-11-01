@@ -16,13 +16,13 @@ use Cms\Controller\Admin\AbstractConfigController;
 
 final class Config extends AbstractConfigController
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getValidationRules()
-	{
-		return array(
-			'per_page_count' => new Pattern\PerPageCount(),
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getValidationRules()
+    {
+        return array(
+            'per_page_count' => new Pattern\PerPageCount(),
+        );
+    }
 }

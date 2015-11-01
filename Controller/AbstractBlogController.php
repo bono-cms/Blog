@@ -15,33 +15,33 @@ use Site\Controller\AbstractController;
 
 abstract class AbstractBlogController extends AbstractController
 {
-	/**
-	 * Returns configuration entity
-	 * 
-	 * @return \Krystal\Stdlib\VirtualEntity
-	 */
-	final protected function getConfig()
-	{
-		return $this->getModuleService('configManager')->getEntity();
-	}
+    /**
+     * Returns configuration entity
+     * 
+     * @return \Krystal\Stdlib\VirtualEntity
+     */
+    final protected function getConfig()
+    {
+        return $this->getModuleService('configManager')->getEntity();
+    }
 
-	/**
-	 * Returns category manager
-	 * 
-	 * @return \Blog\Service\CategoryManager
-	 */
-	final protected function getCategoryManager()
-	{
-		return $this->getModuleService('categoryManager');
-	}
+    /**
+     * Returns category manager
+     * 
+     * @return \Blog\Service\CategoryManager
+     */
+    final protected function getCategoryManager()
+    {
+        return $this->getModuleService('categoryManager');
+    }
 
-	/**
-	 * Returns post manager
-	 * 
-	 * @return \Blog\Service\PostManager
-	 */
-	final protected function getPostManager()
-	{
-		return $this->getModuleService('postManager');
-	}
+    /**
+     * Returns post manager
+     * 
+     * @return \Blog\Service\PostManager
+     */
+    final protected function getPostManager()
+    {
+        return $this->getModuleService('postManager');
+    }
 }

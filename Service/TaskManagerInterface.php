@@ -13,11 +13,11 @@ namespace Blog\Service;
 
 interface TaskManagerInterface
 {
-	/**
-	 * Count amount of posts associated with given category id
-	 * 
-	 * @param string $id
-	 * @return integer
-	 */
-	public function getCountByCategory($id);
+    /**
+     * Count amount of posts associated with given category id
+     * 
+     * @param string $id
+     * @return integer
+     */
+    public function getCountByCategory($id);
 }

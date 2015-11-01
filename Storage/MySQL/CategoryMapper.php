@@ -16,122 +16,122 @@ use Blog\Storage\CategoryMapperInterface;
 
 final class CategoryMapper extends AbstractMapper implements CategoryMapperInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function getTableName()
-	{
-		return 'bono_module_blog_categories';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public static function getTableName()
+    {
+        return 'bono_module_blog_categories';
+    }
 
-	/**
-	 * Fetches as a list
-	 * 
-	 * @return array
-	 */
-	public function fetchList()
-	{
-		return $this->db->select(array('id', 'title'))
-						->from(static::getTableName())
-						->whereEquals('lang_id', $this->getLangId())
-						->queryAll();
-	}
+    /**
+     * Fetches as a list
+     * 
+     * @return array
+     */
+    public function fetchList()
+    {
+        return $this->db->select(array('id', 'title'))
+                        ->from(static::getTableName())
+                        ->whereEquals('lang_id', $this->getLangId())
+                        ->queryAll();
+    }
 
-	/**
-	 * Fetches data for breadcrumbs
-	 * 
-	 * @param string $id
-	 * @return array
-	 */
-	public function fetchBcDataById($id)
-	{
-		return $this->db->select(array('title', 'web_page_id'))
-						->from(static::getTableName())
-						->whereEquals('id', $id)
-						->query();
-	}
+    /**
+     * Fetches data for breadcrumbs
+     * 
+     * @param string $id
+     * @return array
+     */
+    public function fetchBcDataById($id)
+    {
+        return $this->db->select(array('title', 'web_page_id'))
+                        ->from(static::getTableName())
+                        ->whereEquals('id', $id)
+                        ->query();
+    }
 
-	/**
-	 * Fetches all basic data about categories
-	 * 
-	 * @return array
-	 */
-	public function fetchAllBasic()
-	{
-		return $this->db->select(array('id', 'lang_id', 'web_page_id', 'title'))
-						->from(static::getTableName())
-						->whereEquals('lang_id', $this->getLangId())
-						->orderBy('order')
-						->queryAll();
-	}
+    /**
+     * Fetches all basic data about categories
+     * 
+     * @return array
+     */
+    public function fetchAllBasic()
+    {
+        return $this->db->select(array('id', 'lang_id', 'web_page_id', 'title'))
+                        ->from(static::getTableName())
+                        ->whereEquals('lang_id', $this->getLangId())
+                        ->orderBy('order')
+                        ->queryAll();
+    }
 
-	/**
-	 * Inserts a category
-	 * 
-	 * @param array $input Raw input data
-	 * @return boolean
-	 */
-	public function insert(array $input)
-	{
-		return $this->persist($this->getWithlang($input));
-	}
+    /**
+     * Inserts a category
+     * 
+     * @param array $input Raw input data
+     * @return boolean
+     */
+    public function insert(array $input)
+    {
+        return $this->persist($this->getWithlang($input));
+    }
 
-	/**
-	 * Updates a category
-	 * 
-	 * @param array $input Raw input data
-	 * @return boolean
-	 */
-	public function update(array $input)
-	{
-		return $this->persist($input);
-	}
+    /**
+     * Updates a category
+     * 
+     * @param array $input Raw input data
+     * @return boolean
+     */
+    public function update(array $input)
+    {
+        return $this->persist($input);
+    }
 
-	/**
-	 * Deletes a category by its associated id
-	 * 
-	 * @param string $id Category id
-	 * @return boolean
-	 */
-	public function deleteById($id)
-	{
-		return $this->deleteByPk($id);
-	}
+    /**
+     * Deletes a category by its associated id
+     * 
+     * @param string $id Category id
+     * @return boolean
+     */
+    public function deleteById($id)
+    {
+        return $this->deleteByPk($id);
+    }
 
-	/**
-	 * Fetches category name by its associated id
-	 * 
-	 * @param string $id Category id
-	 * @return string
-	 */
-	public function fetchTitleById($id)
-	{
-		return $this->findColumnByPk($id, 'title');
-	}
+    /**
+     * Fetches category name by its associated id
+     * 
+     * @param string $id Category id
+     * @return string
+     */
+    public function fetchTitleById($id)
+    {
+        return $this->findColumnByPk($id, 'title');
+    }
 
-	/**
-	 * Fetches category data by its associated id
-	 * 
-	 * @param string $id Category id
-	 * @return array
-	 */
-	public function fetchById($id)
-	{
-		return $this->findByPk($id);
-	}
+    /**
+     * Fetches category data by its associated id
+     * 
+     * @param string $id Category id
+     * @return array
+     */
+    public function fetchById($id)
+    {
+        return $this->findByPk($id);
+    }
 
-	/**
-	 * Fetches all categories
-	 * 
-	 * @return array
-	 */
-	public function fetchAll()
-	{
-		return $this->db->select('*')
-						->from(static::getTableName())
-						->whereEquals('lang_id', $this->getLangId())
-						->orderBy('id')
-						->desc()
-						->queryAll();
-	}
+    /**
+     * Fetches all categories
+     * 
+     * @return array
+     */
+    public function fetchAll()
+    {
+        return $this->db->select('*')
+                        ->from(static::getTableName())
+                        ->whereEquals('lang_id', $this->getLangId())
+                        ->orderBy('id')
+                        ->desc()
+                        ->queryAll();
+    }
 }
