@@ -23,6 +23,7 @@ final class Add extends AbstractPost
     public function indexAction()
     {
         $this->loadSharedPlugins();
+        $this->loadBreadcrumbs('Add a post');
 
         $post = new VirtualEntity();
         $post->setDate(date('m/d/Y', time()))
@@ -30,10 +31,11 @@ final class Add extends AbstractPost
              ->setComments(true)
              ->setSeo(true);
 
-        return $this->view->render($this->getTemplatePath(), $this->getWithSharedVars(array(
+        return $this->view->render($this->getTemplatePath(), array(
+            'categories' => $this->getCategoryManager()->fetchList(),
             'title' => 'Add a post',
             'post' => $post
-        )));
+        ));
     }
 
     /**
@@ -46,17 +48,14 @@ final class Add extends AbstractPost
         $formValidator = $this->getValidator($this->request->getPost('post'));
 
         if ($formValidator->isValid()) {
-
             $postManager = $this->getPostManager();
 
             if ($postManager->add($this->request->getPost('post'))) {
-
                 $this->flashBag->set('success', 'A post has been created successfully');
                 return $postManager->getLastId();
             }
 
         } else {
-
             return $formValidator->getErrors();
         }
     }

@@ -25,14 +25,15 @@ final class Edit extends AbstractPost
 
         if ($post !== false) {
             $this->loadSharedPlugins();
+            $this->loadBreadcrumbs('Edit the post');
 
-            return $this->view->render($this->getTemplatePath(), $this->getWithSharedVars(array(
+            return $this->view->render($this->getTemplatePath(), array(
+            'categories' => $this->getCategoryManager()->fetchList(),
                 'title' => 'Edit the post',
                 'post' => $post
-            )));
+            ));
 
         } else {
-
             return false;
         }
     }
@@ -47,15 +48,12 @@ final class Edit extends AbstractPost
         $formValidator = $this->getValidator($this->request->getPost('post'));
 
         if ($formValidator->isValid()) {
-
             if ($this->getPostManager()->update($this->request->getPost('post'))) {
-
                 $this->flashBag->set('success', 'A post has been updated successfully');
                 return '1';
             }
 
         } else {
-
             return $formValidator->getErrors();
         }
     }

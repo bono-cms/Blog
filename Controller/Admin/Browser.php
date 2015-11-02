@@ -22,12 +22,12 @@ final class Browser extends AbstractAdminController
     public function indexAction($page = 1)
     {
         $this->loadSharedPlugins();
+        $this->view->getBreadcrumbBag()->addOne('Blog');
 
         $paginator = $this->getPostManager()->getPaginator();
         $paginator->setUrl('/admin/module/blog/page/(:var)');
 
         return $this->view->render($this->getTemplatePath(), $this->getWithSharedVars(array(
-
             'posts' => $this->getPostManager()->fetchAllByPage(false, $page, $this->getSharedPerPageCount()),
             'paginator' => $paginator,
         )));
@@ -42,6 +42,9 @@ final class Browser extends AbstractAdminController
      */
     public function categoryAction($categoryId, $page = 1)
     {
+        $this->loadSharedPlugins();
+        $this->view->getBreadcrumbBag()->addOne('Blog');
+
         $paginator = $this->getPostManager()->getPaginator();
         $paginator->setUrl('/admin/module/blog/category/view/'.$categoryId.'/page/(:var)');
 
@@ -60,7 +63,6 @@ final class Browser extends AbstractAdminController
     public function deleteAction()
     {
         if ($this->request->hasPost('id')) {
-
             $id = $this->request->getPost('id');
 
             $this->getPostManager()->removeById($id);
@@ -78,7 +80,6 @@ final class Browser extends AbstractAdminController
     public function deleteCategoryAction()
     {
         if ($this->request->hasPost('id')) {
-
             $id = $this->request->getPost('id');
 
             $this->getCategoryManager()->removeById($id);
@@ -96,7 +97,6 @@ final class Browser extends AbstractAdminController
     public function deleteSelectedAction()
     {
         if ($this->request->hasPost('toDelete')) {
-
             $ids = array_keys($this->request->getPost('toDelete'));
 
             // Do remove now
@@ -118,7 +118,6 @@ final class Browser extends AbstractAdminController
     public function saveAction()
     {
         if ($this->request->hasPost('published', 'seo', 'comments')) {
-
             // Collect data from the request
             $published = $this->request->getPost('published');
             $seo = $this->request->getPost('seo');
@@ -156,7 +155,7 @@ final class Browser extends AbstractAdminController
     private function loadSharedPlugins()
     {
         $this->view->getPluginBag()
-                   ->appendScript($this->getWithAssetPath('/admin/browser.js'));
+                   ->appendScript('@Blog/admin/browser.js');
     }
 
     /**
@@ -167,13 +166,6 @@ final class Browser extends AbstractAdminController
      */
     private function getWithSharedVars(array $overrides)
     {
-        $this->view->getBreadcrumbBag()->add(array(
-            array(
-                'name' => 'Blog',
-                'link' => '#'
-            )
-        ));
-
         $vars = array(
             'title' => 'Blog',
             'taskManager' => $this->getTaskManager(),

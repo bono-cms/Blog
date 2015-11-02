@@ -53,32 +53,18 @@ abstract class AbstractCategory extends AbstractAdminController
     {
         $this->loadMenuWidget();
         $this->view->getPluginBag()->load($this->getWysiwygPluginName())
-                                   ->appendScript($this->getWithAssetPath('/admin/category.form.js'));
+                                   ->appendScript('@Blog/admin/category.form.js');
     }
 
     /**
-     * Return shared variables for both Add and Edit
+     * Loads breadcrumbs
      * 
-     * @param array $overrides
-     * @return array
+     * @param string $title
+     * @return void
      */
-    final protected function getWithSharedVars(array $overrides)
+    final protected function loadBreadcrumbs($title)
     {
-        $this->view->getBreadcrumbBag()->add(array(
-            array(
-                'name' => 'Blog',
-                'link' => 'Blog:Admin:Browser@indexAction'
-            ),
-            
-            array(
-                'name' => $overrides['title'],
-                'title' => '#'
-            )
-        ));
-
-        $vars = array(
-        );
-
-        return array_replace_recursive($vars, $overrides);
+        $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
+                                       ->addOne($title);
     }
 }

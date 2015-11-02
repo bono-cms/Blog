@@ -48,29 +48,15 @@ abstract class AbstractPost extends AbstractAdminController
     }
 
     /**
-     * Return shared variables
+     * Loads breadcrumbs
      * 
-     * @param array $overrides
-     * @return array
+     * @param string $title
+     * @return void
      */
-    final protected function getWithSharedVars(array $overrides)
+    final protected function loadBreadcrumbs($title)
     {
-        $this->view->getBreadcrumbBag()->add(array(
-            array(
-                'name' => 'Blog',
-                'link' => 'Blog:Admin:Browser@indexAction'
-            ),
-            array(
-                'name' => $overrides['title'],
-                'title' => '#'
-            )
-        ));
-
-        $vars = array(
-            'categories' => $this->getCategoryManager()->fetchList(),
-        );
-
-        return array_replace_recursive($vars, $overrides);
+        $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
+                                       ->addOne($title);
     }
 
     /**
@@ -80,7 +66,7 @@ abstract class AbstractPost extends AbstractAdminController
      */
     final protected function loadSharedPlugins()
     {
-        $this->view->getPluginBag()->appendScript($this->getWithAssetPath('/admin/post.form.js'))
+        $this->view->getPluginBag()->appendScript('@Blog/admin/post.form.js')
                                    ->load(array($this->getWysiwygPluginName(), 'datepicker'));
     }
 }

@@ -25,15 +25,14 @@ final class Edit extends AbstractCategory
 
         if ($category !== false) {
             $this->loadSharedPlugins();
+            $this->loadBreadcrumbs('Edit the category');
 
-            return $this->view->render($this->getTemplatePath(), $this->getWithSharedVars(array(
-                'editing' => true,
+            return $this->view->render($this->getTemplatePath(), array(
                 'title' => 'Edit the category',
                 'category' => $category
-            )));
+            ));
 
         } else {
-
             return false;
         }
     }
@@ -50,13 +49,11 @@ final class Edit extends AbstractCategory
         if ($formValidator->isValid()) {
 
             if ($this->getCategoryManager()->update($this->request->getPost())) {
-
                 $this->flashBag->set('success', 'Category has been updated successfully');
                 return '1';
             }
 
         } else {
-
             return $formValidator->getErrors();
         }
     }
