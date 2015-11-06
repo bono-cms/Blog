@@ -85,7 +85,7 @@ use Krystal\Form\Element;
 			</div>
 			
 			<?php if (!$category->getId()): ?>
-			<button data-button="add" data-back-url="<?php echo $this->url('Blog:Admin:Category:Edit@indexAction'); ?>" data-url="<?php echo $this->url('Blog:Admin:Category:Add@addAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Add'); ?></button>
+			<button data-button="add" data-back-url="<?php echo $this->url('Blog:Admin:Category:Edit@indexAction', null); ?>" data-url="<?php echo $this->url('Blog:Admin:Category:Add@addAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Add'); ?></button>
 			
 			<?php else: ?>
 			
