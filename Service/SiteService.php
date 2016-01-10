@@ -71,6 +71,17 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
     }
 
     /**
+     * Fetches posts ordering by view count
+     * 
+     * @param integer $limit Limit of records to be fetched
+     * @return array
+     */
+    public function getMostlyViewed($limit)
+    {
+        return $this->postManager->fetchMostlyViewed($limit);
+    }
+
+    /**
      * Returns an array of categories with count of posts
      * 
      * @return array
