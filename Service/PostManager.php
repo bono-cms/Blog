@@ -138,6 +138,17 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     }
 
     /**
+     * Counts all published posts associated with particular category id
+     * 
+     * @param string $id Category id
+     * @return integer
+     */
+    public function countAllPublishedByCategoryId($id)
+    {
+        return $this->postMapper->countAllPublishedByCategoryId($id);
+    }
+
+    /**
      * Increments view count by post id
      * 
      * @param string $id
