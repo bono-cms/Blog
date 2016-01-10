@@ -75,6 +75,13 @@ interface PostManagerInterface
     public function fetchMostlyViewed($limit);
 
     /**
+     * Fetches randomly published post entity
+     * 
+     * @return \Krystal\Stdlib\VirtualEntity
+     */
+    public function fetchRandomPublished();
+
+    /**
      * Fetches all posts filtered by pagination
      * 
      * @param boolean $published Whether to fetch only published records
