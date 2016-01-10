@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+1.2
+---
+
+ * Adjusted the grid to two column view.
+
 1.1
 ---
 
