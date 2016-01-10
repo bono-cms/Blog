@@ -14,7 +14,6 @@ namespace Blog\Service;
 use Cms\Service\AbstractManager;
 use Cms\Service\WebPageManagerInterface;
 use Blog\Storage\CategoryMapperInterface;
-use Blog\Storage\PostMapperInterface;
 use Krystal\Stdlib\VirtualEntity;
 
 final class SiteService extends AbstractManager implements SiteServiceInterface
@@ -27,11 +26,11 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
     private $categoryMapper;
 
     /**
-     * Any-complaint post mapper
+     * Post management service
      * 
-     * @var \Blog\Storage\PostMapperInterface
+     * @var \Blog\Service\PostManagerInterface
      */
-    private $postMapper;
+    private $postManager;
 
     /**
      * Web page manager
@@ -44,14 +43,14 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
      * State initialization
      * 
      * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
-     * @param \Blog\Storage\PostMapperInterface $postMapper
+     * @param \Blog\Service\PostManagerInterface $postManager
      * @param \Cms\Service\WebPageManagerInterface $webPageManager
      * @return void
      */
-    public function __construct(CategoryMapperInterface $categoryMapper, PostMapperInterface $postMapper, WebPageManagerInterface $webPageManager)
+    public function __construct(CategoryMapperInterface $categoryMapper, PostManagerInterface $postManager, WebPageManagerInterface $webPageManager)
     {
         $this->categoryMapper = $categoryMapper;
-        $this->postMapper = $postMapper;
+        $this->postManager = $postManager;
         $this->webPageManager = $webPageManager;
     }
 
@@ -63,7 +62,7 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
         $entity = new VirtualEntity();
         $entity->setId($category['id'])
                ->setLangId($category['lang_id'])
-               ->setCount($this->postMapper->countAllPublishedByCategoryId($entity->getId()))
+               ->setCount($this->postManager->countAllPublishedByCategoryId($entity->getId()))
                ->setSlug($this->webPageManager->fetchSlugByWebPageId($category['web_page_id']))
                ->setTitle($category['title'] . sprintf(' (%s) ', $entity->getCount()))
                ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));

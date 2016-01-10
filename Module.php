@@ -33,7 +33,7 @@ final class Module extends AbstractCmsModule
         $postManager = new PostManager($postMapper, $categoryMapper, $webPageManager, $historyManager);
         $categoryManager = new CategoryManager($categoryMapper, $postMapper, $webPageManager, $historyManager, $this->getMenuWidget());
 
-        $siteService = new SiteService($categoryMapper, $postMapper, $webPageManager);
+        $siteService = new SiteService($categoryMapper, $postManager, $webPageManager);
 
         return array(
             'siteService' => $siteService,
