@@ -57,12 +57,10 @@ return array(
         'controller' => 'Admin:Post:Edit@indexAction'
     ),
     
-    
     '/admin/module/blog/post/edit.ajax' => array(
         'controller' => 'Admin:Post:Edit@updateAction',
         'disallow' => array('guest')
     ),
-    
     
     '/admin/module/blog/post/delete.ajax' => array(
         'controller' => 'Admin:Browser@deleteAction',
