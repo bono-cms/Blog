@@ -120,6 +120,17 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     }
 
     /**
+     * Increments view count by post id
+     * 
+     * @param string $id
+     * @return boolean
+     */
+    public function incrementViewCount($id)
+    {
+        return $this->incrementColumnByPk($id, 'views');
+    }
+
+    /**
      * Fetches web page ids by associated category id
      * 
      * @param string $id Category's id

@@ -138,6 +138,17 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     }
 
     /**
+     * Increments view count by post id
+     * 
+     * @param string $id
+     * @return boolean
+     */
+    public function incrementViewCount($id)
+    {
+        return $this->postMapper->incrementViewCount($id);
+    }
+
+    /**
      * Fetches post title by its associated web page id
      * 
      * @param string $webPageId
@@ -232,7 +243,8 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
             ->setMetaDescription(Filter::escape($post['meta_description']))
             ->setDate(date($this->getTimeFormat(), $entity->getTimestamp()))
             ->setPermanentUrl('/module/blog/post/'.$entity->getId())
-            ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
+            ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
+            ->setViewsCount((int) $post['views']);
 
         return $entity;
     }
@@ -345,6 +357,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     {
         $input = $this->prepareInput($input);
         $input['web_page_id'] = '';
+        $input['views'] = '0';
 
         if ($this->postMapper->insert(ArrayUtils::arrayWithout($input, array('date', 'slug')))) {
             $id = $this->getLastId();

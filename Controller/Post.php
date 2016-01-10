@@ -28,14 +28,15 @@ final class Post extends AbstractBlogController
         // If $post isn't false, then $id is valid and $post itself is an instance of entity class
         if ($post !== false) {
             $this->loadPlugins($post);
-
-            return $this->view->render('blog-post', array(
+            $response = $this->view->render('blog-post', array(
                 'page' => $post,
                 'post' => $post,
             ));
 
-        } else {
+            $this->getPostManager()->incrementViewCount($id);
+            return $response;
 
+        } else {
             // Returning false triggers 404 error automatically
             return false;
         }

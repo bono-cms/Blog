@@ -14,6 +14,14 @@ namespace Blog\Service;
 interface PostManagerInterface
 {
     /**
+     * Increments view count by post id
+     * 
+     * @param string $id
+     * @return boolean
+     */
+    public function incrementViewCount($id);
+
+    /**
      * Updates SEO states by their associated ids
      * 
      * @param array $pair

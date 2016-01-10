@@ -14,6 +14,14 @@ namespace Blog\Storage;
 interface PostMapperInterface
 {
     /**
+     * Increments view count by post id
+     * 
+     * @param string $id
+     * @return boolean
+     */
+    public function incrementViewCount($id);
+
+    /**
      * Fetches post name by its associated id
      * 
      * @param string $id Post id
