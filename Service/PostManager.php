@@ -270,6 +270,17 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     }
 
     /**
+     * Fetches posts ordering by view count
+     * 
+     * @param integer $limit Limit of records to be fetched
+     * @return array
+     */
+    public function fetchMostlyViewed($limit)
+    {
+        return $this->prepareResults($this->postMapper->fetchMostlyViewed($limit));
+    }
+
+    /**
      * Fetches randomly published post entity
      * 
      * @return \Krystal\Stdlib\VirtualEntity

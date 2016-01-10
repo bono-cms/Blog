@@ -67,6 +67,14 @@ interface PostManagerInterface
     public function getLastId();
 
     /**
+     * Fetches posts ordering by view count
+     * 
+     * @param integer $limit Limit of records to be fetched
+     * @return array
+     */
+    public function fetchMostlyViewed($limit);
+
+    /**
      * Fetches all posts filtered by pagination
      * 
      * @param boolean $published Whether to fetch only published records
