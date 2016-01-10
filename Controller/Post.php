@@ -11,8 +11,6 @@
 
 namespace Blog\Controller;
 
-use Krystal\Stdlib\VirtualEntity;
-
 final class Post extends AbstractBlogController
 {
     /**
@@ -27,10 +25,14 @@ final class Post extends AbstractBlogController
 
         // If $post isn't false, then $id is valid and $post itself is an instance of entity class
         if ($post !== false) {
-            $this->loadPlugins($post);
+
+            $this->loadSitePlugins();
+            $this->view->getBreadcrumbBag()
+                       ->add($this->getPostManager()->getBreadcrumbs($post));
+
             $response = $this->view->render('blog-post', array(
                 'page' => $post,
-                'post' => $post,
+                'post' => $post
             ));
 
             $this->getPostManager()->incrementViewCount($id);
@@ -40,17 +42,5 @@ final class Post extends AbstractBlogController
             // Returning false triggers 404 error automatically
             return false;
         }
-    }
-
-    /**
-     * Loads required plugins for view
-     * 
-     * @param \Krystal\Stdlib\VirtualEntity $post
-     * @return void
-     */
-    private function loadPlugins(VirtualEntity $post)
-    {
-        $this->loadSitePlugins();
-        $this->view->getBreadcrumbBag()->add($this->getPostManager()->getBreadcrumbs($post));
     }
 }
