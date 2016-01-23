@@ -1,6 +1,7 @@
 <?php
 
 use Krystal\Form\Element;
+use Krystal\Form\HtmlHelper;
 
 ?>
 
@@ -113,16 +114,9 @@ use Krystal\Form\Element;
                     <?php foreach ($categories as $category): ?>
                     <tr>
                         <td class="text-center text-muted"><?php echo $category->getId(); ?></td>
-                        <td class="text-center">
+                        <td class="text-center <?php echo HtmlHelper::addOnDemand(isset($categoryId) && $categoryId == $category->getId(), 'success'); ?>">
                             <a href="<?php echo $this->url('Blog:Admin:Browser@categoryAction', $category->getId()); ?>">
-                                
-                                <?php if (isset($categoryId) && $categoryId == $category->getId()): ?>
-                                <strong><?php echo $category->getTitle(); ?></strong>
-                                
-                                <?php else: ?>
                                 <?php echo $category->getTitle(); ?>
-                                
-                                <?php endif; ?>
                             </a>
                         </td>
                         <td class="text-center"><?php echo $taskManager->getCountByCategory($category->getId()); ?></td>
