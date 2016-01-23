@@ -15,4 +15,14 @@ use Krystal\Stdlib\VirtualEntity;
 
 final class PostEntity extends VirtualEntity
 {
+    /**
+     * Returns custom date format
+     * 
+     * @param string $format
+     * @return string
+     */
+    public function getCustomDateFormat($format)
+    {
+        return date($format, $this->getTimestamp());
+    }
 }
