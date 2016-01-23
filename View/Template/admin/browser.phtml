@@ -26,10 +26,8 @@ use Krystal\Form\HtmlHelper;
 		 <li><a href="#" data-button="save-changes" data-url="<?php echo $this->url('Blog:Admin:Browser@saveAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
 		 <li><a href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Browser@deleteSelectedAction'); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
 		 <?php else: ?>
-		 
 		 <li class="disabled"><a><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
 		 <li class="disabled"><a><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
-		 
 		 <?php endif; ?>
 	  </ul>
 	</div>
@@ -55,7 +53,6 @@ use Krystal\Form\HtmlHelper;
                             <th class="text-center"><?php $this->show('Actions'); ?></th>
                         </tr>
                     </thead>
-                    
                     <?php if (!empty($posts)):?>
                     <tbody>
                         <?php foreach ($posts as $post): ?>
@@ -85,7 +82,6 @@ use Krystal\Form\HtmlHelper;
                         <?php endforeach; ?>
                     </tbody>
                     <?php endif; ?>
-                    
                 </table>
                 
                 <?php if (empty($posts)): ?>
@@ -93,7 +89,6 @@ use Krystal\Form\HtmlHelper;
                     <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
                 </div>
                 <?php endif; ?>
-                
             </div>
         </form>
 
@@ -141,8 +136,6 @@ use Krystal\Form\HtmlHelper;
                 <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No categories'); ?></h2>
             </div>
             <?php endif; ?>
-            
         </div>
-
     </div>
 </div>
