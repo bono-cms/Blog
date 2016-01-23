@@ -17,7 +17,6 @@ use Cms\Service\HistoryManagerInterface;
 use Blog\Storage\PostMapperInterface;
 use Blog\Storage\CategoryMapperInterface;
 use Menu\Contract\MenuAwareManager;
-use Krystal\Stdlib\VirtualEntity;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 
@@ -236,7 +235,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     protected function toEntity(array $post)
     {
-        $entity = new VirtualEntity();
+        $entity = new PostEntity();
         $entity->setId((int) $post['id'])
             ->setLangId((int) $post['lang_id'])
             ->setWebPageId((int) $post['web_page_id'])
