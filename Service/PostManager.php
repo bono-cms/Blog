@@ -200,7 +200,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -217,7 +217,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -456,7 +456,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
         if ($this->removeAllById($id)) {
             $this->track('Post "%s" has been removed', $title);
             return true;
-
         } else {
             return false;
         }
