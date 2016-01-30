@@ -10,7 +10,6 @@
  */
 
 return array(
-    
     '/module/blog/post/(:var)' => array(
         'controller' => 'Post@indexAction'
     ),
@@ -45,58 +44,43 @@ return array(
     ),
     
     '/admin/module/blog/post/add' => array(
-        'controller' => 'Admin:Post:Add@indexAction'
-    ),
-    
-    '/admin/module/blog/post/add.ajax'  => array(
-        'controller' => 'Admin:Post:Add@addAction',
-        'disallow' => array('guest')
+        'controller' => 'Admin:Post@addAction'
     ),
     
     '/admin/module/blog/post/edit/(:var)' => array(
-        'controller' => 'Admin:Post:Edit@indexAction'
+        'controller' => 'Admin:Post@editAction'
     ),
     
-    '/admin/module/blog/post/edit.ajax' => array(
-        'controller' => 'Admin:Post:Edit@updateAction',
+    '/admin/module/blog/post/save' => array(
+        'controller' => 'Admin:Post@saveAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/post/delete.ajax' => array(
-        'controller' => 'Admin:Browser@deleteAction',
+    '/admin/module/blog/post/delete' => array(
+        'controller' => 'Admin:Post@deleteAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/post/delete-selected.ajax' => array(
-        'controller' => 'Admin:Browser@deleteSelectedAction',
-        'disallow' => array('guest')
-    ),
-    
-    '/admin/module/blog/save.ajax' => array(
-        'controller' => 'Admin:Browser@saveAction',
+    '/admin/module/blog/tweak' => array(
+        'controller' => 'Admin:Post@tweakAction',
         'disallow' => array('guest')
     ),
     
     '/admin/module/blog/category/add' => array(
-        'controller' => 'Admin:Category:Add@indexAction'
-    ),
-    
-    '/admin/module/blog/category/add.ajax' => array(
-        'controller' => 'Admin:Category:Add@addAction',
-        'disallow' => array('guest')
+        'controller' => 'Admin:Category@addAction'
     ),
     
     '/admin/module/blog/category/edit/(:var)' => array(
-        'controller' => 'Admin:Category:Edit@indexAction'
+        'controller' => 'Admin:Category@editAction'
     ),
     
-    '/admin/module/blog/category/edit.ajax' => array(
-        'controller' => 'Admin:Category:Edit@updateAction',
+    '/admin/module/blog/category/save' => array(
+        'controller' => 'Admin:Category@saveAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/category/delete.ajax'   => array(
-        'controller' => 'Admin:Browser@deleteCategoryAction',
+    '/admin/module/blog/category/delete' => array(
+        'controller' => 'Admin:Category@deleteAction',
         'disallow' => array('guest')
     ),
     

@@ -14,164 +14,61 @@ namespace Blog\Controller\Admin;
 final class Browser extends AbstractAdminController
 {
     /**
-     * Shows a table
+     * Creates a grid
+     * 
+     * @param array $posts
+     * @param string $url
+     * @param string $categoryId
+     * @return string
+     */
+    private function createGrid(array $posts, $url, $categoryId)
+    {
+        $paginator = $this->getPostManager()->getPaginator();
+        $paginator->setUrl($url);
+
+        // Load view plugins
+        $this->view->getPluginBag()
+                   ->appendScript('@Blog/admin/browser.js');
+
+        // Append a breadcrumb
+        $this->view->getBreadcrumbBag()
+                   ->addOne('Blog');
+
+        return $this->view->render('browser', array(
+            'categoryId' => $categoryId,
+            'posts' => $posts,
+            'paginator' => $paginator,
+            'taskManager' => $this->getTaskManager(),
+            'categories' => $this->getCategoryManager()->fetchAll()
+        ));
+    }
+
+    /**
+     * Renders a grid
      * 
      * @param integer $page Current page
      * @return string
      */
     public function indexAction($page = 1)
     {
-        $this->loadSharedPlugins();
-        $this->view->getBreadcrumbBag()->addOne('Blog');
+        $posts = $this->getPostManager()->fetchAllByPage(false, $page, $this->getSharedPerPageCount());
+        $url = '/admin/module/blog/page/(:var)';
 
-        $paginator = $this->getPostManager()->getPaginator();
-        $paginator->setUrl('/admin/module/blog/page/(:var)');
-
-        return $this->view->render($this->getTemplatePath(), $this->getWithSharedVars(array(
-            'posts' => $this->getPostManager()->fetchAllByPage(false, $page, $this->getSharedPerPageCount()),
-            'paginator' => $paginator,
-        )));
+        return $this->createGrid($posts, $url, null);
     }
 
     /**
-     * List all posts by associated category id
+     * Renders a grid filtered by particular category id
      * 
      * @param string $id Category id
      * @param integer $page
      * @return string
      */
-    public function categoryAction($categoryId, $page = 1)
+    public function categoryAction($id, $page = 1)
     {
-        $this->loadSharedPlugins();
-        $this->view->getBreadcrumbBag()->addOne('Blog');
+        $posts = $this->getPostManager()->fetchAllByCategoryIdAndPage($id, false, $page, $this->getSharedPerPageCount());
+        $url = '/admin/module/blog/category/view/'.$id.'/page/(:var)';
 
-        $paginator = $this->getPostManager()->getPaginator();
-        $paginator->setUrl('/admin/module/blog/category/view/'.$categoryId.'/page/(:var)');
-
-        return $this->view->render($this->getTemplatePath(), $this->getWithSharedVars(array(
-            'categoryId' => $categoryId,
-            'posts' => $this->getPostManager()->fetchAllByCategoryIdAndPage($categoryId, false, $page, $this->getSharedPerPageCount()),
-            'paginator' => $paginator,
-        )));
-    }
-
-    /**
-     * Removes selected post by its associated id
-     * 
-     * @return string
-     */
-    public function deleteAction()
-    {
-        if ($this->request->hasPost('id')) {
-            $id = $this->request->getPost('id');
-
-            $this->getPostManager()->removeById($id);
-            $this->flashBag->set('success', 'Selected post has been removed successfully');
-
-            return '1';
-        }
-    }
-
-    /**
-     * Removes a category by its associated id
-     * 
-     * @return string
-     */
-    public function deleteCategoryAction()
-    {
-        if ($this->request->hasPost('id')) {
-            $id = $this->request->getPost('id');
-
-            $this->getCategoryManager()->removeById($id);
-            $this->flashBag->set('success', 'Selected category has been removed successfully');
-
-            return '1';
-        }
-    }
-
-    /**
-     * Removes selected posts
-     * 
-     * @return string
-     */
-    public function deleteSelectedAction()
-    {
-        if ($this->request->hasPost('toDelete')) {
-            $ids = array_keys($this->request->getPost('toDelete'));
-
-            // Do remove now
-            $this->getPostManager()->removeByIds($ids);
-            $this->flashBag->set('success', 'Selected posts have been removed successfully');
-
-        } else {
-            $this->flashBag->set('warning', 'You should select at least one blog post to remove');
-        }
-
-        return '1';
-    }
-
-    /**
-     * Saves changes from a table
-     * 
-     * @return string The response
-     */
-    public function saveAction()
-    {
-        if ($this->request->hasPost('published', 'seo', 'comments')) {
-            // Collect data from the request
-            $published = $this->request->getPost('published');
-            $seo = $this->request->getPost('seo');
-            $comments = $this->request->getPost('comments');
-
-            // Grab a service now
-            $postManager = $this->getPostManager();
-
-            // Do the bulk actions
-            $postManager->updateSeo($seo);
-            $postManager->updatePublished($published);
-            $postManager->updateComments($comments);
-
-            $this->flashBag->set('success', 'Post settings have been updated');
-
-            return '1';
-        }
-    }
-
-    /**
-     * Returns template path
-     * 
-     * @return string
-     */
-    private function getTemplatePath()
-    {
-        return 'browser';
-    }
-
-    /**
-     * Loads shared plugins
-     * 
-     * @return void
-     */
-    private function loadSharedPlugins()
-    {
-        $this->view->getPluginBag()
-                   ->appendScript('@Blog/admin/browser.js');
-    }
-
-    /**
-     * Returns shared variables
-     * 
-     * @param array $overrides
-     * @return array
-     */
-    private function getWithSharedVars(array $overrides)
-    {
-        $vars = array(
-            'title' => 'Blog',
-            'taskManager' => $this->getTaskManager(),
-            'categories' => $this->getCategoryManager()->fetchAll()
-        );
-
-        return array_replace_recursive($vars, $overrides);
+        return $this->createGrid($posts, $url, $id);
     }
 }
