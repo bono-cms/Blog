@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Updated module icon
  * Improved internal structure
  * Added `getCustomDateFormat()` for post entities to be able to turn their timestamps into any format
  * Added additional "Go home" item to reset category filters
