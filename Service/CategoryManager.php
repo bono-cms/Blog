@@ -218,7 +218,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      * @param string $id Category's id
      * @return boolean
      */
-    public function removeById($id)
+    public function deleteById($id)
     {
         // Grab category's name before we remove it
         $title = Filter::escape($this->categoryMapper->fetchTitleById($id));

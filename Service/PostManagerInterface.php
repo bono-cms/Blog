@@ -147,7 +147,7 @@ interface PostManagerInterface
      * @param string $id Post's id
      * @return boolean
      */
-    public function removeById($id);
+    public function deleteById($id);
 
     /**
      * Removes posts by their associated ids
@@ -155,5 +155,5 @@ interface PostManagerInterface
      * @param array $ids
      * @return boolean
      */
-    public function removeByIds(array $ids);
+    public function deleteByIds(array $ids);
 }

@@ -448,7 +448,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      * @param string $id Post's id
      * @return boolean
      */
-    public function removeById($id)
+    public function deleteById($id)
     {
         $title = Filter::escape($this->postMapper->fetchTitleById($id));
 
@@ -466,7 +466,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      * @param array $ids
      * @return boolean
      */
-    public function removeByIds(array $ids)
+    public function deleteByIds(array $ids)
     {
         foreach ($ids as $id) {
             if (!$this->removeAllById($id)) {

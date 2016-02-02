@@ -4,7 +4,7 @@
   array (
     'name' => 'Blog',
     'url' => '/admin/module/blog',
-    'icon' => '/module/Blog/Assets/blog.png',
+    'icon' => 'fa fa-commenting fa-5x',
     'order' => 10,
     'description' => 'Blog module allows you to create a personal blog on your site',
   ),

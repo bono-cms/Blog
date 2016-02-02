@@ -33,14 +33,14 @@ use Krystal\Form\Element;
 		<div class="form-group clearfix">
 			<label class="col-lg-2 control-label"><?php $this->show('Introduction'); ?></label>
 			<div class="col-lg-10">
-                <?php echo Element::textarea('post[introduction]', $post->getIntroduction()); ?>
+                <?php echo Element::textarea('post[introduction]', $post->getIntroduction(), array('data-wysiwyg' => 'true')); ?>
 			</div>
 		</div>
 		
 		<div class="form-group clearfix">
 			<label class="col-lg-2 control-label"><?php $this->show('Full text'); ?></label>
 			<div class="col-lg-10">
-                <?php echo Element::textarea('post[full]', $post->getFull()); ?>
+                <?php echo Element::textarea('post[full]', $post->getFull(), array('data-wysiwyg' => 'true')); ?>
 			</div>
 		</div>
 		

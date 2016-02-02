@@ -36,7 +36,7 @@ interface CategoryManagerInterface
      * @param string $id Category's id
      * @return boolean
      */
-    public function removeById($id);
+    public function deleteById($id);
 
     /**
      * Fetches as a list
