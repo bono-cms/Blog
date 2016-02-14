@@ -14,6 +14,14 @@ namespace Blog\Service;
 interface PostManagerInterface
 {
     /**
+     * Returns breadcrumb collection
+     * 
+     * @param \Blog\Service\PostEntity $post
+     * @return array
+     */
+    public function getBreadcrumbs(PostEntity $post);
+
+    /**
      * Counts all published posts associated with particular category id
      * 
      * @param string $id Category id
