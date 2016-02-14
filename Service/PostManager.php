@@ -123,10 +123,10 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     /**
      * Returns breadcrumb collection
      * 
-     * @param \Krystal\Stdlib\VirtualEntity $post
+     * @param \Blog\Service\PostEntity $post
      * @return array
      */
-    public function getBreadcrumbs(VirtualEntity $post)
+    public function getBreadcrumbs(PostEntity $post)
     {
         return $this->getWithCategoryBreadcrumbsById($post->getCategoryId(), array(
             array(
