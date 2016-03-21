@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Added support for table prefix
  * Updated module icon
  * Improved internal structure
  * Added `getCustomDateFormat()` for post entities to be able to turn their timestamps into any format
