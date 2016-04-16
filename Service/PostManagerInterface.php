@@ -103,20 +103,10 @@ interface PostManagerInterface
      * @param boolean $published Whether to fetch only published records
      * @param integer $page Current page
      * @param integer $itemsPerPage Items per page count
+     * @param integer $categoryId Optional category id filter
      * @return array
      */
-    public function fetchAllByPage($published, $page, $itemsPerPage);
-
-    /**
-     * Fetches all posts associated with given category id and filtered by pagination
-     * 
-     * @param string $categoryId
-     * @param boolean $published Whether to fetch only published records
-     * @param integer $page Current page
-     * @param integer Items per page count
-     * @return array
-     */
-    public function fetchAllByCategoryIdAndPage($categoryId, $published, $page, $itemsPerPage);
+    public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId = null);
 
     /**
      * Fetches all published post bags

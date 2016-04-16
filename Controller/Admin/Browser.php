@@ -66,7 +66,7 @@ final class Browser extends AbstractAdminController
      */
     public function categoryAction($id, $page = 1)
     {
-        $posts = $this->getPostManager()->fetchAllByCategoryIdAndPage($id, false, $page, $this->getSharedPerPageCount());
+        $posts = $this->getPostManager()->fetchAllByPage(false, $page, $this->getSharedPerPageCount(), $id);
         $url = $this->createUrl('Blog:Admin:Browser@categoryAction', array($id), 1);
 
         return $this->createGrid($posts, $url, $id);

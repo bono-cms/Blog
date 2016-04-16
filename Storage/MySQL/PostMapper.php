@@ -57,23 +57,6 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     }
 
     /**
-     * Queries for a result
-     * 
-     * @param integer $page Current page number
-     * @param integer $itemsPerPage Per page count
-     * @param boolean $published Whether to sort only published records
-     * @param string $sort Column name to sort by
-     * @param string $categoryId Optional category id
-     * @return array
-     */
-    private function getResults($page, $itemsPerPage, $published, $sort, $categoryId = null)
-    {
-        return $this->getSelectQuery($published, $sort, $categoryId)
-                    ->paginate($page, $itemsPerPage)
-                    ->queryAll();
-    }
-
-    /**
      * Counts amount of categories
      * 
      * @param string $categoryId
@@ -287,30 +270,19 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     }
 
     /**
-     * Fetches all posts associated with given category id and filtered by pagination
-     * 
-     * @param string $categoryId
-     * @param boolean $published Whether to fetch only published records
-     * @param integer $page Current page
-     * @param integer $itemsPerPage Per page count
-     * @return array
-     */
-    public function fetchAllByCategoryIdAndPage($categoryId, $published, $page, $itemsPerPage)
-    {
-        return $this->getResults($page, $itemsPerPage, $published, $this->getSortingColumn($published), $categoryId);
-    }
-
-    /**
      * Fetches all posts filtered by pagination
      * 
      * @param boolean $published Whether to fetch only published records
      * @param integer $page Current page
      * @param integer $itemsPerPage Per page count
+     * @param string $categoryId Optional category id filter
      * @return array
      */
-    public function fetchAllByPage($published, $page, $itemsPerPage)
+    public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId)
     {
-        return $this->getResults($page, $itemsPerPage, $published, $this->getSortingColumn($published));
+        return $this->getSelectQuery($published, $this->getSortingColumn($published), $categoryId)
+                    ->paginate($page, $itemsPerPage)
+                    ->queryAll();
     }
 
     /**
