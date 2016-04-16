@@ -325,18 +325,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     }
 
     /**
-     * Fetches all published post bags filtered by pagination
-     * 
-     * @param integer $page
-     * @param integer $itemsPerPage
-     * @return array
-     */
-    public function fetchAllPublishedByPage($page, $itemsPerPage)
-    {
-        return $this->prepareResults($this->postMapper->fetchAllPublishedByPage($page, $itemsPerPage));
-    }
-
-    /**
      * Prepares raw input data before sending to the mapper
      * 
      * @param array $input
