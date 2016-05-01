@@ -56,7 +56,7 @@ return array(
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/post/delete' => array(
+    '/admin/module/blog/post/delete/(:var)' => array(
         'controller' => 'Admin:Post@deleteAction',
         'disallow' => array('guest')
     ),
@@ -79,7 +79,7 @@ return array(
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/category/delete' => array(
+    '/admin/module/blog/category/delete/(:var)' => array(
         'controller' => 'Admin:Category@deleteAction',
         'disallow' => array('guest')
     ),

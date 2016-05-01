@@ -101,11 +101,12 @@ final class Post extends AbstractAdminController
     /**
      * Removes selected post by its associated id
      * 
+     * @param string $id
      * @return string
      */
-    public function deleteAction()
+    public function deleteAction($id)
     {
-        return $this->invokeRemoval('postManager');
+        return $this->invokeRemoval('postManager', $id);
     }
 
     /**

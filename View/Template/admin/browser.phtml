@@ -24,7 +24,7 @@ use Krystal\Form\HtmlHelper;
 		 
 		 <?php if (!empty($posts)):?>
 		 <li><a href="#" data-button="save-changes" data-url="<?php echo $this->url('Blog:Admin:Post@tweakAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
-		 <li><a href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction'); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
+		 <li><a href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction', null); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
 		 <?php else: ?>
 		 <li class="disabled"><a><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
 		 <li class="disabled"><a><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
@@ -76,7 +76,7 @@ use Krystal\Form\HtmlHelper;
                             <td class="text-center">
                                 <a data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('View this post'); ?>" data-button="view" target="_blank" href="<?php echo $post->getUrl(); ?>"><i class="glyphicon glyphicon-search"></i></a>
                                 <a data-button="edit" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('Edit this post'); ?>" href="<?php echo $this->url('Blog:Admin:Post@editAction', $post->getId()); ?>"><i class="glyphicon glyphicon-pencil"></i></a>
-                                <a data-button="delete" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('Remove this post'); ?>" data-id="<?php echo $post->getId(); ?>" data-category="post" href="#"><i class="glyphicon glyphicon-remove"></i></a>
+                                <a data-button="delete" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('Remove this post'); ?>" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction', $post->getId()); ?>" href="#"><i class="glyphicon glyphicon-remove"></i></a>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -123,7 +123,7 @@ use Krystal\Form\HtmlHelper;
                         <td class="text-center">
                             <a data-button="view" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('View this category on site');?>" href="<?php echo $category->getUrl(); ?>" target="_blank" ><i class="glyphicon glyphicon-search"></i></a>
                             <a data-button="edit" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('Edit this category');?>" href="<?php echo $this->url('Blog:Admin:Category@editAction', $category->getId()); ?>"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a data-button="delete" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('Remove this category'); ?>" data-id="<?php echo $category->getId(); ?>" data-category="category" href="#"><i class="glyphicon glyphicon-remove"></i></a>
+                            <a data-button="delete" data-toggle="tooltip" data-placement="left" data-original-title="<?php $this->show('Remove this category'); ?>" data-url="<?php echo $this->url('Blog:Admin:Category@deleteAction', $category->getId()); ?>" href="#"><i class="glyphicon glyphicon-remove"></i></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
