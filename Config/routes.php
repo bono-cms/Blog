@@ -26,69 +26,69 @@ return array(
         'controller' => 'Home@indexAction'
     ),
     
-    '/admin/module/blog/config' => array(
+    '/%s/module/blog/config' => array(
         'controller' => 'Admin:Config@indexAction'
     ),
     
-    '/admin/module/blog/config.ajax' => array(
+    '/%s/module/blog/config.ajax' => array(
         'controller' => 'Admin:Config@saveAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog' => array(
+    '/%s/module/blog' => array(
         'controller' => 'Admin:Browser@indexAction'
     ),
     
-    '/admin/module/blog/page/(:var)' => array(
+    '/%s/module/blog/page/(:var)' => array(
         'controller'    => 'Admin:Browser@indexAction'
     ),
     
-    '/admin/module/blog/post/add' => array(
+    '/%s/module/blog/post/add' => array(
         'controller' => 'Admin:Post@addAction'
     ),
     
-    '/admin/module/blog/post/edit/(:var)' => array(
+    '/%s/module/blog/post/edit/(:var)' => array(
         'controller' => 'Admin:Post@editAction'
     ),
     
-    '/admin/module/blog/post/save' => array(
+    '/%s/module/blog/post/save' => array(
         'controller' => 'Admin:Post@saveAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/post/delete/(:var)' => array(
+    '/%s/module/blog/post/delete/(:var)' => array(
         'controller' => 'Admin:Post@deleteAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/tweak' => array(
+    '/%s/module/blog/tweak' => array(
         'controller' => 'Admin:Post@tweakAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/category/add' => array(
+    '/%s/module/blog/category/add' => array(
         'controller' => 'Admin:Category@addAction'
     ),
     
-    '/admin/module/blog/category/edit/(:var)' => array(
+    '/%s/module/blog/category/edit/(:var)' => array(
         'controller' => 'Admin:Category@editAction'
     ),
     
-    '/admin/module/blog/category/save' => array(
+    '/%s/module/blog/category/save' => array(
         'controller' => 'Admin:Category@saveAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/category/delete/(:var)' => array(
+    '/%s/module/blog/category/delete/(:var)' => array(
         'controller' => 'Admin:Category@deleteAction',
         'disallow' => array('guest')
     ),
     
-    '/admin/module/blog/category/view/(:var)'   => array(
+    '/%s/module/blog/category/view/(:var)'   => array(
         'controller' => 'Admin:Browser@categoryAction'
     ),
     
-    '/admin/module/blog/category/view/(:var)/page/(:var)' => array(
+    '/%s/module/blog/category/view/(:var)/page/(:var)' => array(
         'controller'    => 'Admin:Browser@categoryAction'
     )
 );
