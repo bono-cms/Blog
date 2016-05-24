@@ -126,6 +126,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             ->setLangId((int) $category['lang_id'])
             ->setWebPageId((int) $category['web_page_id'])
             ->setTitle(Filter::escape($category['title']))
+            ->setName(Filter::escape($category['name']))
             ->setDescription(Filter::escapeContent($category['description']))
             ->setSeo((bool) $category['seo'])
             ->setSlug(Filter::escape($this->webPageManager->fetchSlugByWebPageId($category['web_page_id'])))
@@ -221,7 +222,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function deleteById($id)
     {
         // Grab category's name before we remove it
-        $title = Filter::escape($this->categoryMapper->fetchTitleById($id));
+        $title = Filter::escape($this->categoryMapper->fetchNameById($id));
 
         if ($this->removeAllById($id)) {
             $this->track('Category "%s" has been removed', $title);
@@ -275,7 +276,12 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
 
         // Empty slug is always take from a title
         if (empty($category['slug'])) {
-            $category['slug'] = $category['title'];
+            $category['slug'] = $category['name'];
+        }
+
+        // Empty title is taken from the name
+        if (empty($category['title'])) {
+            $category['title'] = $category['name'];
         }
 
         $category['slug'] = $this->webPageManager->sluggify($category['slug']);
@@ -298,13 +304,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         if ($this->categoryMapper->insert(ArrayUtils::arrayWithout($category, array('menu', 'slug')))) {
 
             $id = $this->getLastId();
-            $this->track('Category "%s" has been created', $category['title']);
+            $this->track('Category "%s" has been created', $category['name']);
 
             // Add a web page now
             if ($this->webPageManager->add($id, $category['slug'], 'Blog (Categories)', 'Blog:Category@indexAction', $this->categoryMapper)){
                 // Do the work in case menu widget was injected
                 if ($this->hasMenuWidget()) {
-                    $this->addMenuItem($this->webPageManager->getLastId(), $category['title'], $input);
+                    $this->addMenuItem($this->webPageManager->getLastId(), $category['name'], $input);
                 }
             }
 
@@ -329,11 +335,10 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         $this->webPageManager->update($category['web_page_id'], $category['slug']);
 
         if ($this->hasMenuWidget() && isset($input['menu'])) {
-            $this->updateMenuItem($category['web_page_id'], $category['title'], $input['menu']);
+            $this->updateMenuItem($category['web_page_id'], $category['name'], $input['menu']);
         }
 
-        $this->track('Category "%s" has been updated', $category['title']);
-
+        $this->track('Category "%s" has been updated', $category['name']);
         return $this->categoryMapper->update(ArrayUtils::arrayWithout($category, array('menu', 'slug')));
     }
 }

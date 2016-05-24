@@ -239,8 +239,9 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
         $entity->setId((int) $post['id'])
             ->setLangId((int) $post['lang_id'])
             ->setWebPageId((int) $post['web_page_id'])
-            ->setCategoryTitle(Filter::escape($this->categoryMapper->fetchTitleById($post['category_id'])))
+            ->setCategoryTitle(Filter::escape($this->categoryMapper->fetchNameById($post['category_id'])))
             ->setTitle(Filter::escape($post['title']))
+            ->setName(Filter::escape($post['name']))
             ->setCategoryId((int) $post['category_id'])
             ->setIntroduction(Filter::escapeContent($post['introduction']))
             ->setFull(Filter::escapeContent($post['full']))
@@ -332,9 +333,14 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     private function prepareInput(array $input)
     {
-        // Empty slug is always taken from the title
+        // Empty slug is always taken from the name
         if (empty($input['slug'])) {
-            $input['slug'] = $input['title'];
+            $input['slug'] = $input['name'];
+        }
+
+        // Take empty title from the name
+        if (empty($input['title'])) {
+            $input['title'] = $input['name'];
         }
 
         $input['slug'] = $this->webPageManager->sluggify($input['slug']);
@@ -358,7 +364,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
         if ($this->postMapper->insert(ArrayUtils::arrayWithout($input, array('date', 'slug')))) {
             $id = $this->getLastId();
 
-            $this->track('Post "%s" has been added', $input['title']);
+            $this->track('Post "%s" has been added', $input['name']);
             $this->webPageManager->add($id, $input['slug'], 'Blog (Posts)', 'Blog:Post@indexAction', $this->postMapper);
         }
 
@@ -376,7 +382,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
         $input = $this->prepareInput($input);
         $this->webPageManager->update($input['web_page_id'], $input['slug']);
 
-        $this->track('Post "%s" has been updated', $input['title']);
+        $this->track('Post "%s" has been updated', $input['name']);
         return $this->postMapper->update(ArrayUtils::arrayWithout($input, array('date', 'slug')));
     }
 
@@ -425,10 +431,10 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     public function deleteById($id)
     {
-        $title = Filter::escape($this->postMapper->fetchTitleById($id));
+        $name = Filter::escape($this->postMapper->fetchNameById($id));
 
         if ($this->removeAllById($id)) {
-            $this->track('Post "%s" has been removed', $title);
+            $this->track('Post "%s" has been removed', $name);
             return true;
         } else {
             return false;

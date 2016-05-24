@@ -27,7 +27,7 @@ interface PostMapperInterface
      * @param string $id Post id
      * @return string
      */
-    public function fetchTitleById($id);
+    public function fetchNameById($id);
 
     /**
      * Updates post's published state

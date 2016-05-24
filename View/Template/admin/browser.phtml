@@ -44,7 +44,7 @@ use Krystal\Form\HtmlHelper;
                         <tr>
                             <th class="text-center"><input type="checkbox" /></th>
                             <th class="text-center"><?php $this->show('#'); ?></th>
-                            <th class="text-center"><?php $this->show('Title'); ?></th>
+                            <th class="text-center"><?php $this->show('Name'); ?></th>
                             <th class="text-center col-lg-2"><?php $this->show('Date'); ?></th>
                             <th class="text-center"><?php $this->show('Category'); ?></th>
                             <th class="text-center"><?php $this->show('Published'); ?></th>
@@ -53,6 +53,7 @@ use Krystal\Form\HtmlHelper;
                             <th class="text-center"><?php $this->show('Actions'); ?></th>
                         </tr>
                     </thead>
+                    
                     <?php if (!empty($posts)):?>
                     <tbody>
                         <?php foreach ($posts as $post): ?>
@@ -61,7 +62,7 @@ use Krystal\Form\HtmlHelper;
                                 <input type="checkbox" name="toDelete[<?php echo $post->getId(); ?>]" />
                             </td>
                             <td class="text-center text-muted"><?php echo $post->getId(); ?></td>
-                            <td class="text-center"><?php echo $post->getTitle(); ?></td>
+                            <td class="text-center"><?php echo $post->getName(); ?></td>
                             <td class="text-center"><?php echo date('d-m-Y', $post->getTimestamp()); ?></td>
                             <td class="text-center"><?php echo $post->getCategoryTitle(); ?></td>
                             <td class="text-center">
@@ -103,20 +104,21 @@ use Krystal\Form\HtmlHelper;
                 <thead>
                     <tr>
                         <th class="text-center"><?php $this->show('#'); ?></th>
-                        <th class="text-center"><?php $this->show('Title'); ?></th>
+                        <th class="text-center"><?php $this->show('Name'); ?></th>
                         <th class="text-center"><?php $this->show('Amount of posts'); ?></th>
                         <th class="text-center"><?php $this->show('Actions'); ?></th>
                     </tr>
                 </thead>
                 
                 <?php if (!empty($categories)): ?>
+                
                 <tbody>
                     <?php foreach ($categories as $category): ?>
                     <tr>
                         <td class="text-center text-muted"><?php echo $category->getId(); ?></td>
                         <td class="text-center <?php echo HtmlHelper::addOnDemand(isset($categoryId) && $categoryId == $category->getId(), 'success'); ?>">
                             <a href="<?php echo $this->url('Blog:Admin:Browser@categoryAction', $category->getId()); ?>">
-                                <?php echo $category->getTitle(); ?>
+                                <?php echo $category->getName(); ?>
                             </a>
                         </td>
                         <td class="text-center"><?php echo $taskManager->getCountByCategory($category->getId()); ?></td>
@@ -128,6 +130,7 @@ use Krystal\Form\HtmlHelper;
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
+                
                 <?php endif; ?>
             </table>
             

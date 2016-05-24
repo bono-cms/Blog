@@ -50,7 +50,7 @@ interface CategoryMapperInterface
      * @param string $id Category id
      * @return string
      */
-    public function fetchTitleById($id);
+    public function fetchNameById($id);
 
     /**
      * Fetches category data by its associated id

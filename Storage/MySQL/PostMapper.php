@@ -133,9 +133,9 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      * @param string $id Post's id
      * @return string
      */
-    public function fetchTitleById($id)
+    public function fetchNameById($id)
     {
-        return $this->findColumnByPk($id, 'title');
+        return $this->findColumnByPk($id, 'name');
     }
 
     /**
