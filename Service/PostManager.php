@@ -159,14 +159,11 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     }
 
     /**
-     * Fetches post title by its associated web page id
-     * 
-     * @param string $webPageId
-     * @return string
+     * {@inheritDoc}
      */
-    public function fetchTitleByWebPageId($webPageId)
+    public function fetchNameByWebPageId($webPageId)
     {
-        return $this->postMapper->fetchTitleByWebPageId($webPageId);
+        return $this->postMapper->fetchNameByWebPageId($webPageId);
     }
 
     /**

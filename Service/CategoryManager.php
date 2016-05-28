@@ -106,14 +106,11 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     }
 
     /**
-     * Fetches category title by its associated web page id
-     * 
-     * @param string $webPageId
-     * @return string
+     * {@inheritDoc}
      */
-    public function fetchTitleByWebPageId($webPageId)
+    public function fetchNameByWebPageId($webPageId)
     {
-        return $this->categoryMapper->fetchTitleByWebPageId($webPageId);
+        return $this->categoryMapper->fetchNameByWebPageId($webPageId);
     }
 
     /**
