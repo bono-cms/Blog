@@ -233,26 +233,26 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     protected function toEntity(array $post)
     {
         $entity = new PostEntity();
-        $entity->setId((int) $post['id'])
-            ->setLangId((int) $post['lang_id'])
-            ->setWebPageId((int) $post['web_page_id'])
-            ->setCategoryTitle(Filter::escape($this->categoryMapper->fetchNameById($post['category_id'])))
-            ->setTitle(Filter::escape($post['title']))
-            ->setName(Filter::escape($post['name']))
-            ->setCategoryId((int) $post['category_id'])
-            ->setIntroduction(Filter::escapeContent($post['introduction']))
-            ->setFull(Filter::escapeContent($post['full']))
-            ->setTimestamp((int) $post['timestamp'])
-            ->setPublished((bool) $post['published'])
-            ->setComments((bool) $post['comments'])
-            ->setSeo((bool) $post['seo'])
-            ->setSlug(Filter::escape($this->webPageManager->fetchSlugByWebPageId($post['web_page_id'])))
-            ->setKeywords(Filter::escape($post['keywords']))
-            ->setMetaDescription(Filter::escape($post['meta_description']))
+        $entity->setId($post['id'], PostEntity::FILTER_INT)
+            ->setLangId($post['lang_id'], PostEntity::FILTER_INT)
+            ->setWebPageId($post['web_page_id'], PostEntity::FILTER_INT)
+            ->setCategoryTitle($this->categoryMapper->fetchNameById($post['category_id']), PostEntity::FILTER_TAGS)
+            ->setTitle($post['title'], PostEntity::FILTER_TAGS)
+            ->setName($post['name'], PostEntity::FILTER_TAGS)
+            ->setCategoryId($post['category_id'], PostEntity::FILTER_INT)
+            ->setIntroduction($post['introduction'], PostEntity::FILTER_SAFE_TAGS)
+            ->setFull($post['full'], PostEntity::FILTER_SAFE_TAGS)
+            ->setTimestamp($post['timestamp'], PostEntity::FILTER_INT)
+            ->setPublished($post['published'], PostEntity::FILTER_BOOL)
+            ->setComments($post['comments'], PostEntity::FILTER_BOOL)
+            ->setSeo($post['seo'], PostEntity::FILTER_BOOL)
+            ->setSlug($this->webPageManager->fetchSlugByWebPageId($post['web_page_id']))
+            ->setKeywords($post['keywords'], PostEntity::FILTER_TAGS)
+            ->setMetaDescription($post['meta_description'], PostEntity::FILTER_TAGS)
             ->setDate(date($this->getTimeFormat(), $entity->getTimestamp()))
             ->setPermanentUrl('/module/blog/post/'.$entity->getId())
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
-            ->setViewsCount((int) $post['views']);
+            ->setViewsCount($post['views'], PostEntity::FILTER_INT);
 
         return $entity;
     }
