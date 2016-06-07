@@ -36,7 +36,7 @@ use Krystal\Form\HtmlHelper;
 
 <div class="row">
     <div class="col-lg-8">
-        <?php $this->loadBlock('items-per-page', array('caption' => 'Latest posts')); ?>
+        <?php $this->loadPartial('items-per-page', array('caption' => 'Latest posts')); ?>
 
         <form>
             <div class="table-responsive">
@@ -94,7 +94,7 @@ use Krystal\Form\HtmlHelper;
             </div>
         </form>
 
-        <?php $this->loadBlock('paginator'); ?>
+        <?php $this->loadPartial('paginator'); ?>
     </div>
     
     <div class="col-lg-4">
