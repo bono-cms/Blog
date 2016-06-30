@@ -37,7 +37,7 @@ final class Module extends AbstractCmsModule
 
         return array(
             'siteService' => $siteService,
-            'configManager' => $this->getConfigService(),
+            'configManager' => $this->createConfigService(),
             'taskManager' => new TaskManager($postMapper),
             'postManager' => $postManager,
             'categoryManager' => $categoryManager

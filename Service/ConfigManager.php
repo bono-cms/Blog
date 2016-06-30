@@ -11,17 +11,19 @@
 
 namespace Blog\Service;
 
-use Krystal\Config\File\AbstractConfigManager;
-use Krystal\Security\Filter;
+use Krystal\Config\ConfigModuleService;
+use Krystal\Stdlib\VirtualEntity;
 
-final class ConfigManager extends AbstractConfigManager
+final class ConfigManager extends ConfigModuleService
 {
     /**
      * {@inheritDoc}
      */
-    protected function populate()
+    public function getEntity()
     {
-        $entity = $this->getEntity();
-        $entity->setPerPageCount(Filter::escape($this->get('per_page_count'), 10));
+        $entity = new VirtualEntity;
+        $entity->setPerPageCount($this->get('per_page_count', 10), VirtualEntity::FILTER_INT);
+
+        return $entity;
     }
 }

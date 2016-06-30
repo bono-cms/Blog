@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Changed the way of storing configuration data. Since now its stored in the database
  * Added `name` attribute
  * Added support for table prefix
  * Updated module icon
