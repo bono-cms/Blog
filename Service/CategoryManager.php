@@ -122,14 +122,14 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         $entity->setId($category['id'], VirtualEntity::FILTER_INT)
             ->setLangId($category['lang_id'], VirtualEntity::FILTER_INT)
             ->setWebPageId($category['web_page_id'], VirtualEntity::FILTER_INT)
-            ->setTitle($category['title'], VirtualEntity::FILTER_TAGS)
-            ->setName($category['name'], VirtualEntity::FILTER_TAGS)
+            ->setTitle($category['title'], VirtualEntity::FILTER_HTML)
+            ->setName($category['name'], VirtualEntity::FILTER_HTML)
             ->setDescription($category['description'], VirtualEntity::FILTER_SAFE_TAGS)
             ->setSeo($category['seo'], VirtualEntity::FILTER_BOOL)
             ->setSlug($this->webPageManager->fetchSlugByWebPageId($category['web_page_id']))
             ->setOrder($category['order'], VirtualEntity::FILTER_INT)
-            ->setKeywords($category['keywords'], VirtualEntity::FILTER_TAGS)
-            ->setMetaDescription($category['meta_description'], VirtualEntity::FILTER_TAGS)
+            ->setKeywords($category['keywords'], VirtualEntity::FILTER_HTML)
+            ->setMetaDescription($category['meta_description'], VirtualEntity::FILTER_HTML)
             ->setPermanentUrl('/module/blog/category/'.$entity->getId())
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
 

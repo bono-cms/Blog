@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Fixed issue with quote escaping
  * In category template, added missing `Save & Create` and `Add & Create` buttons
  * Changed the way of storing configuration data. Since now its stored in the database
  * Added `name` attribute
