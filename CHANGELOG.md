@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Replaced `text` input with `textarea` for `keywords` attribute
  * Fixed issue with quote escaping
  * In category template, added missing `Save & Create` and `Add & Create` buttons
  * Changed the way of storing configuration data. Since now its stored in the database
