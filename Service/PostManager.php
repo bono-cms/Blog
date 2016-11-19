@@ -114,7 +114,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
 
         return array(
             array(
-                'name' => $category['title'],
+                'name' => $category['name'],
                 'link' => $this->webPageManager->getUrlByWebPageId($category['web_page_id'])
             )
         );

@@ -87,7 +87,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     {
         return array(
             array(
-                'name' => $category->getTitle(),
+                'name' => $category->getName(),
                 'link' => '#'
             )
         );
