@@ -21,6 +21,14 @@ interface CategoryMapperInterface
     public function fetchBcData();
 
     /**
+     * Fetches child albums by parent id
+     * 
+     * @param string $parentId
+     * @return array
+     */
+    public function fetchChildrenByParentId($parentId);
+
+    /**
      * Fetches as a list
      * 
      * @return array

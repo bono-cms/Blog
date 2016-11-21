@@ -274,6 +274,17 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     }
 
     /**
+     * Fetches child categories by parent id
+     * 
+     * @param string $parentId
+     * @return array
+     */
+    public function fetchChildrenByParentId($parentId)
+    {
+        return $this->prepareResults($this->categoryMapper->fetchChildrenByParentId($parentId));
+    }
+
+    /**
      * Fetches as a list
      * 
      * @return array

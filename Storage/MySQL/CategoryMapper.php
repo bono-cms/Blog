@@ -38,6 +38,20 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     }
 
     /**
+     * Fetches child albums by parent id
+     * 
+     * @param string $parentId
+     * @return array
+     */
+    public function fetchChildrenByParentId($parentId)
+    {
+        return $this->db->select('*')
+                        ->from(static::getTableName())
+                        ->whereEquals('parent_id', $parentId)
+                        ->queryAll();
+    }
+
+    /**
      * Fetches as a list
      * 
      * @return array

@@ -54,6 +54,14 @@ interface CategoryManagerInterface
     public function deleteById($id);
 
     /**
+     * Fetches child categories by parent id
+     * 
+     * @param string $parentId
+     * @return array
+     */
+    public function fetchChildrenByParentId($parentId);
+
+    /**
      * Fetches as a list
      * 
      * @return array

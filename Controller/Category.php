@@ -30,7 +30,6 @@ final class Category extends AbstractBlogController
 
         if ($category !== false) {
             $this->loadPlugins($category);
-
             $config = $this->getConfig();
 
             $postManager = $this->getPostManager();
@@ -43,15 +42,25 @@ final class Category extends AbstractBlogController
                 $this->preparePaginator($paginator, $code, $slug, $pageNumber);
             }
 
-            return $this->view->render('blog-category', array(
+            // Template variables
+            $vars = array(
                 'page' => $category,
                 'category' => $category,
                 'posts' => $posts,
                 'paginator' => $paginator
-            ));
+            );
 
+            // Try to find child nodes
+            $children = $this->getCategoryManager()->fetchChildrenByParentId($id);
+
+            // If we have at least one nested category
+            if (!empty($children)) {
+                // Then append them to view templates as well
+                $vars['categories'] = $children;
+            }
+
+            return $this->view->render('blog-category', $vars);
         } else {
-
             return false;
         }
     }
