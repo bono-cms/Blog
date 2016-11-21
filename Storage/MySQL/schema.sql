@@ -1,8 +1,9 @@
 
 DROP TABLE IF EXISTS `bono_module_blog_categories`;
 CREATE TABLE `bono_module_blog_categories` (
-	
-	`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `parent_id` INT NOT NULL COMMENT 'Parent category id',
 	`lang_id` INT NOT NULL COMMENT 'Language id this category belongs to',
 	`web_page_id` INT NOT NULL COMMENT 'Web page id this category belongs to',
 	`title` varchar(255) NOT NULL COMMENT 'Title of the category',

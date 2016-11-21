@@ -18,6 +18,17 @@ use Krystal\Stdlib\VirtualEntity;
 final class Category extends AbstractAdminController
 {
     /**
+     * Returns album tree with an empty prompt
+     * 
+     * @return array
+     */
+    private function createCategoriesTree()
+    {
+        $text = sprintf('— %s —', $this->translator->translate('None'));
+        return $this->getCategoryManager()->getPromtWithCategoriesTree($text);
+    }
+
+    /**
      * Creates a form
      * 
      * @param \Krystal\Stdlib\VirtualEntity $category
@@ -35,7 +46,8 @@ final class Category extends AbstractAdminController
                                        ->addOne($title);
 
         return $this->view->render('category.form', array(
-            'category' => $category
+            'category' => $category,
+            'categories' => $this->createCategoriesTree()
         ));
     }
 

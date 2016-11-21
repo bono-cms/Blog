@@ -35,7 +35,8 @@ final class Browser extends AbstractAdminController
             'posts' => $posts,
             'paginator' => $paginator,
             'taskManager' => $this->getTaskManager(),
-            'categories' => $this->getCategoryManager()->fetchAll()
+            'categoryManager' => $this->getCategoryManager(),
+            'categories' => $this->getCategoryManager()->getCategoriesTree()
         ));
     }
 

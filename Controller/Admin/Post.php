@@ -34,7 +34,7 @@ final class Post extends AbstractAdminController
                                        ->addOne($title);
 
         return $this->view->render('post.form', array(
-            'categories' => $this->getCategoryManager()->fetchList(),
+            'categories' => $this->getCategoryManager()->getCategoriesTree(),
             'post' => $post
         ));
     }

@@ -14,6 +14,13 @@ namespace Blog\Storage;
 interface CategoryMapperInterface
 {
     /**
+     * Fetches breadcrumb data
+     * 
+     * @return array
+     */
+    public function fetchBcData();
+
+    /**
      * Fetches as a list
      * 
      * @return array

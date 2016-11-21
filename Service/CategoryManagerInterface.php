@@ -16,6 +16,21 @@ use Krystal\Stdlib\VirtualEntity;
 interface CategoryManagerInterface
 {
     /**
+     * Returns a tree pre-pending prompt message
+     * 
+     * @param string $text
+     * @return array
+     */
+    public function getPromtWithCategoriesTree($text);
+
+    /**
+     * Returns albums tree
+     * 
+     * @return array
+     */
+    public function getCategoriesTree();
+
+    /**
      * Returns breadcrumbs for category by its entity
      * 
      * @param \Krystal\Stdlib\VirtualEntity $category

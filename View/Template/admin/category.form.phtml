@@ -30,6 +30,13 @@ use Krystal\Form\Element;
 				</div>
 				
 				<div class="form-group">
+					<label class="col-lg-2 control-label"><?php $this->show('Parent category'); ?></label>
+					<div class="col-lg-10">
+                        <?php echo Element::select('category[parent_id]', $categories, $category->getParentId(), array('class' => 'form-control')); ?>
+					</div>
+				</div>
+                
+				<div class="form-group">
 					<label class="col-lg-2 control-label"><?php $this->show('Description'); ?></label>
 					<div class="col-lg-10">
                         <?php echo Element::textarea('category[description]', $category->getDescription(), array('data-wysiwyg' => 'true')); ?>

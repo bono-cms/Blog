@@ -21,6 +21,9 @@ use Menu\Contract\MenuAwareManager;
 use Krystal\Stdlib\VirtualEntity;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
+use Krystal\Tree\AdjacencyList\TreeBuilder;
+use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
+use Krystal\Tree\AdjacencyList\Render\PhpArray;
 
 final class CategoryManager extends AbstractManager implements CategoryManagerInterface, MenuAwareManager
 {
@@ -78,6 +81,31 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     }
 
     /**
+     * Returns a tree pre-pending prompt message
+     * 
+     * @param string $text
+     * @return array
+     */
+    public function getPromtWithCategoriesTree($text)
+    {
+        $tree = $this->getCategoriesTree();
+        ArrayUtils::assocPrepend($tree, null, $text);
+
+        return $tree;
+    }
+
+    /**
+     * Returns albums tree
+     * 
+     * @return array
+     */
+    public function getCategoriesTree()
+    {
+        $treeBuilder = new TreeBuilder($this->categoryMapper->fetchAll());
+        return $treeBuilder->render(new PhpArray('name'));
+    }
+
+    /**
      * Returns breadcrumbs for category by its entity
      * 
      * @param \Krystal\Stdlib\VirtualEntity $category
@@ -85,12 +113,26 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function getBreadcrumbs(VirtualEntity $category)
     {
-        return array(
-            array(
-                'name' => $category->getName(),
-                'link' => '#'
-            )
-        );
+        return $this->createBreadcrumbs($category->getId());
+    }
+
+    /**
+     * Gets all breadcrumbs by associated id
+     * 
+     * @param string $id Category id
+     * @return array
+     */
+    private function createBreadcrumbs($id)
+    {
+        $wm = $this->webPageManager;
+        $builder = new BreadcrumbBuilder($this->categoryMapper->fetchBcData(), $id);
+
+        return $builder->makeAll(function($breadcrumb) use ($wm) {
+            return array(
+                'name' => $breadcrumb['name'],
+                'link' => $wm->getUrl($breadcrumb['web_page_id'], $breadcrumb['lang_id'])
+            );
+        });
     }
 
     /**
@@ -121,6 +163,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         $entity = new VirtualEntity();
         $entity->setId($category['id'], VirtualEntity::FILTER_INT)
             ->setLangId($category['lang_id'], VirtualEntity::FILTER_INT)
+            ->setParentId($category['parent_id'], VirtualEntity::FILTER_INT)
             ->setWebPageId($category['web_page_id'], VirtualEntity::FILTER_INT)
             ->setTitle($category['title'], VirtualEntity::FILTER_HTML)
             ->setName($category['name'], VirtualEntity::FILTER_HTML)

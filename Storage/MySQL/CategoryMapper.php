@@ -25,6 +25,19 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     }
 
     /**
+     * Fetches breadcrumb data
+     * 
+     * @return array
+     */
+    public function fetchBcData()
+    {
+        return $this->db->select(array('name', 'web_page_id', 'lang_id', 'parent_id', 'id'))
+                        ->from(static::getTableName())
+                        ->whereEquals('lang_id', $this->getLangId())
+                        ->queryAll();
+    }
+
+    /**
      * Fetches as a list
      * 
      * @return array
@@ -130,8 +143,6 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
         return $this->db->select('*')
                         ->from(static::getTableName())
                         ->whereEquals('lang_id', $this->getLangId())
-                        ->orderBy('id')
-                        ->desc()
                         ->queryAll();
     }
 }
