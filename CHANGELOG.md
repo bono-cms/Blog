@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Support for parent categories and images
  * Replaced `text` input with `textarea` for `keywords` attribute
  * Fixed issue with quote escaping
  * In category template, added missing `Save & Create` and `Add & Create` buttons
