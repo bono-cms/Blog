@@ -19,6 +19,7 @@ use Blog\Storage\CategoryMapperInterface;
 use Menu\Contract\MenuAwareManager;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
+use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 
 final class PostManager extends AbstractManager implements PostManagerInterface, MenuAwareManager
 {
@@ -92,32 +93,26 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     private function getWithCategoryBreadcrumbsById($id, array $appends)
     {
-        return array_merge($this->getCategoryBreadcrumbsById($id), $appends);
+        return array_merge($this->createBreadcrumbs($id), $appends);
     }
 
     /**
-     * Returns breadcrumbs for provided category id
+     * Gets all breadcrumbs by associated id
      * 
-     * @param string $id Category's id
+     * @param string $id Category id
      * @return array
      */
-    private function getCategoryBreadcrumbsById($id)
+    private function createBreadcrumbs($id)
     {
-        $category = $this->categoryMapper->fetchBcDataById($id);
+        $wm = $this->webPageManager;
+        $builder = new BreadcrumbBuilder($this->categoryMapper->fetchBcData(), $id);
 
-        // Additional security check
-        if (empty($category)) {
+        return $builder->makeAll(function($breadcrumb) use ($wm) {
             return array(
-                array()
+                'name' => $breadcrumb['name'],
+                'link' => $wm->getUrl($breadcrumb['web_page_id'], $breadcrumb['lang_id'])
             );
-        }
-
-        return array(
-            array(
-                'name' => $category['name'],
-                'link' => $this->webPageManager->getUrlByWebPageId($category['web_page_id'])
-            )
-        );
+        });
     }
 
     /**
@@ -130,7 +125,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     {
         return $this->getWithCategoryBreadcrumbsById($post->getCategoryId(), array(
             array(
-                'name' => $post->getTitle(),
+                'name' => $post->getName(),
                 'link' => '#'
             )
         ));
