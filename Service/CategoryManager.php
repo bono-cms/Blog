@@ -254,6 +254,27 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     }
 
     /**
+     * Removes child albums that belong to provided id
+     * 
+     * @param string $parentId
+     * @return boolean
+     */
+    private function removeChildCategoriesByParentId($parentId)
+    {
+        $treeBuilder = new TreeBuilder($this->categoryMapper->fetchAll());
+        $ids = $treeBuilder->findChildNodeIds($parentId);
+
+        // If there's at least one child id, then start working next
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                $this->removeAllById($id);
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Removes a category by its associated id
      * 
      * @param string $id Category's id
@@ -264,13 +285,12 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         // Grab category's name before we remove it
         $title = Filter::escape($this->categoryMapper->fetchNameById($id));
 
-        if ($this->removeAllById($id)) {
-            $this->track('Category "%s" has been removed', $title);
-            return true;
+        // Completely remove the post
+        $this->removeChildCategoriesByParentId($id);
+        $this->removeAllById($id);
 
-        } else {
-            return false;
-        }
+        $this->track('Category "%s" has been removed', $title);
+        return true;
     }
 
     /**
