@@ -18,12 +18,12 @@ use Blog\Storage\CategoryMapperInterface;
 use Blog\Storage\PostMapperInterface;
 use Menu\Service\MenuWidgetInterface;
 use Menu\Contract\MenuAwareManager;
-use Krystal\Stdlib\VirtualEntity;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\TreeBuilder;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 use Krystal\Tree\AdjacencyList\Render\PhpArray;
+use Krystal\Image\Tool\ImageManagerInterface;
 
 final class CategoryManager extends AbstractManager implements CategoryManagerInterface, MenuAwareManager
 {
@@ -49,6 +49,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     private $webPageManager;
 
     /**
+     * Category image manager
+     * 
+     * @var \Krystal\Image\ImageManagerInterface
+     */
+    private $imageManager;
+
+    /**
      * History manager to keep tracks
      * 
      * @var \Cms\Service\HistoryManagerInterface
@@ -61,6 +68,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
      * @param \Blog\Storage\PostMapperInterface $postMapper
      * @param \Cms\Service\WebPageManagerInterface $webPageManager
+     * @param \Krystal\Image\ImageManagerInterface $imageManager
      * @param \Cms\Service\HistoryManagerInterface $historyManager
      * @param \Menu\Service\MenuWidgetInterface $menuWidget Optional menu widget service
      * @return void
@@ -69,12 +77,14 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         CategoryMapperInterface $categoryMapper,
         PostMapperInterface $postMapper,
         WebPageManagerInterface $webPageManager,
+        ImageManagerInterface $imageManager,
         HistoryManagerInterface $historyManager,
         MenuWidgetInterface $menuWidget = null
     ){
         $this->categoryMapper = $categoryMapper;
         $this->postMapper = $postMapper;
         $this->webPageManager = $webPageManager;
+        $this->imageManager = $imageManager;
         $this->historyManager = $historyManager;
 
         $this->setMenuWidget($menuWidget);
@@ -108,10 +118,10 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     /**
      * Returns breadcrumbs for category by its entity
      * 
-     * @param \Krystal\Stdlib\VirtualEntity $category
+     * @param \Blog\Service\CategoryEntity $category
      * @return array
      */
-    public function getBreadcrumbs(VirtualEntity $category)
+    public function getBreadcrumbs(CategoryEntity $category)
     {
         return $this->createBreadcrumbs($category->getId());
     }
@@ -160,21 +170,27 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     protected function toEntity(array $category)
     {
-        $entity = new VirtualEntity();
-        $entity->setId($category['id'], VirtualEntity::FILTER_INT)
-            ->setLangId($category['lang_id'], VirtualEntity::FILTER_INT)
-            ->setParentId($category['parent_id'], VirtualEntity::FILTER_INT)
-            ->setWebPageId($category['web_page_id'], VirtualEntity::FILTER_INT)
-            ->setTitle($category['title'], VirtualEntity::FILTER_HTML)
-            ->setName($category['name'], VirtualEntity::FILTER_HTML)
-            ->setDescription($category['description'], VirtualEntity::FILTER_SAFE_TAGS)
-            ->setSeo($category['seo'], VirtualEntity::FILTER_BOOL)
+        $imageBag = clone $this->imageManager->getImageBag();
+        $imageBag->setId((int) $category['id'])
+                 ->setCover($category['cover']);
+
+        $entity = new CategoryEntity();
+        $entity->setId($category['id'], CategoryEntity::FILTER_INT)
+            ->setImageBag($imageBag)
+            ->setLangId($category['lang_id'], CategoryEntity::FILTER_INT)
+            ->setParentId($category['parent_id'], CategoryEntity::FILTER_INT)
+            ->setWebPageId($category['web_page_id'], CategoryEntity::FILTER_INT)
+            ->setTitle($category['title'], CategoryEntity::FILTER_HTML)
+            ->setName($category['name'], CategoryEntity::FILTER_HTML)
+            ->setDescription($category['description'], CategoryEntity::FILTER_SAFE_TAGS)
+            ->setSeo($category['seo'], CategoryEntity::FILTER_BOOL)
             ->setSlug($this->webPageManager->fetchSlugByWebPageId($category['web_page_id']))
-            ->setOrder($category['order'], VirtualEntity::FILTER_INT)
-            ->setKeywords($category['keywords'], VirtualEntity::FILTER_HTML)
-            ->setMetaDescription($category['meta_description'], VirtualEntity::FILTER_HTML)
+            ->setOrder($category['order'], CategoryEntity::FILTER_INT)
+            ->setKeywords($category['keywords'], CategoryEntity::FILTER_HTML)
+            ->setMetaDescription($category['meta_description'], CategoryEntity::FILTER_HTML)
             ->setPermanentUrl('/module/blog/category/'.$entity->getId())
-            ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
+            ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
+            ->setCover($category['cover']);
 
         return $entity;
     }
@@ -338,7 +354,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     private function prepareInput(array $input)
     {
-        $category =& $input['category'];
+        $category =& $input['data']['category'];
 
         // Empty slug is always take from a title
         if (empty($category['slug'])) {
@@ -363,14 +379,28 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function add(array $input)
     {
         $input = $this->prepareInput($input);
-        $category =& $input['category'];
 
+        // Form data reference
+        $category =& $input['data']['category'];
         $category['web_page_id'] = '';
 
-        if ($this->categoryMapper->insert(ArrayUtils::arrayWithout($category, array('menu', 'slug')))) {
+        // If we have a cover, then we need to upload it
+        if (!empty($input['files']['file'])) {
+            $file =& $input['files']['file'];
+            $this->filterFileInput($file);
 
+            // Override empty cover's value now
+            $category['cover'] = $file[0]->getName();
+        }
+
+        if ($this->categoryMapper->insert(ArrayUtils::arrayWithout($category, array('menu', 'slug')))) {
             $id = $this->getLastId();
             $this->track('Category "%s" has been created', $category['name']);
+
+            // If there's a file, then it needs to uploaded as a cover
+            if (!empty($input['files']['file'])) {
+                $this->imageManager->upload($id, $input['files']['file']);
+            }
 
             // Add a web page now
             if ($this->webPageManager->add($id, $category['slug'], 'Blog (Categories)', 'Blog:Category@indexAction', $this->categoryMapper)){
@@ -381,7 +411,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             }
 
             return true;
-
         } else {
             return false;
         }
@@ -396,7 +425,31 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function update(array $input)
     {
         $input = $this->prepareInput($input);
-        $category =& $input['category'];
+        $category =& $input['data']['category'];
+
+        // Allow to remove a cover, only it case it exists and checkbox was checked
+        if (isset($category['remove_cover'])) {
+            // Remove a cover, but not a dir itself
+            $this->imageManager->delete($category['id']);
+            $category['cover'] = '';
+        } else {
+            if (!empty($input['files']['file'])) {
+                $file =& $input['files']['file'];
+                // If we have a previous cover's image, then we need to remove it
+                if (!empty($category['cover'])) {
+                    if (!$this->imageManager->delete($category['id'], $category['cover'])) {
+                        // If failed, then exit this method immediately
+                        return false;
+                    }
+                }
+
+                // And now upload a new one
+                $this->filterFileInput($file);
+                $category['cover'] = $file[0]->getName();
+
+                $this->imageManager->upload($category['id'], $file);
+            }
+        }
 
         $this->webPageManager->update($category['web_page_id'], $category['slug']);
 
@@ -405,6 +458,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         }
 
         $this->track('Category "%s" has been updated', $category['name']);
-        return $this->categoryMapper->update(ArrayUtils::arrayWithout($category, array('menu', 'slug')));
+        return $this->categoryMapper->update(ArrayUtils::arrayWithout($category, array('menu', 'slug', 'remove_cover')));
     }
 }

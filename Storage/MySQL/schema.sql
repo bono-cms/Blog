@@ -12,7 +12,8 @@ CREATE TABLE `bono_module_blog_categories` (
 	`seo` varchar(1) NOT NULL COMMENT 'Whether SEO enabled or not',
 	`order` INT NOT NULL COMMENT 'Sort order',
 	`keywords` TEXT NOT NULL COMMENT 'Meta keywords for SEO',
-	`meta_description` TEXT NOT NULL COMMENT 'Meta description for SEO'
+	`meta_description` TEXT NOT NULL COMMENT 'Meta description for SEO',
+    `cover` varchar(50) NOT NULL COMMENT 'Image file basename'
 	
 ) DEFAULT CHARSET = UTF8;
 

@@ -16,9 +16,36 @@ use Blog\Service\PostManager;
 use Blog\Service\CategoryManager;
 use Blog\Service\TaskManager;
 use Blog\Service\SiteService;
+use Krystal\Image\Tool\ImageManager;
 
 final class Module extends AbstractCmsModule
 {
+    /**
+     * Returns album image manager
+     * 
+     * @return \Krystal\Image\ImageManager
+     */
+    private function createCategoryImageManager()
+    {
+        $plugins = array(
+            'thumb' => array(
+                'dimensions' => array(
+                    // Dimensions for administration panel
+                    array(200, 200),
+                    // Dimensions for the site
+                    array(500, 500)
+                )
+            )
+        );
+
+        return new ImageManager(
+            '/data/uploads/module/blog/categories',
+            $this->appConfig->getRootDir(),
+            $this->appConfig->getRootUrl(),
+            $plugins
+        );
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -31,7 +58,14 @@ final class Module extends AbstractCmsModule
         $historyManager = $this->getHistoryManager();
 
         $postManager = new PostManager($postMapper, $categoryMapper, $webPageManager, $historyManager);
-        $categoryManager = new CategoryManager($categoryMapper, $postMapper, $webPageManager, $historyManager, $this->getMenuWidget());
+        $categoryManager = new CategoryManager(
+            $categoryMapper, 
+            $postMapper, 
+            $webPageManager, 
+            $this->createCategoryImageManager(), 
+            $historyManager, 
+            $this->getMenuWidget()
+        );
 
         $siteService = new SiteService($categoryMapper, $postManager, $webPageManager);
 

@@ -33,10 +33,10 @@ interface CategoryManagerInterface
     /**
      * Returns breadcrumbs for category by its entity
      * 
-     * @param \Krystal\Stdlib\VirtualEntity $category
+     * @param \Blog\Service\CategoryEntity $category
      * @return array
      */
-    public function getBreadcrumbs(VirtualEntity $category);
+    public function getBreadcrumbs(CategoryEntity $category);
 
     /**
      * Returns last category's id

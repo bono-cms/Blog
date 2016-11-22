@@ -99,7 +99,7 @@ final class Category extends AbstractAdminController
         $post = $this->request->getPost();
         $data = $post['category'];
 
-        return $this->invokeSave('categoryManager', $data['id'], $post, array(
+        return $this->invokeSave('categoryManager', $data['id'], $this->request->getAll(), array(
             'input' => array(
                 'source' => $data,
                 'definition' => array(

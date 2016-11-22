@@ -14,8 +14,9 @@ use Krystal\Form\Element;
 	<div class="tab-content">
 		<div class="tab-pane fade in active" id="page" role="tabpanel">
 			<div class="well">
-				
+                
                 <?php echo Element::hidden('category[id]', $category->getId()); ?>
+                <?php echo Element::hidden('category[cover]', $category->getCover()); ?>
                 <?php echo Element::hidden('category[web_page_id]', $category->getWebPageId()); ?>
                 <?php echo Element::hidden('web_page_id', $category->getWebPageId()); ?>
                 
@@ -43,6 +44,37 @@ use Krystal\Form\Element;
 					</div>
 				</div>
 				
+                <!--Cover-->
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Cover'); ?></label>
+                    <div class="col-lg-10">
+                        <br />
+                        
+                        <?php if ($category->hasCover()): ?>
+                        <img data-image="preview" src="<?php echo $category->getImageUrl('200x200'); ?>" />
+                        
+                        <br />
+                        <br />
+                        
+                        <div>
+                            <label for="removeCover"><?php $this->show('Remove this cover'); ?>&nbsp;</label>
+                            <input type="checkbox" id="removeCover" name="category[remove_cover]" data-toggle="tooltip" data-placement="left" title="<?php $this->show('Check it if you want to remove this cover'); ?>" />
+                        </div>
+                        
+                        <br />
+                        
+                        <?php else: ?>
+                        <img data-image="preview" />
+                        <?php endif; ?>
+                        
+                        <br />
+                        <br />
+                        
+                        <?php echo Element::file('file', 'image/x-png, image/gif, image/jpeg'); ?>
+                    </div>
+                </div>
+                <!--/Cover-->
+                
 				<div class="options">
 					<div class="form-group">
 						<label class="col-lg-2 control-label"><?php $this->show('Enable SEO'); ?></label>
