@@ -197,7 +197,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     private function removeAllById($id)
     {
-        return $this->removeCategoryById($id) && $this->removeAllPostsByCategoryId($id);
+        $this->removeCategoryById($id);
+
+        // Remove posts
+        $this->removePostWebPagesByCategoryId($id);
+        $this->postMapper->deleteByCategoryId($id);
+
+        return true;
     }
 
     /**
@@ -240,17 +246,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     private function removeCategoryById($id)
     {
         return $this->removeWebPageByCategoryId($id) && $this->categoryMapper->deleteById($id);
-    }
-
-    /**
-     * Removes all posts associated with provided category id
-     * 
-     * @param string $id Post's id
-     * @return boolean
-     */
-    private function removeAllPostsByCategoryId($id)
-    {
-        return $this->removePostWebPagesByCategoryId($id) && $this->postMapper->deleteByCategoryId($id);
     }
 
     /**
