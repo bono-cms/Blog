@@ -64,7 +64,7 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
                ->setLangId($category['lang_id'])
                ->setCount($this->postManager->countAllPublishedByCategoryId($entity->getId()))
                ->setSlug($this->webPageManager->fetchSlugByWebPageId($category['web_page_id']))
-               ->setTitle($category['title'] . sprintf(' (%s) ', $entity->getCount()))
+               ->setTitle($category['name'] . sprintf(' (%s) ', $entity->getCount()))
                ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
 
         return $entity;
