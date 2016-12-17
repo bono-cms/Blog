@@ -115,9 +115,9 @@ use Krystal\Form\HtmlHelper;
                 
                 <tbody>
                     <?php foreach ($categories as $id => $name): ?>
-                    <tr>
+                    <tr class="<?php echo HtmlHelper::addOnDemand(isset($categoryId) && $categoryId == $id, 'success'); ?>">
                         <td class="text-center text-muted"><?php echo $id; ?></td>
-                        <td class="text-center <?php echo HtmlHelper::addOnDemand(isset($categoryId) && $categoryId == $id, 'success'); ?>">
+                        <td class="text-center">
                             <a href="<?php echo $this->url('Blog:Admin:Browser@categoryAction', $id); ?>"><?php echo $name; ?></a>
                         </td>
                         <td class="text-center"><?php echo $taskManager->getCountByCategory($id); ?></td>
