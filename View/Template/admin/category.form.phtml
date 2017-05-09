@@ -63,7 +63,7 @@ use Krystal\Form\Element;
                         <?php endif; ?>
 
                         <a class="btn btn-primary" data-button="upload" data-target="[name='file']" href="#"><i class="glyphicon glyphicon-picture"></i> <?php $this->show('Upload a file'); ?></a>
-                        <?php echo Element::file('file', 'image/x-png, image/gif, image/jpeg', array('class' => 'hidden')); ?>
+                        <?php echo Element::file('file', 'image/x-png, image/gif, image/jpeg', array('class' => 'hidden', 'data-plugin' => 'preview')); ?>
                     </div>
                 </div>
                 <!--/Cover-->

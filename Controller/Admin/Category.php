@@ -58,6 +58,8 @@ final class Category extends AbstractAdminController
      */
     public function addAction()
     {
+        $this->view->getPluginBag()->load('preview');
+
         return $this->createForm(new VirtualEntity(), 'Add a category');
     }
 
