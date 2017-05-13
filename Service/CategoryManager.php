@@ -367,6 +367,12 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         }
 
         $category['slug'] = $this->webPageManager->sluggify($category['slug']);
+
+        // Safe type-casting
+        $category['web_page_id'] = (int) $category['web_page_id'];
+        $category['parent_id'] = (int) $category['parent_id'];
+        $category['order'] = (int) $category['order'];
+
         return $input;
     }
 
@@ -382,7 +388,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
 
         // Form data reference
         $category =& $input['data']['category'];
-        $category['web_page_id'] = '';
 
         // If we have a cover, then we need to upload it
         if (!empty($input['files']['file'])) {

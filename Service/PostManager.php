@@ -338,6 +338,9 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
         $input['slug'] = $this->webPageManager->sluggify($input['slug']);
         $input['timestamp'] = strtotime($input['date']);
 
+        // Safe type-casting
+        $input['web_page_id'] = (int) $input['web_page_id'];
+
         return $input;
     }
 
@@ -350,7 +353,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     public function add(array $input)
     {
         $input = $this->prepareInput($input);
-        $input['web_page_id'] = '';
         $input['views'] = '0';
 
         if ($this->postMapper->insert(ArrayUtils::arrayWithout($input, array('date', 'slug')))) {
