@@ -71,6 +71,18 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
     }
 
     /**
+     * Returns recent blog post entities
+     * 
+     * @param integer $limit Limit of posts to be returned
+     * @param string $categoryId Optional category ID filter
+     * @return array
+     */
+    public function getRecent($limit, $categoryId = null)
+    {
+        return $this->postManager->fetchRecent($limit, $categoryId);
+    }
+
+    /**
      * Fetches posts ordering by view count
      * 
      * @param integer $limit Limit of records to be fetched

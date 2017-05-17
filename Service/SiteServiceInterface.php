@@ -14,6 +14,15 @@ namespace Blog\Service;
 interface SiteServiceInterface
 {
     /**
+     * Returns recent blog post entities
+     * 
+     * @param integer $limit Limit of posts to be returned
+     * @param string $categoryId Optional category ID filter
+     * @return array
+     */
+    public function getRecent($limit, $categoryId = null);
+
+    /**
      * Fetches posts ordering by view count
      * 
      * @param integer $limit Limit of records to be fetched

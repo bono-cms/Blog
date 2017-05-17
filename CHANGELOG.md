@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Added `getRecent()` method in `\Blog\Service\SiteService`
  * Support for parent categories and images
  * Replaced `text` input with `textarea` for `keywords` attribute
  * Fixed issue with quote escaping
