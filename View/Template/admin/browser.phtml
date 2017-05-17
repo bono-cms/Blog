@@ -65,7 +65,7 @@ use Krystal\Form\HtmlHelper;
                             <td class="text-center text-muted"><?php echo $post->getId(); ?></td>
                             <td class="text-center"><?php echo $post->getName(); ?></td>
                             <td class="text-center"><?php echo date('d-m-Y', $post->getTimestamp()); ?></td>
-                            <td class="text-center"><?php echo $post->getCategoryTitle(); ?></td>
+                            <td class="text-center"><?php echo $post->getCategoryName(); ?></td>
                             <td class="text-center">
                                 <?php echo Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished()); ?>
                             </td>

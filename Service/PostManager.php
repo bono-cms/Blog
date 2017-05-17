@@ -225,29 +225,32 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     /**
      * {@inheritDoc}
      */
-    protected function toEntity(array $post)
+    protected function toEntity(array $post, $full = true)
     {
         $entity = new PostEntity();
         $entity->setId($post['id'], PostEntity::FILTER_INT)
             ->setLangId($post['lang_id'], PostEntity::FILTER_INT)
             ->setWebPageId($post['web_page_id'], PostEntity::FILTER_INT)
-            ->setCategoryTitle($this->categoryMapper->fetchNameById($post['category_id']), PostEntity::FILTER_HTML)
-            ->setTitle($post['title'], PostEntity::FILTER_HTML)
             ->setName($post['name'], PostEntity::FILTER_HTML)
-            ->setCategoryId($post['category_id'], PostEntity::FILTER_INT)
-            ->setIntroduction($post['introduction'], PostEntity::FILTER_SAFE_TAGS)
-            ->setFull($post['full'], PostEntity::FILTER_SAFE_TAGS)
+            ->setCategoryName($post['category_name'], PostEntity::FILTER_HTML)
             ->setTimestamp($post['timestamp'], PostEntity::FILTER_INT)
             ->setPublished($post['published'], PostEntity::FILTER_BOOL)
             ->setComments($post['comments'], PostEntity::FILTER_BOOL)
             ->setSeo($post['seo'], PostEntity::FILTER_BOOL)
             ->setSlug($this->webPageManager->fetchSlugByWebPageId($post['web_page_id']))
-            ->setKeywords($post['keywords'], PostEntity::FILTER_HTML)
-            ->setMetaDescription($post['meta_description'], PostEntity::FILTER_HTML)
-            ->setDate(date($this->getTimeFormat(), $entity->getTimestamp()))
-            ->setPermanentUrl('/module/blog/post/'.$entity->getId())
-            ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
-            ->setViewsCount($post['views'], PostEntity::FILTER_INT);
+            ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
+
+        if ($full === true) {
+            $entity->setTitle($post['title'], PostEntity::FILTER_HTML)
+                   ->setKeywords($post['keywords'], PostEntity::FILTER_HTML)
+                   ->setMetaDescription($post['meta_description'], PostEntity::FILTER_HTML)
+                   ->setDate(date($this->getTimeFormat(), $entity->getTimestamp()))
+                   ->setCategoryId($post['category_id'], PostEntity::FILTER_INT)
+                   ->setViewsCount($post['views'], PostEntity::FILTER_INT)
+                   ->setPermanentUrl('/module/blog/post/'.$entity->getId())
+                   ->setIntroduction($post['introduction'], PostEntity::FILTER_SAFE_TAGS)
+                   ->setFull($post['full'], PostEntity::FILTER_SAFE_TAGS);
+        }
 
         return $entity;
     }
@@ -280,7 +283,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     public function fetchMostlyViewed($limit)
     {
-        return $this->prepareResults($this->postMapper->fetchMostlyViewed($limit));
+        return $this->prepareResults($this->postMapper->fetchMostlyViewed($limit), false);
     }
 
     /**
@@ -304,7 +307,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId = null)
     {
-        return $this->prepareResults($this->postMapper->fetchAllByPage($published, $page, $itemsPerPage, $categoryId));
+        return $this->prepareResults($this->postMapper->fetchAllByPage($published, $page, $itemsPerPage, $categoryId), false);
     }
 
     /**
