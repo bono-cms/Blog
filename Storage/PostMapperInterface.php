@@ -119,6 +119,15 @@ interface PostMapperInterface
     public function fetchAllPublished();
 
     /**
+     * Fetch recent blog posts
+     * 
+     * @param integer $limit Limit of rows to be returned
+     * @param string $categoryId Optional category ID filter
+     * @return array
+     */
+    public function fetchRecent($limit, $categoryId = null);
+
+    /**
      * Fetches all posts filtered by pagination
      * 
      * @param boolean $published Whether to fetch only published records
