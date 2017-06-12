@@ -13,6 +13,8 @@ namespace Blog\Storage;
 
 interface PostMapperInterface
 {
+    const PARAM_COLUMN_ATTACHED = 'attached';
+
     /**
      * Increments view count by post id
      * 
@@ -71,6 +73,15 @@ interface PostMapperInterface
      * @return boolean
      */
     public function update(array $data);
+
+    /**
+     * Fetches post data by associated IDs
+     * 
+     * @param array $ids A collection of post IDs
+     * @param boolean $relational Whether to include relational data
+     * @return array
+     */
+    public function fetchByIds(array $ids, $relational = false);
 
     /**
      * Fetches post data by its associated id
