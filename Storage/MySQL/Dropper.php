@@ -22,6 +22,7 @@ final class Dropper extends AbstractStorageDropper
     {
         return array(
             PostMapper::getTableName(),
+            PostMapper::getJunctionTableName(),
             CategoryMapper::getTableName()
         );
     }
