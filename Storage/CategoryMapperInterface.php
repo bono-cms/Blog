@@ -14,6 +14,13 @@ namespace Blog\Storage;
 interface CategoryMapperInterface
 {
     /**
+     * Fetch all categories with their attached post names
+     * 
+     * @return array
+     */
+    public function fetchAllWithPosts();
+
+    /**
      * Fetches breadcrumb data
      * 
      * @return array
