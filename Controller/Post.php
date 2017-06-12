@@ -21,11 +21,10 @@ final class Post extends AbstractBlogController
      */
     public function indexAction($id)
     {
-        $post = $this->getPostManager()->fetchById($id);
+        $post = $this->getPostManager()->fetchById($id, true);
 
         // If $post isn't false, then $id is valid and $post itself is an instance of entity class
         if ($post !== false) {
-
             $this->loadSitePlugins();
             $this->view->getBreadcrumbBag()
                        ->add($this->getPostManager()->getBreadcrumbs($post));

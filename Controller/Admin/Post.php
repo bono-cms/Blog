@@ -65,7 +65,7 @@ final class Post extends AbstractAdminController
      */
     public function editAction($id)
     {
-        $post = $this->getPostManager()->fetchById($id);
+        $post = $this->getPostManager()->fetchById($id, false);
 
         if ($post !== false) {
             return $this->createForm($post, 'Edit the post');
