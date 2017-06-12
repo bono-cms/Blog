@@ -91,6 +91,16 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     }
 
     /**
+     * Fetch all categories with their associated posts
+     * 
+     * @return array
+     */
+    public function fetchAllWithPosts()
+    {
+        return ArrayUtils::arrayDropdown($this->categoryMapper->fetchAllWithPosts(), 'category', 'id', 'post');
+    }
+
+    /**
      * Returns a tree pre-pending prompt message
      * 
      * @param string $text

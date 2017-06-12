@@ -16,6 +16,13 @@ use Krystal\Stdlib\VirtualEntity;
 interface CategoryManagerInterface
 {
     /**
+     * Fetch all categories with their associated posts
+     * 
+     * @return array
+     */
+    public function fetchAllWithPosts();
+
+    /**
      * Returns a tree pre-pending prompt message
      * 
      * @param string $text
