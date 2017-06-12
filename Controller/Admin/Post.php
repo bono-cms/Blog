@@ -27,7 +27,7 @@ final class Post extends AbstractAdminController
     {
         // Load view plugins
         $this->view->getPluginBag()->appendScript('@Blog/admin/post.form.js')
-                                   ->load(array($this->getWysiwygPluginName(), 'datepicker'));
+                                   ->load(array($this->getWysiwygPluginName(), 'datepicker', 'chosen'));
 
         // Append breadcrumbs
         $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
@@ -35,6 +35,8 @@ final class Post extends AbstractAdminController
 
         return $this->view->render('post.form', array(
             'categories' => $this->getCategoryManager()->getCategoriesTree(),
+            // If you don't ability to attach similar posts, you can comment 'posts' key to reduce DB queries
+            'posts' => $this->getCategoryManager()->fetchAllWithPosts(),
             'post' => $post
         ));
     }

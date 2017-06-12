@@ -46,7 +46,15 @@ use Krystal\Form\Element;
 		</div>
 		
 		<div class="options">
-			
+            <?php if (isset($posts)): ?>
+            <div class="form-group">
+                <label class="col-lg-2 control-label"><?php $this->show('Attached posts'); ?></label>
+                <div class="col-lg-10">
+                    <?php echo Element::select('post[attached][]', $posts, $post->getAttachedIds(), array('class' => 'form-control', 'data-plugin' => 'chosen', 'data-placeholder' => ' ', 'multiple' => true)); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
 			<div class="form-group">
 				<label class="col-lg-2 control-label"><?php echo $this->translate('Date'); ?></label>
 				<div class="col-lg-10">
