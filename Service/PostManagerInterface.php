@@ -141,12 +141,14 @@ interface PostManagerInterface
     public function update(array $form);
 
     /**
-     * Fetches post bag by its associated id
+     * Fetches post entity by its associated id
      * 
-     * @param string $id
+     * @param string $id Post ID
+     * @param boolean $withAttached Whether to grab attached entities
+     * @return \News\Service\PostEntity|boolean
      * @return array
      */
-    public function fetchById($id);
+    public function fetchById($id, $withAttached);
 
     /**
      * Removes a post by its associated id

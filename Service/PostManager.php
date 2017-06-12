@@ -227,7 +227,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     protected function toEntity(array $post, $full = true)
     {
-        $entity = new PostEntity();
+        $entity = new PostEntity(false);
         $entity->setId($post['id'], PostEntity::FILTER_INT)
             ->setLangId($post['lang_id'], PostEntity::FILTER_INT)
             ->setWebPageId($post['web_page_id'], PostEntity::FILTER_INT)
@@ -241,6 +241,11 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
 
         if ($full === true) {
+            // Attached ones if available
+            if (isset($post[PostMapperInterface::PARAM_COLUMN_ATTACHED])) {
+                $entity->setAttachedIds(ArrayUtils::arrayList($post[PostMapperInterface::PARAM_COLUMN_ATTACHED], 'id', 'id'));
+            }
+
             $entity->setTitle($post['title'], PostEntity::FILTER_HTML)
                    ->setKeywords($post['keywords'], PostEntity::FILTER_HTML)
                    ->setMetaDescription($post['meta_description'], PostEntity::FILTER_HTML)
@@ -398,12 +403,25 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     /**
      * Fetches post entity by its associated id
      * 
-     * @param string $id
+     * @param string $id Post ID
+     * @param boolean $withAttached Whether to grab attached entities
+     * @return \News\Service\PostEntity|boolean
      * @return array
      */
-    public function fetchById($id)
+    public function fetchById($id, $withAttached)
     {
-        return $this->prepareResult($this->postMapper->fetchById($id));
+        $entity = $this->prepareResult($this->postMapper->fetchById($id));
+
+        if ($entity !== false) {
+            if ($withAttached === true) {
+                $rows = $this->postMapper->fetchByIds($entity->getAttachedIds());
+                $entity->setAttachedPosts($this->prepareResults($rows, false));
+            }
+
+            return $entity;
+        } else {
+            return false;
+        }
     }
 
     /**
