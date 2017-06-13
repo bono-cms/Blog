@@ -245,6 +245,8 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         // Synchronize relations if provided
         if (isset($input[self::PARAM_COLUMN_ATTACHED])) {
             $this->syncWithJunction(self::getJunctionTableName(), $input[$this->getPk()], $input[self::PARAM_COLUMN_ATTACHED]);
+        } else {
+            $this->removeFromJunction(self::getJunctionTableName(), $input[$this->getPk()]);
         }
 
         return $this->persist(ArrayUtils::arrayWithout($input, array(self::PARAM_COLUMN_ATTACHED)));
