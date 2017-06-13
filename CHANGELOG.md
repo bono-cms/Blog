@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Ability to attach related posts
  * Added `getRecent()` method in `\Blog\Service\SiteService`
  * Support for parent categories and images
  * Replaced `text` input with `textarea` for `keywords` attribute
