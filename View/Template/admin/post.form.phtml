@@ -1,152 +1,160 @@
-<?php defined('KRYSTAL') or die; ?>
 <?php
 
 use Krystal\Form\Element;
+defined('KRYSTAL') or die;
 
 ?>
 
 <?php if (!empty($categories)): ?>
 
 <form data-group="post">
-	<div class="well">
-		
-        <?php echo Element::hidden('post[id]', $post->getId()); ?>
-        <?php echo Element::hidden('post[web_page_id]', $post->getWebPageId()); ?>
-        <?php echo Element::hidden('web_page_id', $post->getWebPageId()); ?>
-		
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><?php $this->show('Name'); ?></label>
-			<div class="col-lg-10">
-				<div class="input-group">
-                    <?php echo Element::text('post[name]', $post->getName(), array('class' => 'form-control', 'placeholder' => $this->translate("Post name"))); ?>
-					<span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
-				</div>
-			</div>
-		</div>
-		
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><?php $this->show('Category'); ?></label>
-			<div class="col-lg-10">
-                <?php echo Element::select('post[category_id]', $categories, $post->getCategoryId(), array('class' => 'form-control')); ?>
-			</div>
-		</div>
-		
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><?php $this->show('Introduction'); ?></label>
-			<div class="col-lg-10">
-                <?php echo Element::textarea('post[introduction]', $post->getIntroduction(), array('data-wysiwyg' => 'true')); ?>
-			</div>
-		</div>
-		
-		<div class="form-group">
-			<label class="col-lg-2 control-label"><?php $this->show('Full text'); ?></label>
-			<div class="col-lg-10">
-                <?php echo Element::textarea('post[full]', $post->getFull(), array('data-wysiwyg' => 'true')); ?>
-			</div>
-		</div>
-		
-		<div class="options">
-            <?php if (isset($posts)): ?>
-            <div class="form-group">
-                <label class="col-lg-2 control-label"><?php $this->show('Attached posts'); ?></label>
-                <div class="col-lg-10">
-                    <?php echo Element::select('post[attached][]', $posts, $post->getAttachedIds(), array('class' => 'form-control', 'data-plugin' => 'chosen', 'data-placeholder' => ' ', 'multiple' => true)); ?>
-                </div>
-            </div>
-            <?php endif; ?>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#data" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Data'); ?></a></li>
+        <li role="presentation"><a href="#configuration" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-th-list"></i> <?php $this->show('Configuration'); ?></a></li>
+    </ul>
 
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php echo $this->translate('Date'); ?></label>
-				<div class="col-lg-10">
-					<div class="input-group date">
-						<?php echo Element::text('post[date]', $post->getDate(), array('class' => 'form-control', 'placeholder' => $this->translate('Date of the post'))); ?>
-						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar" data-toggle="tooltip" title="<?php $this->show('Change the date'); ?>"></i></span>
-					</div>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php $this->show('Enable comments'); ?></label>
-				<div class="col-lg-10">
-                    <?php echo Element::checkbox('post[comments]', $post->getComments(), array('class' => 'form-control')); ?>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php echo $this->translate('Published'); ?></label>
-				<div class="col-lg-10">
-                    <?php echo Element::checkbox('post[published]', $post->getPublished(), array('class' => 'form-control')); ?>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php echo $this->translate('Enable SEO'); ?></label>
-				<div class="col-lg-10">
-                    <?php echo Element::checkbox('post[seo]', $post->getSeo(), array('class' => 'form-control')); ?>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php $this->show('Slug'); ?></label>
-				<div class="col-lg-10">
-					<div class="input-group">
-                        <?php echo Element::text('post[slug]', $post->getSlug(), array('class' => 'form-control', 'data-input' => 'slug', 'placeholder' => $this->translate('URL slug for this post. By default is taken from a title'))); ?>
-						<span class="input-group-addon">
-							<a href="#" data-button="slug"><i class="glyphicon glyphicon-refresh" data-toggle="tooltip" title="<?php $this->show('Refresh'); ?>"></i></a>
-						</span>
-					</div>
-				</div>
-			</div>
-			
-            <div class="form-group">
-                <label class="col-lg-2 control-label"><?php $this->show('Title'); ?></label>
-                <div class="col-lg-10">
-                    <div class="input-group">
-                        <?php echo Element::text('post[title]', $post->getTitle(), array('class' => 'form-control', 'data-input' => 'title', 'placeholder' => $this->translate("Post's title"))); ?>
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="data">
+            <div class="well">
+                <?php echo Element::hidden('post[id]', $post->getId()); ?>
+                <?php echo Element::hidden('post[web_page_id]', $post->getWebPageId()); ?>
+                <?php echo Element::hidden('web_page_id', $post->getWebPageId()); ?>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Name'); ?></label>
+                    <div class="col-lg-10">
+                        <div class="input-group">
+                            <?php echo Element::text('post[name]', $post->getName(), array('class' => 'form-control', 'placeholder' => $this->translate("Post name"))); ?>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Introduction'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::textarea('post[introduction]', $post->getIntroduction(), array('data-wysiwyg' => 'true')); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Full text'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::textarea('post[full]', $post->getFull(), array('data-wysiwyg' => 'true')); ?>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label"><?php $this->show('Slug'); ?></label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <?php echo Element::text('post[slug]', $post->getSlug(), array('class' => 'form-control', 'data-input' => 'slug', 'placeholder' => $this->translate('URL slug for this post. By default is taken from a title'))); ?>
+                                <span class="input-group-addon">
+                                    <a href="#" data-button="slug"><i class="glyphicon glyphicon-refresh" data-toggle="tooltip" title="<?php $this->show('Refresh'); ?>"></i></a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label"><?php $this->show('Title'); ?></label>
+                        <div class="col-lg-10">
+                            <div class="input-group">
+                                <?php echo Element::text('post[title]', $post->getTitle(), array('class' => 'form-control', 'data-input' => 'title', 'placeholder' => $this->translate("Post's title"))); ?>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label"><?php $this->show('Keywords'); ?></label>
+                        <div class="col-lg-10">
+                            <?php echo Element::textarea('post[keywords]', $post->getKeywords(), array('class' => 'form-control', 'placeholder' => $this->translate('Keywords used for search engines'))); ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-lg-2 control-label"><?php $this->show('Description'); ?></label>
+                        <div class="col-lg-10">
+                            <?php echo Element::textarea('post[meta_description]', $post->getMetaDescription(), array('class' => 'form-control', 'placeholder' => $this->translate('Meta description for search engines'))); ?>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php $this->show('Keywords'); ?></label>
-				<div class="col-lg-10">
-                    <?php echo Element::textarea('post[keywords]', $post->getKeywords(), array('class' => 'form-control', 'placeholder' => $this->translate('Keywords used for search engines'))); ?>
-				</div>
-			</div>
-			
-			<div class="form-group">
-				<label class="col-lg-2 control-label"><?php $this->show('Description'); ?></label>
-				<div class="col-lg-10">
-                    <?php echo Element::textarea('post[meta_description]', $post->getMetaDescription(), array('class' => 'form-control', 'placeholder' => $this->translate('Meta description for search engines'))); ?>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<?php if ($post->getId()): ?>
-	
-    <button data-button="save" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save'); ?></button>
-	<button data-button="save-create" data-back-url="<?php echo $this->url('Blog:Admin:Post@addAction'); ?>" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> <?php $this->show('Save & Create new'); ?></button>
-	
-	<?php else: ?>
-	
-    <button data-button="add" data-back-url="<?php echo $this->url('Blog:Admin:Post@editAction', null); ?>" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Add'); ?></button>
-	<button data-button="add-create" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> <?php $this->show('Add & Create new'); ?></button>
-	
-	<?php endif; ?>
-	
-	<button data-button="options" class="btn btn-primary"><i class="glyphicon glyphicon-open"></i> <?php $this->show('More options'); ?></button>
-	<button data-button="cancel" data-url="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>" class="btn btn-default"><i class="glyphicon glyphicon-floppy-remove"></i> <?php $this->show('Cancel'); ?></button>
+        </div>
 
+        <div role="tabpanel" class="tab-pane" id="configuration">
+            <div class="well">
+                <?php if (isset($posts)): ?>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Attached posts'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::select('post[attached][]', $posts, $post->getAttachedIds(), array('class' => 'form-control', 'data-plugin' => 'chosen', 'data-placeholder' => ' ', 'multiple' => true)); ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+            
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Category'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::select('post[category_id]', $categories, $post->getCategoryId(), array('class' => 'form-control')); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Date'); ?></label>
+                    <div class="col-lg-10">
+                        <div class="input-group date">
+                            <?php echo Element::text('post[date]', $post->getDate(), array('class' => 'form-control', 'placeholder' => $this->translate('Date of the post'))); ?>
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar" data-toggle="tooltip" title="<?php $this->show('Change the date'); ?>"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Enable SEO'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::checkbox('post[seo]', $post->getSeo(), array('class' => 'form-control')); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Enable comments'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::checkbox('post[comments]', $post->getComments(), array('class' => 'form-control')); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Published'); ?></label>
+                    <div class="col-lg-10">
+                        <?php echo Element::checkbox('post[published]', $post->getPublished(), array('class' => 'form-control')); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <?php if ($post->getId()): ?>
+    <button data-button="save" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save'); ?></button>
+    <button data-button="save-create" data-back-url="<?php echo $this->url('Blog:Admin:Post@addAction'); ?>" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> <?php $this->show('Save & Create new'); ?></button>
+    <?php else: ?>
+
+    <button data-button="add" data-back-url="<?php echo $this->url('Blog:Admin:Post@editAction', null); ?>" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Add'); ?></button>
+    <button data-button="add-create" data-url="<?php echo $this->url('Blog:Admin:Post@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-open"></i> <?php $this->show('Add & Create new'); ?></button>
+    <?php endif; ?>
+
+    <button data-button="options" class="btn btn-primary"><i class="glyphicon glyphicon-open"></i> <?php $this->show('More options'); ?></button>
+    <button data-button="cancel" data-url="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>" class="btn btn-default"><i class="glyphicon glyphicon-floppy-remove"></i> <?php $this->show('Cancel'); ?></button>
 </form>
 
 <?php else: ?>
 
 <div class="well">
-	<div class="center-block">
-		<h2 class="text-muted text-center"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Before you add a post, you need to create at least one category'); ?></h2>
-	</div>
+    <div class="center-block">
+        <h2 class="text-muted text-center"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Before you add a post, you need to create at least one category'); ?></h2>
+    </div>
 </div>
 
 <?php endif; ?>

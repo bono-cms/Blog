@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Compact view in templates (in administration panel)
  * Ability to attach related posts
  * Added `getRecent()` method in `\Blog\Service\SiteService`
  * Support for parent categories and images
