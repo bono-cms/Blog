@@ -338,30 +338,22 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     }
 
     /**
-     * Prepares raw input data before sending to the mapper
+     * Saves a page
      * 
      * @param array $input
-     * @return array
+     * @return boolean
      */
-    private function prepareInput(array $input)
+    private function savePage(array $input)
     {
-        // Empty slug is always taken from the name
-        if (empty($input['slug'])) {
-            $input['slug'] = $input['name'];
-        }
+        // Convert a date to UNIX-timestamp
+        $input['post']['timestamp'] = (int) strtotime($input['post']['date']);
 
-        // Take empty title from the name
-        if (empty($input['title'])) {
-            $input['title'] = $input['name'];
-        }
-
-        $input['slug'] = $this->webPageManager->sluggify($input['slug']);
-        $input['timestamp'] = strtotime($input['date']);
-
-        // Safe type-casting
-        $input['web_page_id'] = (int) $input['web_page_id'];
-
-        return $input;
+        return $this->postMapper->savePage(
+            'Blog (Posts)', 
+            'Blog:Post@indexAction', 
+            ArrayUtils::arrayWithout($input['post'], array('date', 'slug')), 
+            $input['translation']
+        );
     }
 
     /**
@@ -372,17 +364,11 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     public function add(array $input)
     {
-        $input = $this->prepareInput($input);
-        $input['views'] = '0';
-
-        if ($this->postMapper->insert(ArrayUtils::arrayWithout($input, array('date', 'slug')))) {
-            $id = $this->getLastId();
-
-            $this->track('Post "%s" has been added', $input['name']);
-            $this->webPageManager->add($id, $input['slug'], 'Blog (Posts)', 'Blog:Post@indexAction', $this->postMapper);
-        }
-
-        return true;
+        // No views by defaults
+        $input['post']['views'] = 0;
+        #$this->track('Post "%s" has been added', $input['name']);
+        
+        return $this->savePage($input);
     }
 
     /**
@@ -393,11 +379,8 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     public function update(array $input)
     {
-        $input = $this->prepareInput($input);
-        $this->webPageManager->update($input['web_page_id'], $input['slug']);
-
-        $this->track('Post "%s" has been updated', $input['name']);
-        return $this->postMapper->update(ArrayUtils::arrayWithout($input, array('date', 'slug')));
+        #$this->track('Post "%s" has been updated', $input['name']);
+        return $this->savePage($input);
     }
 
     /**
@@ -405,22 +388,27 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      * 
      * @param string $id Post ID
      * @param boolean $withAttached Whether to grab attached entities
-     * @return \News\Service\PostEntity|boolean
-     * @return array
+     * @param boolean $withTranslations Whether to include translations as well
+     * @return \News\Service\PostEntity|boolean|array
      */
-    public function fetchById($id, $withAttached)
+    public function fetchById($id, $withAttached, $withTranslations)
     {
-        $entity = $this->prepareResult($this->postMapper->fetchById($id));
+        if ($withTranslations) {
+            return $this->prepareResults($this->postMapper->fetchById($id, true));
 
-        if ($entity !== false) {
-            if ($withAttached === true) {
-                $rows = $this->postMapper->fetchByIds($entity->getAttachedIds());
-                $entity->setAttachedPosts($this->prepareResults($rows, false));
-            }
-
-            return $entity;
         } else {
-            return false;
+            $entity = $this->prepareResult($this->postMapper->fetchById($id));
+
+            if ($entity !== false) {
+                if ($withAttached === true) {
+                    $rows = $this->postMapper->fetchByIds($entity->getAttachedIds());
+                    $entity->setAttachedPosts($this->prepareResults($rows, false));
+                }
+
+                return $entity;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -458,10 +446,10 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
      */
     public function deleteById($id)
     {
-        $name = Filter::escape($this->postMapper->fetchNameById($id));
+        #$name = Filter::escape($this->postMapper->fetchNameById($id));
 
-        if ($this->removeAllById($id)) {
-            $this->track('Post "%s" has been removed', $name);
+        if ($this->postMapper->deleteById($id)) {
+            #$this->track('Post "%s" has been removed', $name);
             return true;
         } else {
             return false;
@@ -477,12 +465,12 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     public function deleteByIds(array $ids)
     {
         foreach ($ids as $id) {
-            if (!$this->removeAllById($id)) {
+            if (!$this->postMapper->deleteById($id)) {
                 return false;
             }
         }
 
-        $this->track('Batch removal of %s posts', count($ids));
+        #$this->track('Batch removal of %s posts', count($ids));
         return true;
     }
 }

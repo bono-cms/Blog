@@ -145,10 +145,10 @@ interface PostManagerInterface
      * 
      * @param string $id Post ID
      * @param boolean $withAttached Whether to grab attached entities
-     * @return \News\Service\PostEntity|boolean
-     * @return array
+     * @param boolean $withTranslations Whether to include translations as well
+     * @return \News\Service\PostEntity|boolean|array
      */
-    public function fetchById($id, $withAttached);
+    public function fetchById($id, $withAttached, $withTranslations);
 
     /**
      * Removes a post by its associated id

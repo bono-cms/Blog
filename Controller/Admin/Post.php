@@ -66,7 +66,7 @@ final class Post extends AbstractAdminController
      */
     public function editAction($id)
     {
-        $post = $this->getPostManager()->fetchById($id, false);
+        $post = $this->getPostManager()->fetchById($id, false, true);
 
         if ($post !== false) {
             return $this->createForm($post, 'Edit the post');
@@ -157,14 +157,14 @@ final class Post extends AbstractAdminController
 
             // Update
             if (!empty($input['id'])) {
-                if ($service->update($input)) {
+                if ($service->update($this->request->getPost())) {
                     $this->flashBag->set('success', 'The element has been updated successfully');
                     return '1';
                 }
 
             } else {
                 // Create
-                if ($service->add($input)) {
+                if ($service->add($this->request->getPost())) {
                     $this->flashBag->set('success', 'The element has been created successfully');
                     return $service->getLastId();
                 }

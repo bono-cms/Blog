@@ -79,17 +79,19 @@ interface PostMapperInterface
      * 
      * @param array $ids A collection of post IDs
      * @param boolean $relational Whether to include relational data
+     * @param boolean $withTranslations Whether to include translations as well
      * @return array
      */
-    public function fetchByIds(array $ids, $relational = false);
+    public function fetchByIds(array $ids, $relational = false, $withTranslations = false);
 
     /**
      * Fetches post data by its associated id
      * 
-     * @param string $id Post id
+     * @param string $id
+     * @param boolean $withTranslations Whether to include translations as well
      * @return array
      */
-    public function fetchById($id);
+    public function fetchById($id, $withTranslations = false);
 
     /**
      * Deletes a post by its associated id
