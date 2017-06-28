@@ -107,7 +107,7 @@ defined('KRYSTAL') or die;
 
         <div role="tabpanel" class="tab-pane" id="configuration">
             <div class="well">
-                <?php echo Element::hidden('post[id]', $post->getId()); ?>
+                <?php echo Element::hidden('post[id]', $entity->getId()); ?>
 
                 <?php if (isset($posts)): ?>
                 <div class="form-group">
