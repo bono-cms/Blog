@@ -16,8 +16,6 @@ use Cms\Service\HistoryManagerInterface;
 use Cms\Service\WebPageManagerInterface;
 use Blog\Storage\CategoryMapperInterface;
 use Blog\Storage\PostMapperInterface;
-use Menu\Service\MenuWidgetInterface;
-use Menu\Contract\MenuAwareManager;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\TreeBuilder;
@@ -25,7 +23,7 @@ use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 use Krystal\Tree\AdjacencyList\Render\PhpArray;
 use Krystal\Image\Tool\ImageManagerInterface;
 
-final class CategoryManager extends AbstractManager implements CategoryManagerInterface, MenuAwareManager
+final class CategoryManager extends AbstractManager implements CategoryManagerInterface
 {
     /**
      * Any compliant category mapper
@@ -70,7 +68,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      * @param \Cms\Service\WebPageManagerInterface $webPageManager
      * @param \Krystal\Image\ImageManagerInterface $imageManager
      * @param \Cms\Service\HistoryManagerInterface $historyManager
-     * @param \Menu\Service\MenuWidgetInterface $menuWidget Optional menu widget service
      * @return void
      */
     public function __construct(
@@ -78,16 +75,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
         PostMapperInterface $postMapper,
         WebPageManagerInterface $webPageManager,
         ImageManagerInterface $imageManager,
-        HistoryManagerInterface $historyManager,
-        MenuWidgetInterface $menuWidget = null
+        HistoryManagerInterface $historyManager
     ){
         $this->categoryMapper = $categoryMapper;
         $this->postMapper = $postMapper;
         $this->webPageManager = $webPageManager;
         $this->imageManager = $imageManager;
         $this->historyManager = $historyManager;
-
-        $this->setMenuWidget($menuWidget);
     }
 
     /**
@@ -366,7 +360,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     {
         $category =& $input['data']['category'];
 
-        // Empty slug is always take from a title
+        // Empty slug is always take from a name
         if (empty($category['slug'])) {
             $category['slug'] = $category['name'];
         }
@@ -408,7 +402,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             $category['cover'] = $file[0]->getName();
         }
 
-        if ($this->categoryMapper->insert(ArrayUtils::arrayWithout($category, array('menu', 'slug')))) {
+        if ($this->categoryMapper->insert(ArrayUtils::arrayWithout($category, array('slug')))) {
             $id = $this->getLastId();
             $this->track('Category "%s" has been created', $category['name']);
 
@@ -418,12 +412,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             }
 
             // Add a web page now
-            if ($this->webPageManager->add($id, $category['slug'], 'Blog (Categories)', 'Blog:Category@indexAction', $this->categoryMapper)){
-                // Do the work in case menu widget was injected
-                if ($this->hasMenuWidget()) {
-                    $this->addMenuItem($this->webPageManager->getLastId(), $category['name'], $input);
-                }
-            }
+            $this->webPageManager->add($id, $category['slug'], 'Blog (Categories)', 'Blog:Category@indexAction', $this->categoryMapper);
 
             return true;
         } else {
@@ -468,11 +457,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
 
         $this->webPageManager->update($category['web_page_id'], $category['slug']);
 
-        if ($this->hasMenuWidget() && isset($input['menu'])) {
-            $this->updateMenuItem($category['web_page_id'], $category['name'], $input['menu']);
-        }
-
         $this->track('Category "%s" has been updated', $category['name']);
-        return $this->categoryMapper->update(ArrayUtils::arrayWithout($category, array('menu', 'slug', 'remove_cover')));
+        return $this->categoryMapper->update(ArrayUtils::arrayWithout($category, array('slug', 'remove_cover')));
     }
 }

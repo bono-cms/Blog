@@ -63,8 +63,7 @@ final class Module extends AbstractCmsModule
             $postMapper, 
             $webPageManager, 
             $this->createCategoryImageManager(), 
-            $historyManager, 
-            $this->getMenuWidget()
+            $historyManager
         );
 
         $siteService = new SiteService($categoryMapper, $postManager, $webPageManager);
