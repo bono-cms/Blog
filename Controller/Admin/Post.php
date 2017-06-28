@@ -82,19 +82,10 @@ final class Post extends AbstractAdminController
      */
     public function tweakAction()
     {
-        if ($this->request->hasPost('published', 'seo', 'comments')) {
-            // Collect data from the request
-            $published = $this->request->getPost('published');
-            $seo = $this->request->getPost('seo');
-            $comments = $this->request->getPost('comments');
-
+        if ($this->request->isPost()) {
             // Grab a service now
             $postManager = $this->getPostManager();
-
-            // Do the bulk actions
-            $postManager->updateSeo($seo);
-            $postManager->updatePublished($published);
-            $postManager->updateComments($comments);
+            $postManager->updateSettings($this->request->getPost());
 
             $this->flashBag->set('success', 'Post settings have been updated');
             return '1';

@@ -32,31 +32,12 @@ interface PostMapperInterface
     public function fetchNameById($id);
 
     /**
-     * Updates post's published state
+     * Update settings
      * 
-     * @param string $id Post id
-     * @param string $published Either 0 or 1
+     * @param array $settings
      * @return boolean
      */
-    public function updatePublished($id, $published);
-
-    /**
-     * Update post comment's state, if they are enabled or not
-     * 
-     * @param string $id Post id
-     * @param string $comments Either 0 or 1
-     * @return boolean
-     */
-    public function updateComments($id, $comments);
-
-    /**
-     * Updates post seo's state, if must be indexed or not
-     * 
-     * @parma string $id Post id
-     * @param string $seo Either 0 or 1
-     * @return boolean
-     */
-    public function updateSeo($id, $seo);
+    public function updateSettings(array $settings);
 
     /**
      * Inserts a post

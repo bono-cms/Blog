@@ -38,28 +38,12 @@ interface PostManagerInterface
     public function incrementViewCount($id);
 
     /**
-     * Updates SEO states by their associated ids
+     * Update settings
      * 
-     * @param array $pair
+     * @param array $settings
      * @return boolean
      */
-    public function updateSeo(array $pair);
-
-    /**
-     * Update comments. Enabled or disable for particular post
-     * 
-     * @param array $pair
-     * @return boolean
-     */
-    public function updateComments(array $pair);
-
-    /**
-     * Updates published state by their associated ids
-     * 
-     * @param array $pair
-     * @return boolean
-     */
-    public function updatePublished(array $pair);
+    public function updateSettings(array $settings);
 
     /**
      * Returns time format
