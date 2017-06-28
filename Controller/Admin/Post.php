@@ -19,11 +19,11 @@ final class Post extends AbstractAdminController
     /**
      * Creates a form
      * 
-     * @param \Krystal\Stdlib\VirtualEntity $post
+     * @param \Krystal\Stdlib\VirtualEntity|array $post
      * @param string $title
      * @return string
      */
-    private function createForm(VirtualEntity $post, $title)
+    private function createForm($post, $title)
     {
         // Load view plugins
         $this->view->getPluginBag()->appendScript('@Blog/admin/post.form.js')
@@ -37,7 +37,8 @@ final class Post extends AbstractAdminController
             'categories' => $this->getCategoryManager()->getCategoriesTree(),
             // If you don't ability to attach similar posts, you can comment 'posts' key to reduce DB queries
             'posts' => $this->getCategoryManager()->fetchAllWithPosts(),
-            'post' => $post
+            'post' => $post,
+            'new' => is_object($post),
         ));
     }
 
@@ -151,7 +152,7 @@ final class Post extends AbstractAdminController
             )
         ));
 
-        if ($formValidator->isValid()) {
+        if (1) {
             $service = $this->getModuleService('postManager');
 
             // Update

@@ -26,7 +26,7 @@ final class Category extends AbstractBlogController
      */
     public function indexAction($id = false, $pageNumber = 1, $code = null, $slug = null)
     {
-        $category = $this->getCategoryManager()->fetchById($id);
+        $category = $this->getCategoryManager()->fetchById($id, false);
 
         if ($category !== false) {
             $this->loadPlugins($category);
