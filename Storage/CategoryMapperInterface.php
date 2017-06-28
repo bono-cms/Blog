@@ -78,9 +78,10 @@ interface CategoryMapperInterface
      * Fetches category data by its associated id
      * 
      * @param string $id Category id
+     * @param boolean $withTranslations Whether to fetch translations or not
      * @return array
      */
-    public function fetchById($id);
+    public function fetchById($id, $withTranslations);
 
     /**
      * Fetches all categories

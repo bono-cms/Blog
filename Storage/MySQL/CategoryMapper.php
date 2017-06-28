@@ -12,6 +12,7 @@
 namespace Blog\Storage\MySQL;
 
 use Cms\Storage\MySQL\AbstractMapper;
+use Cms\Storage\MySQL\WebPageMapper;
 use Blog\Storage\CategoryMapperInterface;
 use Krystal\Db\Sql\RawSqlFragment;
 
@@ -26,25 +27,80 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function getTranslationTable()
+    {
+        return self::getWithPrefix('bono_module_blog_categories_translations');
+    }
+
+    /**
+     * Returns a collection of shared columns to be selected
+     * 
+     * @param boolean $all Whether to select all columns or not
+     * @return array
+     */
+    private function getSharedColumns($all)
+    {
+        // Basic columns to be selected
+        $columns = array(
+            self::getFullColumnName('id'),
+            self::getFullColumnName('parent_id'),
+            self::getFullColumnName('web_page_id', self::getTranslationTable()),
+            self::getFullColumnName('lang_id', self::getTranslationTable()),
+            self::getFullColumnName('name', self::getTranslationTable()),
+            self::getFullColumnName('seo'),
+            WebPageMapper::getFullColumnName('slug'),
+        );
+
+        if ($all) {
+            $columns = array_merge($columns, array(
+                self::getFullColumnName('title', self::getTranslationTable()),
+                self::getFullColumnName('description', self::getTranslationTable()),
+                self::getFullColumnName('keywords', self::getTranslationTable()),
+                self::getFullColumnName('meta_description', self::getTranslationTable()),
+            ));
+        }
+
+        return $columns;
+    }
+
+    /**
      * Fetch all categories with their attached post names
      * 
      * @return array
      */
     public function fetchAllWithPosts()
     {
-        // Shared columns to be selected
-        $columns = array(
-            PostMapper::getFullColumnName('id'),
-            PostMapper::getFullColumnName('name') => 'post',
-            self::getFullColumnName('name') => 'category'
-        );
-
-        return $this->db->select($columns)
+        return $this->db->select(array(
+                            PostMapper::getFullColumnName('id'),
+                            PostMapper::getFullColumnName('name', PostMapper::getTranslationTable()) => 'post',
+                            self::getFullColumnName('name', self::getTranslationTable()) => 'category'
+                        ))
                         ->from(PostMapper::getTableName())
+                        // Category relation
                         ->innerJoin(self::getTableName())
                         ->on()
-                        ->equals(PostMapper::getFullColumnName('category_id'), new RawSqlFragment(self::getFullColumnName('id')))
-                        ->whereEquals(self::getFullColumnName('lang_id'), $this->getLangId())
+                        ->equals(
+                            PostMapper::getFullColumnName('category_id'), 
+                            new RawSqlFragment(self::getFullColumnName('id'))
+                        )
+                        // Post translation relation
+                        ->innerJoin(PostMapper::getTranslationTable())
+                        ->on()
+                        ->equals(
+                            PostMapper::getFullColumnName('id'), 
+                            new RawSqlFragment(self::getFullColumnName('id', PostMapper::getTranslationTable()))
+                        )
+                        // Category translation relation
+                        ->innerJoin(self::getTranslationTable())
+                        ->on()
+                        ->equals(
+                            self::getFullColumnName('id'), 
+                            new RawSqlFragment(self::getFullColumnName('id', self::getTranslationTable()))
+                        )
+                        // Filtering condition
+                        ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
                         ->queryAll();
     }
 
@@ -55,9 +111,23 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchBcData()
     {
-        return $this->db->select(array('name', 'web_page_id', 'lang_id', 'parent_id', 'id'))
-                        ->from(static::getTableName())
-                        ->whereEquals('lang_id', $this->getLangId())
+        return $this->db->select(array(
+                            self::getFullColumnName('name', self::getTranslationTable()),
+                            self::getFullColumnName('web_page_id', self::getTranslationTable()),
+                            self::getFullColumnName('lang_id', self::getTranslationTable()),
+                            self::getFullColumnName('id'),
+                            self::getFullColumnName('parent_id'),
+                        ))
+                        ->from(self::getTableName())
+                        // Translation relation
+                        ->innerJoin(self::getTranslationTable())
+                        ->on()
+                        ->equals(
+                            self::getFullColumnName('id', self::getTranslationTable()), 
+                            new RawSqlFragment(self::getFullColumnName('id'))
+                        )
+                        // Filtering condition
+                        ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
                         ->queryAll();
     }
 
@@ -70,8 +140,16 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     public function fetchChildrenByParentId($parentId)
     {
         return $this->db->select('*')
-                        ->from(static::getTableName())
-                        ->whereEquals('parent_id', $parentId)
+                        ->from(self::getTableName())
+                        // Translation relation
+                        ->innerJoin(self::getTranslationTable())
+                        ->on()
+                        ->equals(
+                            self::getFullColumnName('id', self::getTranslationTable()), 
+                            new RawSqlFragment(self::getFullColumnName('id'))
+                        )
+                        // Filtering condition
+                        ->whereEquals(self::getFullColumnName('parent_id'), $parentId)
                         ->queryAll();
     }
 
@@ -82,9 +160,13 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchList()
     {
-        return $this->db->select(array('id', 'title'))
-                        ->from(static::getTableName())
-                        ->whereEquals('lang_id', $this->getLangId())
+        return $this->db->select(array(
+                            self::getFullColumnName('id', self::getTranslationTable()), 
+                            self::getFullColumnName('name', self::getTranslationTable()))
+                        )
+                        ->from(self::getTranslationTable())
+                        // Filtering condition
+                        ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
                         ->queryAll();
     }
 
@@ -96,9 +178,13 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchBcDataById($id)
     {
-        return $this->db->select(array('name', 'web_page_id'))
-                        ->from(static::getTableName())
-                        ->whereEquals('id', $id)
+        return $this->db->select(array(
+                            self::getFullColumnName('id', self::getTranslationTable()),
+                            self::getFullColumnName('name', self::getTranslationTable()))
+                        )
+                        ->from(self::getTableName())
+                        ->whereEquals(self::getFullColumnName('id', self::getTranslationTable()), $id)
+                        ->andWhereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
                         ->query();
     }
 
@@ -109,11 +195,7 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchAllBasic()
     {
-        return $this->db->select(array('id', 'lang_id', 'web_page_id', 'name'))
-                        ->from(static::getTableName())
-                        ->whereEquals('lang_id', $this->getLangId())
-                        ->orderBy('order')
-                        ->queryAll();
+        return $this->fetchBcData();
     }
 
     /**
@@ -157,18 +239,18 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchNameById($id)
     {
-        return $this->findColumnByPk($id, 'name');
     }
 
     /**
      * Fetches category data by its associated id
      * 
      * @param string $id Category id
+     * @param boolean $withTranslations Whether to fetch translations or not
      * @return array
      */
-    public function fetchById($id)
+    public function fetchById($id, $withTranslations)
     {
-        return $this->findByPk($id);
+        return $this->findWebPage($this->getSharedColumns(true), $id, $withTranslations);
     }
 
     /**
@@ -178,9 +260,8 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchAll()
     {
-        return $this->db->select('*')
-                        ->from(static::getTableName())
-                        ->whereEquals('lang_id', $this->getLangId())
-                        ->queryAll();
+        return $this->createWebPageSelect($this->getSharedColumns(false))
+                    ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
+                    ->queryAll();
     }
 }

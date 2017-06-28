@@ -333,9 +333,10 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      * Fetches category's entity by its associated id
      * 
      * @param string $id
-     * @return \Krystal\Stdlib\VirtualEntity|boolean
+     * @param boolean $withTranslations Whether to fetch translations or not
+     * @return \Krystal\Stdlib\VirtualEntity|boolean|array
      */
-    public function fetchById($id)
+    public function fetchById($id, $withTranslations)
     {
         return $this->prepareResult($this->categoryMapper->fetchById($id));
     }

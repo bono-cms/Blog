@@ -79,9 +79,10 @@ interface CategoryManagerInterface
      * Fetches category's entity by its associated id
      * 
      * @param string $id
-     * @return \Krystal\Stdlib\VirtualEntity|boolean
+     * @param boolean $withTranslations Whether to fetch translations or not
+     * @return \Krystal\Stdlib\VirtualEntity|boolean|array
      */
-    public function fetchById($id);
+    public function fetchById($id, $withTranslations);
 
     /**
      * Fetches all category entities
