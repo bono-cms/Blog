@@ -111,13 +111,7 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchBcData()
     {
-        return $this->db->select(array(
-                            self::getFullColumnName('name', self::getTranslationTable()),
-                            self::getFullColumnName('web_page_id', self::getTranslationTable()),
-                            self::getFullColumnName('lang_id', self::getTranslationTable()),
-                            self::getFullColumnName('id'),
-                            self::getFullColumnName('parent_id'),
-                        ))
+        return $this->db->select($this->getSharedColumns(false))
                         ->from(self::getTableName())
                         // Translation relation
                         ->innerJoin(self::getTranslationTable())
@@ -125,6 +119,18 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                         ->equals(
                             self::getFullColumnName('id', self::getTranslationTable()), 
                             new RawSqlFragment(self::getFullColumnName('id'))
+                        )
+                        // Web page relation
+                        ->innerJoin(WebPageMapper::getTableName())
+                        ->on()
+                        ->equals(
+                            WebPageMapper::getFullColumnName('id'),
+                            new RawSqlFragment(self::getFullColumnName('web_page_id', self::getTranslationTable()))
+                        )
+                        ->rawAnd()
+                        ->equals(
+                            WebPageMapper::getFullColumnName('lang_id'),
+                            new RawSqlFragment(self::getFullColumnName('lang_id', self::getTranslationTable()))
                         )
                         // Filtering condition
                         ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())

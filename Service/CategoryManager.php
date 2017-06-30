@@ -142,24 +142,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function getBreadcrumbs(CategoryEntity $category)
     {
-        return $this->createBreadcrumbs($category->getId());
-    }
-
-    /**
-     * Gets all breadcrumbs by associated id
-     * 
-     * @param string $id Category id
-     * @return array
-     */
-    private function createBreadcrumbs($id)
-    {
+        $builder = new BreadcrumbBuilder($this->categoryMapper->fetchBcData(), $category->getId());
         $wm = $this->webPageManager;
-        $builder = new BreadcrumbBuilder($this->categoryMapper->fetchBcData(), $id);
 
-        return $builder->makeAll(function($breadcrumb) use ($wm) {
+        return $builder->makeAll(function($row) use ($wm) {
             return array(
-                'name' => $breadcrumb['name'],
-                'link' => $wm->getUrl($breadcrumb['web_page_id'], $breadcrumb['lang_id'])
+                'name' => $row['name'],
+                'link' => $wm->surround($row['slug'], $row['lang_id'])
             );
         });
     }
