@@ -260,8 +260,53 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchAll()
     {
-        return $this->createWebPageSelect($this->getSharedColumns(false))
-                    ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
-                    ->queryAll();
+        return $this->db->select(array(
+                            self::getFullColumnName('id'),
+                            self::getFullColumnName('parent_id'),
+                            self::getFullColumnName('lang_id', self::getTranslationTable()),
+                            self::getFullColumnName('name', self::getTranslationTable()),
+                            WebPageMapper::getFullColumnName('slug')
+                        ))
+                        ->count(PostMapper::getFullColumnName('id'), 'post_count')
+                        ->from(PostMapper::getTableName())
+
+                        // Category relation
+                        ->innerJoin(self::getTableName())
+                        ->on()
+                        ->equals(
+                            self::getFullColumnName('id'), 
+                            new RawSqlFragment(PostMapper::getFullColumnName('category_id'))
+                        )
+                        // Translation relation
+                        ->innerJoin(self::getTranslationTable())
+                        ->on()
+                        ->equals(
+                            self::getFullColumnName('id', self::getTranslationTable()),
+                            new RawSqlFragment(self::getFullColumnName('id'))
+                        )
+                        ->rawAnd()
+                        ->equals(
+                            self::getFullColumnName('lang_id', self::getTranslationTable()),
+                            $this->getLangId()
+                        )
+                        // Web page relation
+                        ->innerJoin(WebPageMapper::getTableName())
+                        ->on()
+                        ->equals(
+                            WebPageMapper::getFullColumnName('id'),
+                            new RawSqlFragment(self::getFullColumnName('web_page_id', self::getTranslationTable()))
+                        )
+                        ->rawAnd()
+                        ->equals(
+                            WebPageMapper::getFullColumnName('lang_id'),
+                            new RawSqlFragment(self::getFullColumnName('lang_id', self::getTranslationTable()))
+                        )
+                        // Aggregate grouping
+                        ->groupBy(array(
+                            PostMapper::getFullColumnName('category_id'),
+                            self::getFullColumnName('name', self::getTranslationTable()),
+                            WebPageMapper::getFullColumnName('slug')
+                        ))
+                        ->queryAll();
     }
 }
