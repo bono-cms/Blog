@@ -84,37 +84,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     }
 
     /**
-     * Gets category breadcrumbs with appends
-     * 
-     * @param string $id Category's id
-     * @param array $appends
-     * @return array
-     */
-    private function getWithCategoryBreadcrumbsById($id, array $appends)
-    {
-        return array_merge($this->createBreadcrumbs($id), $appends);
-    }
-
-    /**
-     * Gets all breadcrumbs by associated id
-     * 
-     * @param string $id Category id
-     * @return array
-     */
-    private function createBreadcrumbs($id)
-    {
-        $wm = $this->webPageManager;
-        $builder = new BreadcrumbBuilder($this->categoryMapper->fetchBcData(), $id);
-
-        return $builder->makeAll(function($breadcrumb) use ($wm) {
-            return array(
-                'name' => $breadcrumb['name'],
-                'link' => $wm->getUrl($breadcrumb['web_page_id'], $breadcrumb['lang_id'])
-            );
-        });
-    }
-
-    /**
      * Returns breadcrumb collection
      * 
      * @param \Blog\Service\PostEntity $post
@@ -122,7 +91,19 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      */
     public function getBreadcrumbs(PostEntity $post)
     {
-        return $this->getWithCategoryBreadcrumbsById($post->getCategoryId(), array(
+        $builder = new BreadcrumbBuilder($this->categoryMapper->fetchBcData(), $post->getCategoryId());
+        $wm = $this->webPageManager;
+
+        // Previous breadcrumb
+        $breadcrumbs = $builder->makeAll(function($row) use ($wm) {
+            return array(
+                'name' => $row['name'],
+                'link' => $wm->surround($row['slug'], $row['lang_id'])
+            );
+        });
+
+        // Merge previous ones with last one
+        return array_merge($breadcrumbs, array(
             array(
                 'name' => $post->getName(),
                 'link' => '#'
