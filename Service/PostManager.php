@@ -16,12 +16,11 @@ use Cms\Service\AbstractManager;
 use Cms\Service\HistoryManagerInterface;
 use Blog\Storage\PostMapperInterface;
 use Blog\Storage\CategoryMapperInterface;
-use Menu\Contract\MenuAwareManager;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 
-final class PostManager extends AbstractManager implements PostManagerInterface, MenuAwareManager
+final class PostManager extends AbstractManager implements PostManagerInterface
 {
     /**
      * Any compliant post mapper
@@ -151,14 +150,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
     public function incrementViewCount($id)
     {
         return $this->postMapper->incrementViewCount($id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function fetchNameByWebPageId($webPageId)
-    {
-        return $this->postMapper->fetchNameByWebPageId($webPageId);
     }
 
     /**
@@ -370,32 +361,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface,
                 return false;
             }
         }
-    }
-
-    /**
-     * Removes a web page by post's associated id
-     * 
-     * @param string $id Post's id
-     * @return boolean
-     */
-    private function removeWebPageById($id)
-    {
-        $webPageId = $this->postMapper->fetchWebPageIdById($id);
-        return $this->webPageManager->deleteById($webPageId);
-    }
-
-    /**
-     * Removes all by post's associated id
-     * 
-     * @param string $id Post's id
-     * @return boolean
-     */
-    private function removeAllById($id)
-    {
-        $this->removeWebPageById($id);
-        $this->postMapper->deleteById($id);
-
-        return true;
     }
 
     /**

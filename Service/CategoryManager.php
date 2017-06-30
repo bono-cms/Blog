@@ -164,14 +164,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     /**
      * {@inheritDoc}
      */
-    public function fetchNameByWebPageId($webPageId)
-    {
-        return $this->categoryMapper->fetchNameByWebPageId($webPageId);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected function toEntity(array $category)
     {
         $imageBag = clone $this->imageManager->getImageBag();
