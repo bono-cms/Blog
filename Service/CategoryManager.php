@@ -20,7 +20,7 @@ use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\TreeBuilder;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
-use Krystal\Tree\AdjacencyList\Render\PhpArray;
+use Krystal\Tree\AdjacencyList\Render;
 use Krystal\Image\Tool\ImageManagerInterface;
 
 final class CategoryManager extends AbstractManager implements CategoryManagerInterface
@@ -102,7 +102,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function getPromtWithCategoriesTree($text)
     {
-        $tree = $this->getCategoriesTree();
+        $tree = $this->getCategoriesTree(false);
         ArrayUtils::assocPrepend($tree, null, $text);
 
         return $tree;
@@ -111,12 +111,27 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     /**
      * Returns albums tree
      * 
+     * @param boolean $all Whether to fetch as a pair or a collection
      * @return array
      */
-    public function getCategoriesTree()
+    public function getCategoriesTree($all)
     {
-        $treeBuilder = new TreeBuilder($this->categoryMapper->fetchAll());
-        return $treeBuilder->render(new PhpArray('name'));
+        $rows = $this->categoryMapper->fetchAll();
+        $treeBuilder = new TreeBuilder($rows);
+
+        if ($all == true) {
+            $rows = $treeBuilder->render(new Render\Merge('name'));
+
+            // @TODO XSS filtering
+            foreach ($rows as $index => $row) {
+                // Append new "url" key
+                $rows[$index]['url'] = $this->webPageManager->surround($row['slug'], $row['lang_id']);
+            }
+
+            return $rows;
+        } else {
+            return $treeBuilder->render(new Render\PhpArray('name'));
+        }
     }
 
     /**
