@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Removed internal `TaskManager` service
  * Removed menu widget
  * Compact view in templates (in administration panel)
  * Ability to attach related posts
