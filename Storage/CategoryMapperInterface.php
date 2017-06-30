@@ -86,7 +86,8 @@ interface CategoryMapperInterface
     /**
      * Fetches all categories
      * 
+     * @param boolean $countOnlyPublished Whether to count all or only published posts in categories
      * @return array
      */
-    public function fetchAll();
+    public function fetchAll($countOnlyPublished = false);
 }

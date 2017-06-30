@@ -262,13 +262,14 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     /**
      * Fetches all categories
      * 
+     * @param boolean $countOnlyPublished Whether to count all or only published posts in categories
      * @return array
      */
-    public function fetchAll()
+    public function fetchAll($countOnlyPublished = false)
     {
         $columns = $this->getSharedColumns(false);
 
-        return $this->db->select($columns)
+        $db = $this->db->select($columns)
                         ->count(PostMapper::getFullColumnName('id'), 'post_count')
                         ->from(PostMapper::getTableName())
 
@@ -302,9 +303,14 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                         ->equals(
                             WebPageMapper::getFullColumnName('lang_id'),
                             new RawSqlFragment(self::getFullColumnName('lang_id', self::getTranslationTable()))
-                        )
-                        // Aggregate grouping
-                        ->groupBy($columns)
-                        ->queryAll();
+                        );
+
+        if ($countOnlyPublished == true) {
+            $db->whereEquals(PostMapper::getFullColumnName('published'), '1');
+        }
+
+        // Aggregate grouping
+        return $db->groupBy($columns)
+                  ->queryAll();
     }
 }
