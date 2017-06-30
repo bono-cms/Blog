@@ -324,7 +324,11 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function fetchById($id, $withTranslations)
     {
-        return $this->prepareResult($this->categoryMapper->fetchById($id));
+        if ($withTranslations == true) {
+            return $this->prepareResults($this->categoryMapper->fetchById($id, true));
+        } else {
+            return $this->prepareResult($this->categoryMapper->fetchById($id, false));
+        }
     }
 
     /**

@@ -50,6 +50,8 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
             self::getFullColumnName('lang_id', self::getTranslationTable()),
             self::getFullColumnName('name', self::getTranslationTable()),
             self::getFullColumnName('seo'),
+            self::getFullColumnName('cover'),
+            self::getFullColumnName('order'),
             WebPageMapper::getFullColumnName('slug'),
         );
 
@@ -145,18 +147,11 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchChildrenByParentId($parentId)
     {
-        return $this->db->select('*')
-                        ->from(self::getTableName())
-                        // Translation relation
-                        ->innerJoin(self::getTranslationTable())
-                        ->on()
-                        ->equals(
-                            self::getFullColumnName('id', self::getTranslationTable()), 
-                            new RawSqlFragment(self::getFullColumnName('id'))
-                        )
-                        // Filtering condition
-                        ->whereEquals(self::getFullColumnName('parent_id'), $parentId)
-                        ->queryAll();
+        return $this->createWebPageSelect($this->getSharedColumns(true))
+                    // Filtering condition
+                    ->whereEquals(self::getFullColumnName('parent_id'), $parentId)
+                    ->andWhereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
+                    ->queryAll();
     }
 
     /**
