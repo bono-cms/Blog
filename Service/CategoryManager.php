@@ -184,7 +184,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             ->setName($category['name'], CategoryEntity::FILTER_HTML)
             ->setDescription($category['description'], CategoryEntity::FILTER_SAFE_TAGS)
             ->setSeo($category['seo'], CategoryEntity::FILTER_BOOL)
-            ->setSlug($this->webPageManager->fetchSlugByWebPageId($category['web_page_id']))
+            ->setSlug(isset($category['slug']) ? $category['slug'] : null)
             ->setOrder($category['order'], CategoryEntity::FILTER_INT)
             ->setKeywords($category['keywords'], CategoryEntity::FILTER_HTML)
             ->setMetaDescription($category['meta_description'], CategoryEntity::FILTER_HTML)
