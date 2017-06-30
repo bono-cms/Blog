@@ -160,51 +160,6 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     }
 
     /**
-     * Fetches as a list
-     * 
-     * @return array
-     */
-    public function fetchList()
-    {
-        return $this->db->select(array(
-                            self::getFullColumnName('id', self::getTranslationTable()), 
-                            self::getFullColumnName('name', self::getTranslationTable()))
-                        )
-                        ->from(self::getTranslationTable())
-                        // Filtering condition
-                        ->whereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
-                        ->queryAll();
-    }
-
-    /**
-     * Fetches data for breadcrumbs
-     * 
-     * @param string $id
-     * @return array
-     */
-    public function fetchBcDataById($id)
-    {
-        return $this->db->select(array(
-                            self::getFullColumnName('id', self::getTranslationTable()),
-                            self::getFullColumnName('name', self::getTranslationTable()))
-                        )
-                        ->from(self::getTableName())
-                        ->whereEquals(self::getFullColumnName('id', self::getTranslationTable()), $id)
-                        ->andWhereEquals(self::getFullColumnName('lang_id', self::getTranslationTable()), $this->getLangId())
-                        ->query();
-    }
-
-    /**
-     * Fetches all basic data about categories
-     * 
-     * @return array
-     */
-    public function fetchAllBasic()
-    {
-        return $this->fetchBcData();
-    }
-
-    /**
      * Inserts a category
      * 
      * @param array $input Raw input data

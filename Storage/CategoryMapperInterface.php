@@ -36,13 +36,6 @@ interface CategoryMapperInterface
     public function fetchChildrenByParentId($parentId);
 
     /**
-     * Fetches as a list
-     * 
-     * @return array
-     */
-    public function fetchList();
-
-    /**
      * Inserts a category
      * 
      * @param array $data Category data
