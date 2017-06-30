@@ -260,13 +260,9 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchAll()
     {
-        return $this->db->select(array(
-                            self::getFullColumnName('id'),
-                            self::getFullColumnName('parent_id'),
-                            self::getFullColumnName('lang_id', self::getTranslationTable()),
-                            self::getFullColumnName('name', self::getTranslationTable()),
-                            WebPageMapper::getFullColumnName('slug')
-                        ))
+        $columns = $this->getSharedColumns(false);
+
+        return $this->db->select($columns)
                         ->count(PostMapper::getFullColumnName('id'), 'post_count')
                         ->from(PostMapper::getTableName())
 
@@ -302,11 +298,7 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                             new RawSqlFragment(self::getFullColumnName('lang_id', self::getTranslationTable()))
                         )
                         // Aggregate grouping
-                        ->groupBy(array(
-                            PostMapper::getFullColumnName('category_id'),
-                            self::getFullColumnName('name', self::getTranslationTable()),
-                            WebPageMapper::getFullColumnName('slug')
-                        ))
+                        ->groupBy($columns)
                         ->queryAll();
     }
 }
