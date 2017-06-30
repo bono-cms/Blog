@@ -62,8 +62,8 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
         $entity = new VirtualEntity();
         $entity->setId($category['id'])
                ->setLangId($category['lang_id'])
-               ->setCount($this->postManager->countAllPublishedByCategoryId($entity->getId()))
-               ->setSlug($this->webPageManager->fetchSlugByWebPageId($category['web_page_id']))
+               ->setCount($category['post_count'])
+               ->setSlug($category['slug'])
                ->setTitle($category['name'] . sprintf(' (%s) ', $entity->getCount()))
                ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
 
@@ -100,6 +100,6 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
      */
     public function getAllCategoriesWithCount()
     {
-        return $this->prepareResults($this->categoryMapper->fetchAllBasic());
+        return $this->prepareResults($this->categoryMapper->fetchAll(true));
     }
 }

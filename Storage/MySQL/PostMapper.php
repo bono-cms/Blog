@@ -134,27 +134,6 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     }
 
     /**
-     * Counts amount of categories
-     * 
-     * @param string $categoryId
-     * @param boolean $published Whether to include published in calculation
-     * @return integer
-     */
-    private function getCount($categoryId, $published)
-    {
-        $db = $this->db->select()
-                       ->count('id', 'count')
-                       ->from(self::getTableName())
-                       ->whereEquals('category_id', $categoryId);
-
-        if ($published === true) {
-            $db->andWhereEquals('published', '1');
-        }
-
-        return (int) $db->query('count');
-    }
-
-    /**
      * Increments view count by post id
      * 
      * @param string $id
@@ -409,27 +388,5 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
                    ->desc();
             }
         });
-    }
-
-    /**
-     * Count all published posts associated with given category id
-     * 
-     * @param string $categoryId
-     * @return integer
-     */
-    public function countAllPublishedByCategoryId($categoryId)
-    {
-        return $this->getCount($categoryId, true);
-    }
-
-    /**
-     * Counts all posts associated with given category id
-     * 
-     * @param string $categoryId
-     * @return integer
-     */
-    public function countAllByCategoryId($categoryId)
-    {
-        return $this->getCount($categoryId, false);
     }
 }

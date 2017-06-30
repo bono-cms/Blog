@@ -131,12 +131,4 @@ interface PostMapperInterface
      * @return array
      */
     public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId);
-
-    /**
-     * Counts all posts associated with given category id
-     * 
-     * @param string $categoryId
-     * @return integer
-     */
-    public function countAllByCategoryId($categoryId);
 }

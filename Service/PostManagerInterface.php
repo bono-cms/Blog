@@ -22,14 +22,6 @@ interface PostManagerInterface
     public function getBreadcrumbs(PostEntity $post);
 
     /**
-     * Counts all published posts associated with particular category id
-     * 
-     * @param string $id Category id
-     * @return integer
-     */
-    public function countAllPublishedByCategoryId($id);
-
-    /**
      * Increments view count by post id
      * 
      * @param string $id
