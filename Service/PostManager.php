@@ -158,7 +158,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
             ->setPublished($post['published'], PostEntity::FILTER_BOOL)
             ->setComments($post['comments'], PostEntity::FILTER_BOOL)
             ->setSeo($post['seo'], PostEntity::FILTER_BOOL)
-            ->setSlug($this->webPageManager->fetchSlugByWebPageId($post['web_page_id']))
+            ->setSlug($post['slug'])
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
 
         if ($full === true) {
