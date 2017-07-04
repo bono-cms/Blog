@@ -221,10 +221,10 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
 
         $db = $this->db->select($columns)
                         ->count(PostMapper::getFullColumnName('id'), 'post_count')
-                        ->from(PostMapper::getTableName())
+                        ->from(self::getTableName())
 
                         // Category relation
-                        ->innerJoin(self::getTableName())
+                        ->leftJoin(PostMapper::getTableName())
                         ->on()
                         ->equals(
                             self::getFullColumnName('id'), 
