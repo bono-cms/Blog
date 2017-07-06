@@ -31,7 +31,8 @@ final class Post extends AbstractBlogController
 
             $response = $this->view->render('blog-post', array(
                 'page' => $post,
-                'post' => $post
+                'post' => $post,
+                'languages' => $this->getPostManager()->getSwitchUrls($id)
             ));
 
             $this->getPostManager()->incrementViewCount($id);

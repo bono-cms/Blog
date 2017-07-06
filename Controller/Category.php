@@ -47,7 +47,8 @@ final class Category extends AbstractBlogController
                 'page' => $category,
                 'category' => $category,
                 'posts' => $posts,
-                'paginator' => $paginator
+                'paginator' => $paginator,
+                'languages' => $this->getCategoryManager()->getSwitchUrls($id)
             );
 
             // Try to find child nodes
