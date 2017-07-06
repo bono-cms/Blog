@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Support complete internalization
  * Removed internal `TaskManager` service
  * Removed menu widget
  * Compact view in templates (in administration panel)
