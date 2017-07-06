@@ -259,6 +259,17 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     }
 
     /**
+     * Returns a collection of switching URLs
+     * 
+     * @param string $id Post ID
+     * @return array
+     */
+    public function getSwitchUrls($id)
+    {
+        return $this->postMapper->createSwitchUrls($id, 'Blog (Posts)', 'Blog:Post@indexAction');
+    }
+
+    /**
      * Saves a page
      * 
      * @param array $input

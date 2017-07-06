@@ -101,6 +101,14 @@ interface PostManagerInterface
     public function fetchAllPublished();
 
     /**
+     * Returns a collection of switching URLs
+     * 
+     * @param string $id Post ID
+     * @return array
+     */
+    public function getSwitchUrls($id);
+
+    /**
      * Adds a post
      * 
      * @param array $form Form data

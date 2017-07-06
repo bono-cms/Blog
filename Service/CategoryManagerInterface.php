@@ -79,6 +79,14 @@ interface CategoryManagerInterface
     public function fetchById($id, $withTranslations);
 
     /**
+     * Returns a collection of switching URLs
+     * 
+     * @param string $id Category ID
+     * @return array
+     */
+    public function getSwitchUrls($id);
+
+    /**
      * Fetches all category entities
      * 
      * @return array
