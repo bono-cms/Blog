@@ -38,6 +38,9 @@ defined('KRYSTAL') or die;
                         <?php echo Element::hidden(sprintf('translation[%s][web_page_id]', $language->getId()), $entity->getWebPageId()); ?>
                         <?php echo Element::hidden(sprintf('translation[%s][lang_id]', $language->getId()), $language->getId()); ?>
 
+                        <h2 class="text-muted"><?php echo $language->getName(); ?></h2>
+                        <br />
+
                         <div class="form-group">
                             <label class="col-lg-2 control-label"><?php $this->show('Name'); ?></label>
                             <div class="col-lg-10">
