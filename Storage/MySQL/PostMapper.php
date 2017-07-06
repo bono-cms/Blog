@@ -94,19 +94,46 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     private function findRecords($categoryId, $published, $page, $itemsPerPage, Closure $orderCallback)
     {
-        $db = $this->createWebPageSelect($this->getSharedColumns(false))
-                   // Category translating relation
-                   ->innerJoin(CategoryMapper::getTranslationTable())
-                   ->on()
-                   ->equals(
-                        CategoryMapper::getFullColumnName('id', CategoryMapper::getTranslationTable()), 
-                        new RawSqlFragment(self::getFullColumnName('category_id'))
-                    )
-                    // Filtering condition
-                    ->whereEquals(
-                        self::getFullColumnName('lang_id', self::getTranslationTable()), 
-                        $this->getLangId()
-                    );
+        $db = $this->db->select($this->getSharedColumns(false))
+                       ->from(self::getTableName())
+                       // Translation relation
+                       ->innerJoin(self::getTranslationTable())
+                       ->on()
+                       ->equals(
+                            self::getFullColumnName('id', self::getTranslationTable()),
+                            new RawSqlFragment(self::getFullColumnName('id'))
+                        )
+                        // Category translation
+                        ->innerJoin(CategoryMapper::getTranslationTable())
+                        ->on()
+                        ->equals(
+                            self::getFullColumnName('category_id'),
+                            new RawSqlFragment(CategoryMapper::getFullColumnName('id', CategoryMapper::getTranslationTable()))
+                        )
+                        ->rawAnd()
+                        ->equals(
+                            CategoryMapper::getFullColumnName('lang_id', CategoryMapper::getTranslationTable()),
+                            new RawSqlFragment(PostMapper::getFullColumnName('lang_id', PostMapper::getTranslationTable()))
+                        )
+                        // Category relation
+                        ->innerJoin(CategoryMapper::getTableName())
+                        ->on()
+                        ->equals(
+                            CategoryMapper::getFullColumnName('id'),
+                            new RawSqlFragment(CategoryMapper::getFullColumnName('id', CategoryMapper::getTranslationTable()))
+                        )
+                        // Web page relation
+                        ->innerJoin(WebPageMapper::getTableName())
+                        ->on()
+                        ->equals(
+                            WebPageMapper::getFullColumnName('id'),
+                            new RawSqlFragment(PostMapper::getFullColumnName('web_page_id', PostMapper::getTranslationTable()))
+                        )
+                        // Filtering condition
+                        ->whereEquals(
+                            self::getFullColumnName('lang_id', self::getTranslationTable()), 
+                            $this->getLangId()
+                        );
 
         // Append category ID if provided
         if ($categoryId !== null) {
