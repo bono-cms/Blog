@@ -106,6 +106,14 @@ interface PostMapperInterface
     public function fetchRandomPublished();
 
     /**
+     * Find a collection of post IDs attached to category ID
+     * 
+     * @param string $categoryId
+     * @return array
+     */
+    public function findPostIdsByCategoryId($categoryId);
+
+    /**
      * Fetches all published posts
      * 
      * @return array
