@@ -117,6 +117,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function getCategoriesTree($all)
     {
         $rows = $this->categoryMapper->fetchAll();
+
         $treeBuilder = new TreeBuilder($rows);
 
         if ($all == true) {
@@ -213,55 +214,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     private function removeAllById($id)
     {
-        $this->removeCategoryById($id);
-
-        // Remove posts
-        $this->removePostWebPagesByCategoryId($id);
-        $this->postMapper->deleteByCategoryId($id);
-
-        return true;
-    }
-
-    /**
-     * Removes all web pages associated with category id
-     * 
-     * @param string $id Category's id
-     * @return boolean
-     */
-    private function removePostWebPagesByCategoryId($id)
-    {
-        $ids = $this->postMapper->fetchWebPageIdsByCategoryId($id);
-
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $this->webPageManager->deleteById($id);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Removes web page associated with provided category id
-     * 
-     * @param string $id Category's id
-     * @return boolean
-     */
-    private function removeWebPageByCategoryId($id)
-    {
-        $webPageId = $this->categoryMapper->fetchWebPageIdById($id);
-        return $this->webPageManager->deleteById($webPageId);
-    }
-
-    /**
-     * Removes a category by its associated id
-     * 
-     * @param string $id Category's id
-     * @return boolean
-     */
-    private function removeCategoryById($id)
-    {
-        return $this->removeWebPageByCategoryId($id) && $this->categoryMapper->deleteById($id);
+        return $this->categoryMapper->deletePage($id) && $this->postMapper->deletePage($this->postMapper->findPostIdsByCategoryId($id));
     }
 
     /**
@@ -294,13 +247,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function deleteById($id)
     {
         // Grab category's name before we remove it
-        $title = Filter::escape($this->categoryMapper->fetchNameById($id));
+        #$title = Filter::escape($this->categoryMapper->fetchNameById($id));
 
         // Completely remove the post
         $this->removeChildCategoriesByParentId($id);
         $this->removeAllById($id);
 
-        $this->track('Category "%s" has been removed', $title);
+        #$this->track('Category "%s" has been removed', $title);
         return true;
     }
 
@@ -342,33 +295,21 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     }
 
     /**
-     * Prepares input before sending to the mapper
+     * Saves a page
      * 
-     * @param array $input Raw input data
-     * @return array
+     * @param array $input
+     * @return boolean
      */
-    private function prepareInput(array $input)
+    private function savePage(array $input)
     {
         $category =& $input['data']['category'];
 
-        // Empty slug is always take from a name
-        if (empty($category['slug'])) {
-            $category['slug'] = $category['name'];
-        }
-
-        // Empty title is taken from the name
-        if (empty($category['title'])) {
-            $category['title'] = $category['name'];
-        }
-
-        $category['slug'] = $this->webPageManager->sluggify($category['slug']);
-
-        // Safe type-casting
-        $category['web_page_id'] = (int) $category['web_page_id'];
+        // Strict casting
         $category['parent_id'] = (int) $category['parent_id'];
         $category['order'] = (int) $category['order'];
 
-        return $input;
+        $category = ArrayUtils::arrayWithout($category, array('slug', 'remove_cover'));
+        return $this->categoryMapper->savePage('Blog (Categories)', 'Blog:Category@indexAction', $category, $input['data']['translation']);
     }
 
     /**
@@ -379,13 +320,14 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function add(array $input)
     {
-        $input = $this->prepareInput($input);
-
         // Form data reference
         $category =& $input['data']['category'];
 
-        // If we have a cover, then we need to upload it
+        // If there's a file, then it needs to uploaded as a cover
         if (!empty($input['files']['file'])) {
+            $id = $this->getLastId();
+            $this->imageManager->upload($id, $input['files']['file']);
+
             $file =& $input['files']['file'];
             $this->filterFileInput($file);
 
@@ -393,22 +335,8 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             $category['cover'] = $file[0]->getName();
         }
 
-        if ($this->categoryMapper->insert(ArrayUtils::arrayWithout($category, array('slug')))) {
-            $id = $this->getLastId();
-            $this->track('Category "%s" has been created', $category['name']);
-
-            // If there's a file, then it needs to uploaded as a cover
-            if (!empty($input['files']['file'])) {
-                $this->imageManager->upload($id, $input['files']['file']);
-            }
-
-            // Add a web page now
-            $this->webPageManager->add($id, $category['slug'], 'Blog (Categories)', 'Blog:Category@indexAction', $this->categoryMapper);
-
-            return true;
-        } else {
-            return false;
-        }
+        #$this->track('Category "%s" has been created', $category['name']);
+        return $this->savePage($input);
     }
 
     /**
@@ -419,7 +347,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function update(array $input)
     {
-        $input = $this->prepareInput($input);
         $category =& $input['data']['category'];
 
         // Allow to remove a cover, only it case it exists and checkbox was checked
@@ -446,9 +373,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             }
         }
 
-        $this->webPageManager->update($category['web_page_id'], $category['slug']);
-
-        $this->track('Category "%s" has been updated', $category['name']);
-        return $this->categoryMapper->update(ArrayUtils::arrayWithout($category, array('slug', 'remove_cover')));
+        #$this->track('Category "%s" has been updated', $category['name']);
+        return $this->savePage($input);
     }
 }
