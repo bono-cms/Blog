@@ -111,6 +111,7 @@ defined('KRYSTAL') or die;
         <div role="tabpanel" class="tab-pane" id="configuration">
             <div class="well">
                 <?php echo Element::hidden('post[id]', $entity->getId()); ?>
+                <?php echo Element::hidden('post[cover]', $entity->getCover()); ?>
 
                 <?php if (isset($posts)): ?>
                 <div class="form-group">
@@ -158,6 +159,29 @@ defined('KRYSTAL') or die;
                         <?php echo Element::checkbox('post[published]', $entity->getPublished(), array('class' => 'form-control')); ?>
                     </div>
                 </div>
+
+                <!--Cover-->
+                <div class="form-group">
+                    <label class="col-lg-2 control-label"><?php $this->show('Cover'); ?></label>
+                    <div class="col-lg-10">
+                        <br />
+                        <?php if ($entity->hasCover()): ?>
+                        <p><img src="<?php echo $entity->getImageUrl('200x200'); ?>" /></p>
+
+                        <p>
+                            <label for="removeCover"><?php $this->show('Remove this cover'); ?>&nbsp;</label>
+                            <input type="checkbox" id="removeCover" name="post[remove_cover]" data-toggle="tooltip" data-placement="left" title="<?php $this->show('Check it if you want to remove this cover'); ?>" />
+                        </p>
+
+                        <?php else: ?>
+                        <p><img data-image="preview" /></p>
+                        <?php endif; ?>
+
+                        <a class="btn btn-primary" data-button="upload" data-target="[name='file']" href="#"><i class="glyphicon glyphicon-picture"></i> <?php $this->show('Upload a file'); ?></a>
+                        <?php echo Element::file('file', 'image/x-png, image/gif, image/jpeg', array('class' => 'hidden', 'data-plugin' => 'preview')); ?>
+                    </div>
+                </div>
+                <!--/Cover-->
             </div>
         </div>
     </div>

@@ -124,14 +124,14 @@ final class Category extends AbstractAdminController
 
             // Update
             if (!empty($data['id'])) {
-                if ($service->update($input)) {
+                if ($service->update($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been updated successfully');
                     return '1';
                 }
 
             } else {
                 // Create
-                if ($service->add($input)) {
+                if ($service->add($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been created successfully');
                     return $service->getLastId();
                 }

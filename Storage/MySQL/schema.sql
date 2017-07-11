@@ -34,6 +34,7 @@ CREATE TABLE `bono_module_blog_posts` (
     `published` varchar(1) NOT NULL,
     `comments` varchar(1) NOT NULL,
     `seo` varchar(1) NOT NULL,
+    `cover` varchar(255),
     `views` INT NOT NULL
 
 ) DEFAULT CHARSET = UTF8;

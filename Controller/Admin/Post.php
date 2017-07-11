@@ -49,6 +49,10 @@ final class Post extends AbstractAdminController
      */
     public function addAction()
     {
+        // Load preview plugin
+        $this->view->getPluginBag()
+                   ->load('preview');
+
         $post = new VirtualEntity();
         $post->setDate(date('m/d/Y', time()))
              ->setPublished(true)
@@ -148,14 +152,14 @@ final class Post extends AbstractAdminController
 
             // Update
             if (!empty($input['id'])) {
-                if ($service->update($this->request->getPost())) {
+                if ($service->update($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been updated successfully');
                     return '1';
                 }
 
             } else {
                 // Create
-                if ($service->add($this->request->getPost())) {
+                if ($service->add($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been created successfully');
                     return $service->getLastId();
                 }

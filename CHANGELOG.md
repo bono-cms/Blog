@@ -4,6 +4,7 @@ CHANGELOG
 1.2
 ---
 
+ * Added support for cover images in posts
  * Support complete internalization
  * Removed internal `TaskManager` service
  * Removed menu widget

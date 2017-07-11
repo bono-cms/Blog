@@ -21,7 +21,7 @@ use Krystal\Image\Tool\ImageManager;
 final class Module extends AbstractCmsModule
 {
     /**
-     * Returns album image manager
+     * Returns album image manager for category
      * 
      * @return \Krystal\Image\ImageManager
      */
@@ -47,6 +47,32 @@ final class Module extends AbstractCmsModule
     }
 
     /**
+     * Returns album image manager for post
+     * 
+     * @return \Krystal\Image\ImageManager
+     */
+    private function createPostImageManager()
+    {
+        $plugins = array(
+            'thumb' => array(
+                'dimensions' => array(
+                    // Dimensions for administration panel
+                    array(200, 200),
+                    // Dimensions for the site
+                    array(500, 500)
+                )
+            )
+        );
+
+        return new ImageManager(
+            '/data/uploads/module/blog/posts',
+            $this->appConfig->getRootDir(),
+            $this->appConfig->getRootUrl(),
+            $plugins
+        );
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getServiceProviders()
@@ -57,7 +83,7 @@ final class Module extends AbstractCmsModule
         $webPageManager = $this->getWebPageManager();
         $historyManager = $this->getHistoryManager();
 
-        $postManager = new PostManager($postMapper, $categoryMapper, $webPageManager, $historyManager);
+        $postManager = new PostManager($postMapper, $categoryMapper, $webPageManager, $this->createPostImageManager(), $historyManager);
         $categoryManager = new CategoryManager(
             $categoryMapper, 
             $postMapper, 

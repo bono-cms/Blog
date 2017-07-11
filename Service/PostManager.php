@@ -19,6 +19,7 @@ use Blog\Storage\CategoryMapperInterface;
 use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
+use Krystal\Image\Tool\ImageManagerInterface;
 
 final class PostManager extends AbstractManager implements PostManagerInterface
 {
@@ -44,6 +45,13 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     private $webPageManager;
 
     /**
+     * Post image manager
+     * 
+     * @var \Krystal\Image\ImageManagerInterface
+     */
+    private $imageManager;
+
+    /**
      * History manager to keep track
      * 
      * @var \Cms\Service\HistoryManagerInterface
@@ -56,6 +64,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      * @param \Blog\Storage\PostMapperInterface $postMapper
      * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
      * @param \Cms\Service\WebPageManagerInterface $webPageManager
+     * @param \Krystal\Image\Tool\ImageManagerInterface $imageManager
      * @param \Cms\Service\HistoryManagerInterface $historyManager
      * @return void
      */
@@ -63,11 +72,13 @@ final class PostManager extends AbstractManager implements PostManagerInterface
         PostMapperInterface $postMapper, 
         CategoryMapperInterface $categoryMapper,
         WebPageManagerInterface $webPageManager,
+        ImageManagerInterface $imageManager,
         HistoryManagerInterface $historyManager
     ){
         $this->postMapper = $postMapper;
         $this->categoryMapper = $categoryMapper;
         $this->webPageManager = $webPageManager;
+        $this->imageManager = $imageManager;
         $this->historyManager = $historyManager;
     }
 
@@ -148,8 +159,13 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      */
     protected function toEntity(array $post, $full = true)
     {
+        $imageBag = clone $this->imageManager->getImageBag();
+        $imageBag->setId((int) $post['id'])
+                 ->setCover($post['cover']);
+
         $entity = new PostEntity(false);
         $entity->setId($post['id'], PostEntity::FILTER_INT)
+            ->setImageBag($imageBag)
             ->setLangId($post['lang_id'], PostEntity::FILTER_INT)
             ->setWebPageId($post['web_page_id'], PostEntity::FILTER_INT)
             ->setName($post['name'], PostEntity::FILTER_HTML)
@@ -158,6 +174,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
             ->setPublished($post['published'], PostEntity::FILTER_BOOL)
             ->setComments($post['comments'], PostEntity::FILTER_BOOL)
             ->setSeo($post['seo'], PostEntity::FILTER_BOOL)
+            ->setCover($post['cover'])
             ->setSlug($post['slug'])
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
 
@@ -277,15 +294,21 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      */
     private function savePage(array $input)
     {
-        // Convert a date to UNIX-timestamp
-        $input['post']['timestamp'] = (int) strtotime($input['post']['date']);
+        $post =& $input['data']['post'];
+        $translations =& $input['data']['translation'];
 
-        return $this->postMapper->savePage(
-            'Blog (Posts)', 
-            'Blog:Post@indexAction', 
-            ArrayUtils::arrayWithout($input['post'], array('date', 'slug')), 
-            $input['translation']
-        );
+        // Convert a date to UNIX-timestamp
+        $post['timestamp'] = (int) strtotime($post['date']);
+
+        // No views by defaults
+        if (!isset($post['views'])) {
+            $post['views'] = 0;
+        }
+
+        // Remove extra keys
+        $post = ArrayUtils::arrayWithout($post, array('date', 'slug', 'remove_cover'));
+
+        return $this->postMapper->savePage('Blog (Posts)', 'Blog:Post@indexAction', $post, $translations);
     }
 
     /**
@@ -296,11 +319,29 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      */
     public function add(array $input)
     {
-        // No views by defaults
-        $input['post']['views'] = 0;
+        // Form data reference
+        $post =& $input['data']['post'];
+
+        // If there's a file, then it needs to uploaded as a cover
+        if (!empty($input['files']['file'])) {
+            $file =& $input['files']['file'];
+            $this->filterFileInput($file);
+
+            // Override empty cover's value now
+            $post['cover'] = $file[0]->getName();
+        } else {
+            $post['cover'] = '';
+        }
+
+        $this->savePage($input);
+
+        // Do upload if has a cover
+        if (!empty($input['files']['file'])) {
+            $this->imageManager->upload($this->getLastId(), $input['files']['file']);
+        }
+
         #$this->track('Post "%s" has been added', $input['name']);
-        
-        return $this->savePage($input);
+        return true;
     }
 
     /**
@@ -311,7 +352,33 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      */
     public function update(array $input)
     {
-        #$this->track('Post "%s" has been updated', $input['name']);
+        $post =& $input['data']['post'];
+
+        // Allow to remove a cover, only it case it exists and checkbox was checked
+        if (isset($post['remove_cover'])) {
+            // Remove a cover, but not a dir itself
+            $this->imageManager->delete($post['id']);
+            $post['cover'] = '';
+        } else {
+            if (!empty($input['files']['file'])) {
+                $file =& $input['files']['file'];
+                // If we have a previous cover's image, then we need to remove it
+                if (!empty($post['cover'])) {
+                    if (!$this->imageManager->delete($post['id'], $post['cover'])) {
+                        // If failed, then exit this method immediately
+                        return false;
+                    }
+                }
+
+                // And now upload a new one
+                $this->filterFileInput($file);
+                $post['cover'] = $file[0]->getName();
+
+                $this->imageManager->upload($post['id'], $file);
+            }
+        }
+
+        #$this->track('Category "%s" has been updated', $category['name']);
         return $this->savePage($input);
     }
 
@@ -345,6 +412,23 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     }
 
     /**
+     * Removes a post completely
+     * 
+     * @param integer $id Post ID
+     * @return boolean
+     */
+    private function removePost($id)
+    {
+        // Remove a post with its translations
+        $this->postMapper->deletePage($id);
+
+        // Remove a cover if present as well
+        $this->imageManager->delete($id);
+
+        return true;
+    }
+
+    /**
      * Removes a post by its associated id
      * 
      * @param string $id Post's id
@@ -354,7 +438,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     {
         #$name = Filter::escape($this->postMapper->fetchNameById($id));
 
-        if ($this->postMapper->deleteById($id)) {
+        if ($this->removePost($id)) {
             #$this->track('Post "%s" has been removed', $name);
             return true;
         } else {
@@ -371,7 +455,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     public function deleteByIds(array $ids)
     {
         foreach ($ids as $id) {
-            if (!$this->postMapper->deleteById($id)) {
+            if (!$this->removePost($id)) {
                 return false;
             }
         }
