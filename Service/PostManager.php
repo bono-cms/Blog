@@ -168,6 +168,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
             ->setImageBag($imageBag)
             ->setLangId($post['lang_id'], PostEntity::FILTER_INT)
             ->setWebPageId($post['web_page_id'], PostEntity::FILTER_INT)
+            ->setIntroduction($post['introduction'], PostEntity::FILTER_SAFE_TAGS)
             ->setName($post['name'], PostEntity::FILTER_HTML)
             ->setCategoryName($post['category_name'], PostEntity::FILTER_HTML)
             ->setTimestamp($post['timestamp'], PostEntity::FILTER_INT)
@@ -191,7 +192,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface
                    ->setCategoryId($post['category_id'], PostEntity::FILTER_INT)
                    ->setViewsCount($post['views'], PostEntity::FILTER_INT)
                    ->setPermanentUrl('/module/blog/post/'.$entity->getId())
-                   ->setIntroduction($post['introduction'], PostEntity::FILTER_SAFE_TAGS)
                    ->setFull($post['full'], PostEntity::FILTER_SAFE_TAGS);
         }
 
