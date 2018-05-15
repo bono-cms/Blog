@@ -44,23 +44,23 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     {
         // Basic columns to be selected
         $columns = array(
-            self::getFullColumnName('id'),
-            self::getFullColumnName('parent_id'),
-            CategoryTranslationMapper::getFullColumnName('web_page_id'),
-            CategoryTranslationMapper::getFullColumnName('lang_id'),
-            CategoryTranslationMapper::getFullColumnName('name'),
-            self::getFullColumnName('seo'),
-            self::getFullColumnName('cover'),
-            self::getFullColumnName('order'),
-            WebPageMapper::getFullColumnName('slug'),
+            self::column('id'),
+            self::column('parent_id'),
+            CategoryTranslationMapper::column('web_page_id'),
+            CategoryTranslationMapper::column('lang_id'),
+            CategoryTranslationMapper::column('name'),
+            self::column('seo'),
+            self::column('cover'),
+            self::column('order'),
+            WebPageMapper::column('slug'),
         );
 
         if ($all) {
             $columns = array_merge($columns, array(
-                CategoryTranslationMapper::getFullColumnName('title'),
-                CategoryTranslationMapper::getFullColumnName('description'),
-                CategoryTranslationMapper::getFullColumnName('keywords'),
-                CategoryTranslationMapper::getFullColumnName('meta_description'),
+                CategoryTranslationMapper::column('title'),
+                CategoryTranslationMapper::column('description'),
+                CategoryTranslationMapper::column('keywords'),
+                CategoryTranslationMapper::column('meta_description'),
             ));
         }
 
@@ -75,34 +75,34 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     public function fetchAllWithPosts()
     {
         return $this->db->select(array(
-                            PostMapper::getFullColumnName('id'),
-                            PostTranslationMapper::getFullColumnName('name') => 'post',
-                            CategoryTranslationMapper::getFullColumnName('name') => 'category'
+                            PostMapper::column('id'),
+                            PostTranslationMapper::column('name') => 'post',
+                            CategoryTranslationMapper::column('name') => 'category'
                         ))
                         ->from(PostMapper::getTableName())
                         // Category relation
                         ->innerJoin(self::getTableName())
                         ->on()
                         ->equals(
-                            PostMapper::getFullColumnName('category_id'), 
-                            new RawSqlFragment(self::getFullColumnName('id'))
+                            PostMapper::column('category_id'), 
+                            new RawSqlFragment(self::column('id'))
                         )
                         // Post translation relation
                         ->innerJoin(PostTranslationMapper::getTableName())
                         ->on()
                         ->equals(
-                            PostMapper::getFullColumnName('id'), 
-                            new RawSqlFragment(PostTranslationMapper::getFullColumnName('id'))
+                            PostMapper::column('id'), 
+                            new RawSqlFragment(PostTranslationMapper::column('id'))
                         )
                         // Category translation relation
                         ->innerJoin(CategoryTranslationMapper::getTableName())
                         ->on()
                         ->equals(
-                            self::getFullColumnName('id'), 
-                            new RawSqlFragment(CategoryTranslationMapper::getFullColumnName('id'))
+                            self::column('id'), 
+                            new RawSqlFragment(CategoryTranslationMapper::column('id'))
                         )
                         // Filtering condition
-                        ->whereEquals(CategoryTranslationMapper::getFullColumnName('lang_id'), $this->getLangId())
+                        ->whereEquals(CategoryTranslationMapper::column('lang_id'), $this->getLangId())
                         ->queryAll();
     }
 
@@ -119,23 +119,23 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                         ->innerJoin(self::getTranslationTable())
                         ->on()
                         ->equals(
-                            CategoryTranslationMapper::getFullColumnName('id'), 
-                            new RawSqlFragment(self::getFullColumnName('id'))
+                            CategoryTranslationMapper::column('id'), 
+                            new RawSqlFragment(self::column('id'))
                         )
                         // Web page relation
                         ->innerJoin(WebPageMapper::getTableName())
                         ->on()
                         ->equals(
-                            WebPageMapper::getFullColumnName('id'),
-                            new RawSqlFragment(CategoryTranslationMapper::getFullColumnName('web_page_id'))
+                            WebPageMapper::column('id'),
+                            new RawSqlFragment(CategoryTranslationMapper::column('web_page_id'))
                         )
                         ->rawAnd()
                         ->equals(
-                            WebPageMapper::getFullColumnName('lang_id'),
-                            new RawSqlFragment(CategoryTranslationMapper::getFullColumnName('lang_id'))
+                            WebPageMapper::column('lang_id'),
+                            new RawSqlFragment(CategoryTranslationMapper::column('lang_id'))
                         )
                         // Filtering condition
-                        ->whereEquals(CategoryTranslationMapper::getFullColumnName('lang_id'), $this->getLangId())
+                        ->whereEquals(CategoryTranslationMapper::column('lang_id'), $this->getLangId())
                         ->queryAll();
     }
 
@@ -149,8 +149,8 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     {
         return $this->createWebPageSelect($this->getSharedColumns(true))
                     // Filtering condition
-                    ->whereEquals(self::getFullColumnName('parent_id'), $parentId)
-                    ->andWhereEquals(CategoryTranslationMapper::getFullColumnName('lang_id'), $this->getLangId())
+                    ->whereEquals(self::column('parent_id'), $parentId)
+                    ->andWhereEquals(CategoryTranslationMapper::column('lang_id'), $this->getLangId())
                     ->queryAll();
     }
 
@@ -220,43 +220,43 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
         $columns = $this->getSharedColumns(false);
 
         $db = $this->db->select($columns)
-                        ->count(PostMapper::getFullColumnName('id'), 'post_count')
+                        ->count(PostMapper::column('id'), 'post_count')
                         ->from(self::getTableName())
 
                         // Category relation
                         ->leftJoin(PostMapper::getTableName())
                         ->on()
                         ->equals(
-                            self::getFullColumnName('id'), 
-                            new RawSqlFragment(PostMapper::getFullColumnName('category_id'))
+                            self::column('id'), 
+                            new RawSqlFragment(PostMapper::column('category_id'))
                         )
                         // Translation relation
                         ->innerJoin(self::getTranslationTable())
                         ->on()
                         ->equals(
-                            CategoryTranslationMapper::getFullColumnName('id'),
-                            new RawSqlFragment(self::getFullColumnName('id'))
+                            CategoryTranslationMapper::column('id'),
+                            new RawSqlFragment(self::column('id'))
                         )
                         ->rawAnd()
                         ->equals(
-                            CategoryTranslationMapper::getFullColumnName('lang_id'),
+                            CategoryTranslationMapper::column('lang_id'),
                             $this->getLangId()
                         )
                         // Web page relation
                         ->innerJoin(WebPageMapper::getTableName())
                         ->on()
                         ->equals(
-                            WebPageMapper::getFullColumnName('id'),
-                            new RawSqlFragment(CategoryTranslationMapper::getFullColumnName('web_page_id'))
+                            WebPageMapper::column('id'),
+                            new RawSqlFragment(CategoryTranslationMapper::column('web_page_id'))
                         )
                         ->rawAnd()
                         ->equals(
-                            WebPageMapper::getFullColumnName('lang_id'),
-                            new RawSqlFragment(CategoryTranslationMapper::getFullColumnName('lang_id'))
+                            WebPageMapper::column('lang_id'),
+                            new RawSqlFragment(CategoryTranslationMapper::column('lang_id'))
                         );
 
         if ($countOnlyPublished == true) {
-            $db->whereEquals(PostMapper::getFullColumnName('published'), '1');
+            $db->whereEquals(PostMapper::column('published'), '1');
         }
 
         // Aggregate grouping

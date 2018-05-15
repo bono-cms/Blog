@@ -23,12 +23,12 @@ final class SearchMapper extends AbstractMapper
     {
         // Columns to be selected
         $columns = array(
-            PostMapper::getFullColumnName('id'),
-            PostTranslationMapper::getFullColumnName('web_page_id'),
-            PostTranslationMapper::getFullColumnName('lang_id'),
-            PostTranslationMapper::getFullColumnName('title'),
-            PostTranslationMapper::getFullColumnName('introduction') => 'content',
-            PostTranslationMapper::getFullColumnName('name')
+            PostMapper::column('id'),
+            PostTranslationMapper::column('web_page_id'),
+            PostTranslationMapper::column('lang_id'),
+            PostTranslationMapper::column('title'),
+            PostTranslationMapper::column('introduction') => 'content',
+            PostTranslationMapper::column('name')
         );
 
         $queryBuilder->select($columns)
@@ -37,14 +37,14 @@ final class SearchMapper extends AbstractMapper
                      ->innerJoin(PostTranslationMapper::getTableName())
                      ->on()
                      ->equals(
-                        PostMapper::getFullColumnName('id'),
-                        PostTranslationMapper::getFullColumnName('id')
+                        PostMapper::column('id'),
+                        PostTranslationMapper::column('id')
                      )
                      // Constraints
-                     ->whereEquals(PostTranslationMapper::getFullColumnName('lang_id'), "'{$this->getLangId()}'")
-                     ->andWhereEquals(PostMapper::getFullColumnName('published'), '1')
+                     ->whereEquals(PostTranslationMapper::column('lang_id'), "'{$this->getLangId()}'")
+                     ->andWhereEquals(PostMapper::column('published'), '1')
                      // Search
-                     ->andWhereLike(PostTranslationMapper::getFullColumnName('name'), $placeholder)
-                     ->orWhereLike(PostTranslationMapper::getFullColumnName('full'), $placeholder);
+                     ->andWhereLike(PostTranslationMapper::column('name'), $placeholder)
+                     ->orWhereLike(PostTranslationMapper::column('full'), $placeholder);
     }
 }
