@@ -37,8 +37,7 @@ final class Post extends AbstractAdminController
             'categories' => $this->getCategoryManager()->getCategoriesTree(false),
             // If you don't ability to attach similar posts, you can comment 'posts' key to reduce DB queries
             'posts' => $this->getCategoryManager()->fetchAllWithPosts(),
-            'post' => $post,
-            'new' => is_object($post),
+            'post' => $post
         ));
     }
 

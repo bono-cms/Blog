@@ -39,7 +39,9 @@ final class Category extends AbstractAdminController
     {
         // Load view plugins
         $this->loadMenuWidget();
-        $this->view->getPluginBag()->load($this->getWysiwygPluginName());
+
+        $this->view->getPluginBag()
+                   ->load($this->getWysiwygPluginName());
 
         // Append breadcrumbs
         $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
@@ -47,7 +49,6 @@ final class Category extends AbstractAdminController
 
         return $this->view->render('category.form', array(
             'category' => $category,
-            'new' => is_object($category),
             'categories' => $this->createCategoriesTree()
         ));
     }
