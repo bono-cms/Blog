@@ -98,38 +98,22 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         $db = $this->db->select($this->getSharedColumns(false))
                        ->from(self::getTableName())
                        // Translation relation
-                       ->innerJoin(PostTranslationMapper::getTableName())
-                       ->on()
-                       ->equals(
-                            PostTranslationMapper::column('id'),
-                            new RawSqlFragment(self::column('id'))
-                        )
+                       ->innerJoin(PostTranslationMapper::getTableName(), array(
+                            PostTranslationMapper::column('id') => self::getRawColumn('id')
+                       ))
                         // Category translation
-                        ->innerJoin(CategoryTranslationMapper::getTableName())
-                        ->on()
-                        ->equals(
-                            self::column('category_id'),
-                            new RawSqlFragment(CategoryTranslationMapper::column('id'))
-                        )
-                        ->rawAnd()
-                        ->equals(
-                            CategoryTranslationMapper::column('lang_id'),
-                            new RawSqlFragment(PostTranslationMapper::column('lang_id'))
-                        )
+                        ->innerJoin(CategoryTranslationMapper::getTableName(), array(
+                            self::column('category_id') => CategoryTranslationMapper::getRawColumn('id'),
+                            CategoryTranslationMapper::column('lang_id') => PostTranslationMapper::getRawColumn('lang_id')
+                        ))
                         // Category relation
-                        ->innerJoin(CategoryMapper::getTableName())
-                        ->on()
-                        ->equals(
-                            CategoryMapper::column('id'),
-                            new RawSqlFragment(CategoryTranslationMapper::column('id'))
-                        )
+                        ->innerJoin(CategoryMapper::getTableName(), array(
+                            CategoryMapper::column('id') => CategoryTranslationMapper::getRawColumn('id')
+                        ))
                         // Web page relation
-                        ->innerJoin(WebPageMapper::getTableName())
-                        ->on()
-                        ->equals(
-                            WebPageMapper::column('id'),
-                            new RawSqlFragment(PostTranslationMapper::column('web_page_id'))
-                        )
+                        ->innerJoin(WebPageMapper::getTableName(), array(
+                            WebPageMapper::column('id') => PostTranslationMapper::getRawColumn('web_page_id')
+                        ))
                         // Filtering condition
                         ->whereEquals(
                             PostTranslationMapper::column('lang_id'), 
@@ -256,12 +240,9 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     {
         $db = $this->createWebPageSelect($this->getSharedColumns(true))
                     // Category relation
-                    ->innerJoin(CategoryMapper::getTableName())
-                    ->on()
-                    ->equals(
-                        CategoryMapper::column('id'), 
-                        new RawSqlFragment(self::column('category_id'))
-                    )
+                    ->innerJoin(CategoryMapper::getTableName(), array(
+                        CategoryMapper::column('id') => self::getRawColumn('category_id')
+                    ))
                    // Category translating relation
                    ->innerJoin(CategoryTranslationMapper::getTableName())
                    ->on()

@@ -34,12 +34,9 @@ final class SearchMapper extends AbstractMapper
         $queryBuilder->select($columns)
                      ->from(PostMapper::getTableName())
                      // Translation relation
-                     ->innerJoin(PostTranslationMapper::getTableName())
-                     ->on()
-                     ->equals(
-                        PostMapper::column('id'),
-                        PostTranslationMapper::column('id')
-                     )
+                     ->innerJoin(PostTranslationMapper::getTableName(), array(
+                        PostMapper::column('id') => PostTranslationMapper::getRawColumn('id')
+                     ))
                      // Constraints
                      ->whereEquals(PostTranslationMapper::column('lang_id'), "'{$this->getLangId()}'")
                      ->andWhereEquals(PostMapper::column('published'), '1')
