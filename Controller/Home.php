@@ -14,15 +14,17 @@ namespace Blog\Controller;
 final class Home extends AbstractBlogController
 {
     /**
-     * Shows all recent posts
-     * Usually used as a home page
+     * Shows all recent posts (on a home page)
      * 
      * @param integer $pageNumber Current page number
      * @return string
      */
     public function indexAction($pageNumber = 1)
     {
-        $this->loadPlugins();
+        $this->loadSitePlugins();
+
+        // No breadcrumbs on home page's display
+        $this->view->getBreadcrumbBag()->clear();
 
         $postManager = $this->getPostManager();
         $posts = $postManager->fetchAllByPage(true, $pageNumber, $this->getConfig()->getPerPageCount());
@@ -41,18 +43,5 @@ final class Home extends AbstractBlogController
             'posts' => $posts,
             'languages' => $this->getService('Pages', 'pageManager')->getSwitchUrls(null)            
         ));
-    }
-
-    /**
-     * Loads required plugins for view
-     * 
-     * @return void
-     */
-    private function loadPlugins()
-    {
-        $this->loadSitePlugins();
-
-        // No breadcrumbs on home page's display
-        $this->view->getBreadcrumbBag()->clear();
     }
 }
