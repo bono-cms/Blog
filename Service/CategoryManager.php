@@ -333,17 +333,13 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     {
         // Form data reference
         $category =& $input['data']['category'];
+        $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
         // If there's a file, then it needs to uploaded as a cover
-        if (!empty($input['files']['file'])) {
-            $id = $this->getLastId();
-            $this->imageManager->upload($id, $input['files']['file']);
-
-            $file =& $input['files']['file'];
-            $this->filterFileInput($file);
-
+        if ($file) {
+            $this->imageManager->upload($this->getLastId(), $file);
             // Override empty cover's value now
-            $category['cover'] = $file[0]->getName();
+            $category['cover'] = $file->getUniqueName();
         }
 
         #$this->track('Category "%s" has been created', $category['name']);
@@ -359,6 +355,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function update(array $input)
     {
         $category =& $input['data']['category'];
+        $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
         // Allow to remove a cover, only it case it exists and checkbox was checked
         if (isset($category['remove_cover'])) {
@@ -366,8 +363,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             $this->imageManager->delete($category['id']);
             $category['cover'] = '';
         } else {
-            if (!empty($input['files']['file'])) {
-                $file =& $input['files']['file'];
+            if ($file) {
                 // If we have a previous cover's image, then we need to remove it
                 if (!empty($category['cover'])) {
                     if (!$this->imageManager->delete($category['id'], $category['cover'])) {
@@ -377,9 +373,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
                 }
 
                 // And now upload a new one
-                $this->filterFileInput($file);
-                $category['cover'] = $file[0]->getName();
-
+                $category['cover'] = $file->getUniqueName();
                 $this->imageManager->upload($category['id'], $file);
             }
         }

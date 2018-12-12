@@ -321,23 +321,16 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     {
         // Form data reference
         $post =& $input['data']['post'];
+        $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
         // If there's a file, then it needs to uploaded as a cover
-        if (!empty($input['files']['file'])) {
-            $file =& $input['files']['file'];
-            $this->filterFileInput($file);
-
-            // Override empty cover's value now
-            $post['cover'] = $file[0]->getName();
-        } else {
-            $post['cover'] = '';
-        }
+        $post['cover'] = $file ? $file->getUniqueName() : '';
 
         $this->savePage($input);
 
         // Do upload if has a cover
-        if (!empty($input['files']['file'])) {
-            $this->imageManager->upload($this->getLastId(), $input['files']['file']);
+        if ($file) {
+            $this->imageManager->upload($this->getLastId(), $file);
         }
 
         #$this->track('Post "%s" has been added', $input['name']);
@@ -353,6 +346,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     public function update(array $input)
     {
         $post =& $input['data']['post'];
+        $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
         // Allow to remove a cover, only it case it exists and checkbox was checked
         if (isset($post['remove_cover'])) {
@@ -360,9 +354,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
             $this->imageManager->delete($post['id']);
             $post['cover'] = '';
         } else {
-            if (!empty($input['files']['file'])) {
-                $file =& $input['files']['file'];
-                // If we have a previous cover's image, then we need to remove it
+            if ($file) {
                 if (!empty($post['cover'])) {
                     if (!$this->imageManager->delete($post['id'], $post['cover'])) {
                         // If failed, then exit this method immediately
@@ -371,8 +363,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
                 }
 
                 // And now upload a new one
-                $this->filterFileInput($file);
-                $post['cover'] = $file[0]->getName();
+                $post['cover'] = $file->getUniqueName();
 
                 $this->imageManager->upload($post['id'], $file);
             }
