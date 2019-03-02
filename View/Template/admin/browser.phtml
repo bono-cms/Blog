@@ -1,8 +1,7 @@
 <?php
 
 use Krystal\Form\Element;
-use Krystal\Form\HtmlHelper;
-use Krystal\Grid\Grid;
+use Krystal\Widget\GridWidget;
 use Cms\View\Icon;
 
 defined('KRYSTAL') or die;
@@ -43,7 +42,7 @@ defined('KRYSTAL') or die;
 
         <form>
             <div class="table-responsive">
-                <?= Grid::render($posts, array(
+                <?= $this->widget(new GridWidget($posts, array(
                     'batch' => true,
                     'pk' => 'id',
                     'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
@@ -112,9 +111,8 @@ defined('KRYSTAL') or die;
                             );
                         }
                     )
+                ))); ?>
 
-                ), $this->translator); ?>
-                
                 <?php if (empty($posts)): ?>
                 <div class="center-block">
                     <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
@@ -130,7 +128,7 @@ defined('KRYSTAL') or die;
         <div class="table-responsive">
             <h4><i class="glyphicon glyphicon-th-list"></i> <?php echo $this->translate('Categories'); ?> (<?php echo count($categories); ?>)</h4>
 
-            <?= Grid::render($categories, array(
+            <?= $this->widget(new GridWidget($categories, array(
                 'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
                 'rowAttributes' => array(
                     'class' => function($row) use ($categoryId){
@@ -173,9 +171,8 @@ defined('KRYSTAL') or die;
                         );
                     }
                 )
+            ))); ?>
 
-            ), $this->translator); ?>
-            
             <?php if (empty($categories)): ?>
             <div class="center-block">
                 <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No categories'); ?></h2>
