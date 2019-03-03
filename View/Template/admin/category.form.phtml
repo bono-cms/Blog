@@ -7,8 +7,8 @@ defined('KRYSTAL') or die;
 
 ?>
 
-<form data-group="category">
-	<ul class="nav nav-tabs" role="tablist">
+<form data-group="category" autocomplete="off">
+    <ul class="nav nav-tabs" role="tablist">
 		<li role="presentation" class="active"><a href="#page" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Category'); ?></a></li>
         <li role="presentation"><a href="#configuration" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-th-list"></i> <?php $this->show('Configuration'); ?></a></li>
 	</ul>
@@ -51,9 +51,10 @@ defined('KRYSTAL') or die;
                                 <label class="col-lg-2 control-label"><?php $this->show('Slug'); ?></label>
                                 <div class="col-lg-10">
                                     <div class="input-group">
-                                        <?php echo Element::text(sprintf('translation[%s][slug]', $language->getId()), $entity->getSlug(), array('class' => 'form-control', 'data-input' => 'slug', 'placeholder' => $this->translate('URL slug for this category. By default is taken from a title'))); ?>
+                                        <?php echo Element::text(sprintf('translation[%s][slug]', $language->getId()), $entity->getSlug(), array('class' => 'form-control', 'placeholder' => $this->translate('URL slug for this category. By default its taken from the name'))); ?>
+
                                         <span class="input-group-addon">
-                                            <a href="#" data-button="slug"><i class="glyphicon glyphicon-refresh" data-toggle="tooltip" title="<?php $this->show('Refresh the slug'); ?>"></i></a>
+                                            <a href="#" data-slug-selector="<?= LanguageManager::generateSelector($language->getId()); ?>"><i class="glyphicon glyphicon-refresh" data-toggle="tooltip" title="<?php $this->show('Refresh the slug'); ?>"></i></a>
                                         </span>
                                     </div>
                                 </div>
