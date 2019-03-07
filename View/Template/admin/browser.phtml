@@ -8,134 +8,44 @@ defined('KRYSTAL') or die;
 
 ?>
 
-<div class="btn-toolbar">
-	<div class="btn-group">
-	  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-		<i class="glyphicon glyphicon-list"></i> <?php echo $this->translate('Menu'); ?> <span class="caret"></span>
-	  </button>
-	  <ul class="dropdown-menu">
-         <?php if (isset($categoryId)): ?>
-		 <li><a href="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>"><i class="glyphicon glyphicon-home"></i> <?php $this->show('Go home'); ?></a></li>
-		 <li class="divider"></li>
-         <?php endif; ?>
-         
-		 <li><a href="<?php echo $this->url('Blog:Admin:Post@addAction'); ?>"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Add a post'); ?></a></li>
-		 <li><a href="<?php echo $this->url('Blog:Admin:Category@addAction'); ?>"><i class="glyphicon glyphicon-folder-open"></i> <?php $this->show('Add category'); ?></a></li>
-		 <li><a href="<?php echo $this->url('Blog:Admin:Config@indexAction'); ?>"><i class="glyphicon glyphicon-th"></i> <?php $this->show('Configuration'); ?></a></li>
-		 <li class="divider"></li>
-		 <li class="dropdown-header"><?php $this->show('Actions'); ?></li>
-		 
-		 <?php if (!empty($posts)):?>
-		 <li><a href="#" data-button="save-changes" data-url="<?php echo $this->url('Blog:Admin:Post@tweakAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
-		 <li><a href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction', null); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
-		 <?php else: ?>
-		 <li class="disabled"><a><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
-		 <li class="disabled"><a><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
-		 <?php endif; ?>
-	  </ul>
-	</div>
-</div>
+<div class="card">
+    <div class="btn-toolbar">
+        <div class="dropdown">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-list"></i> <?php echo $this->translate('Menu'); ?> <span class="caret"></span>
+          </button>
 
-<div class="row">
-    <div class="col-lg-8">
-        <?php $this->loadPartial('items-per-page', array('caption' => 'Latest posts')); ?>
+          <div class="dropdown-menu">
+             <?php if (isset($categoryId)): ?>
+             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>"><i class="glyphicon glyphicon-home"></i> <?php $this->show('Go home'); ?></a></li>
+             <div class="dropdown-divider"></div>
+             <?php endif; ?>
 
-        <form>
-            <div class="table-responsive">
-                <?= $this->widget(new GridViewWidget($posts, array(
-                    'batch' => true,
-                    'pk' => 'id',
-                    'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
-                    'columns' => array(
-                        array(
-                            'column' => 'id',
-                            'label' => '#'
-                        ),
+             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Post@addAction'); ?>"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Add a post'); ?></a></li>
+             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Category@addAction'); ?>"><i class="glyphicon glyphicon-folder-open"></i> <?php $this->show('Add category'); ?></a></li>
+             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Config@indexAction'); ?>"><i class="glyphicon glyphicon-th"></i> <?php $this->show('Configuration'); ?></a></li>
+             <div class="dropdown-divider"></div>
+             <div class="dropdown-header"><?php $this->show('Actions'); ?></div>
 
-                        array(
-                            'column' => 'name',
-                        ),
-
-                        array(
-                            'column' => 'timestamp',
-                            'label' => 'Date',
-                            'value' => function($post){
-                                return date('d-m-Y', $post->getTimestamp());
-                            }
-                        ),
-
-                        array(
-                            'column' => 'category_name',
-                            'label' => 'Amount of news'
-                        ),
-
-                        array(
-                            'column' => 'published',
-                            'value' => function($post){
-                                return Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished());
-                            }
-                        ),
-
-                        array(
-                            'column' => 'comments',
-                            'value' => function($post){
-                                return Element::checkbox(sprintf('comments[%s]', $post->getId()), $post->getComments());
-                            }
-                        ),
-
-                        array(
-                            'column' => 'seo',
-                            'label' => 'Enable SEO',
-                            'value' => function($post){
-                                return Element::checkbox(sprintf('seo[%s]', $post->getId()), $post->getSeo());
-                            }
-                        )
-                    ),
-
-                    'actions' => array(
-                        'view' => function($post){
-                            return Icon::view($post->getUrl(), $this->translate('View this post'));
-                        },
-
-                        'edit' => function($post){
-                            return Icon::edit(
-                                $this->url('Blog:Admin:Post@editAction', $post->getId()),
-                                $this->translate('Edit this post')
-                            );
-                        },
-
-                        'remove' => function($post){
-                            return Icon::remove(
-                                $this->url('Blog:Admin:Post@deleteAction', $post->getId()),
-                                $this->translate('Remove this post')
-                            );
-                        }
-                    )
-                ))); ?>
-
-                <?php if (empty($posts)): ?>
-                <div class="center-block">
-                    <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
-                </div>
-                <?php endif; ?>
-            </div>
-        </form>
-
-        <?php $this->loadPartial('paginator'); ?>
+             <?php if (!empty($posts)):?>
+             <a class="dropdown-item" href="#" data-button="save-changes" data-url="<?php echo $this->url('Blog:Admin:Post@tweakAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
+             <a class="dropdown-item" href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction', null); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
+             <?php else: ?>
+             <a class="dropdown-item disabled"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
+             <a class="dropdown-item disabled"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
+             <?php endif; ?>
+          </div>
+        </div>
     </div>
-    
-    <div class="col-lg-4">
+
+    <?php $this->loadPartial('items-per-page', array('caption' => 'Latest posts')); ?>
+
+    <form>
         <div class="table-responsive">
-            <h4><i class="glyphicon glyphicon-th-list"></i> <?php echo $this->translate('Categories'); ?> (<?php echo count($categories); ?>)</h4>
-
-            <?= $this->widget(new GridViewWidget($categories, array(
+            <?= $this->widget(new GridViewWidget($posts, array(
+                'batch' => true,
+                'pk' => 'id',
                 'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
-                'rowAttributes' => array(
-                    'class' => function($row) use ($categoryId){
-                        return $row['id'] == $categoryId ? 'success' : null;
-                    }
-                ),
-
                 'columns' => array(
                     array(
                         'column' => 'id',
@@ -147,37 +57,124 @@ defined('KRYSTAL') or die;
                     ),
 
                     array(
-                        'column' => 'post_count',
-                        'label' => 'Amount of posts'
+                        'column' => 'timestamp',
+                        'label' => 'Date',
+                        'value' => function($post){
+                            return date('d-m-Y', $post->getTimestamp());
+                        }
+                    ),
+
+                    array(
+                        'column' => 'category_name',
+                        'label' => 'Amount of news'
+                    ),
+
+                    array(
+                        'column' => 'published',
+                        'value' => function($post){
+                            return Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished());
+                        }
+                    ),
+
+                    array(
+                        'column' => 'comments',
+                        'value' => function($post){
+                            return Element::checkbox(sprintf('comments[%s]', $post->getId()), $post->getComments());
+                        }
+                    ),
+
+                    array(
+                        'column' => 'seo',
+                        'label' => 'Enable SEO',
+                        'value' => function($post){
+                            return Element::checkbox(sprintf('seo[%s]', $post->getId()), $post->getSeo());
+                        }
                     )
                 ),
 
                 'actions' => array(
-                    'view' => function($category){
-                        return Icon::view($category['url'], $this->translate('View this category on site'));
+                    'view' => function($post){
+                        return Icon::view($post->getUrl(), $this->translate('View this post'));
                     },
 
-                    'edit' => function($category){
+                    'edit' => function($post){
                         return Icon::edit(
-                            $this->url('Blog:Admin:Category@editAction', $category['id']),
-                            $this->translate('Edit this category')
+                            $this->url('Blog:Admin:Post@editAction', $post->getId()),
+                            $this->translate('Edit this post')
                         );
                     },
 
-                    'remove' => function($category){
+                    'remove' => function($post){
                         return Icon::remove(
-                            $this->url('Blog:Admin:Category@deleteAction', $category['id']),
-                            $this->translate('Remove this category')
+                            $this->url('Blog:Admin:Post@deleteAction', $post->getId()),
+                            $this->translate('Remove this post')
                         );
                     }
                 )
             ))); ?>
 
-            <?php if (empty($categories)): ?>
+            <?php if (empty($posts)): ?>
             <div class="center-block">
-                <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No categories'); ?></h2>
+                <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
             </div>
             <?php endif; ?>
         </div>
+    </form>
+
+    <?php $this->loadPartial('paginator'); ?>
+</div>
+
+<div class="card">
+    <h4><i class="glyphicon glyphicon-th-list"></i> <?php echo $this->translate('Categories'); ?> (<?php echo count($categories); ?>)</h4>
+
+    <?= $this->widget(new GridViewWidget($categories, array(
+        'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
+        'rowAttributes' => array(
+            'class' => function($row) use ($categoryId){
+                return $row['id'] == $categoryId ? 'success' : null;
+            }
+        ),
+
+        'columns' => array(
+            array(
+                'column' => 'id',
+                'label' => '#'
+            ),
+
+            array(
+                'column' => 'name',
+            ),
+
+            array(
+                'column' => 'post_count',
+                'label' => 'Amount of posts'
+            )
+        ),
+
+        'actions' => array(
+            'view' => function($category){
+                return Icon::view($category['url'], $this->translate('View this category on site'));
+            },
+
+            'edit' => function($category){
+                return Icon::edit(
+                    $this->url('Blog:Admin:Category@editAction', $category['id']),
+                    $this->translate('Edit this category')
+                );
+            },
+
+            'remove' => function($category){
+                return Icon::remove(
+                    $this->url('Blog:Admin:Category@deleteAction', $category['id']),
+                    $this->translate('Remove this category')
+                );
+            }
+        )
+    ))); ?>
+
+    <?php if (empty($categories)): ?>
+    <div class="center-block">
+        <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No categories'); ?></h2>
     </div>
+    <?php endif; ?>
 </div>
