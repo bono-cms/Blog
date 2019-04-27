@@ -8,36 +8,36 @@ defined('KRYSTAL') or die;
 
 ?>
 
-<div class="card">
-    <div class="btn-toolbar">
-        <div class="dropdown">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-            <i class="glyphicon glyphicon-list"></i> <?php echo $this->translate('Menu'); ?> <span class="caret"></span>
-          </button>
+<div class="btn-toolbar">
+    <div class="dropdown">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-list"></i> <?php echo $this->translate('Menu'); ?> <span class="caret"></span>
+      </button>
 
-          <div class="dropdown-menu">
-             <?php if (isset($categoryId)): ?>
-             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>"><i class="glyphicon glyphicon-home"></i> <?php $this->show('Go home'); ?></a></li>
-             <div class="dropdown-divider"></div>
-             <?php endif; ?>
+      <div class="dropdown-menu">
+         <?php if (isset($categoryId)): ?>
+         <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>"><i class="glyphicon glyphicon-home"></i> <?php $this->show('Go home'); ?></a></li>
+         <div class="dropdown-divider"></div>
+         <?php endif; ?>
 
-             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Post@addAction'); ?>"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Add a post'); ?></a></li>
-             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Category@addAction'); ?>"><i class="glyphicon glyphicon-folder-open"></i> <?php $this->show('Add category'); ?></a></li>
-             <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Config@indexAction'); ?>"><i class="glyphicon glyphicon-th"></i> <?php $this->show('Configuration'); ?></a></li>
-             <div class="dropdown-divider"></div>
-             <div class="dropdown-header"><?php $this->show('Actions'); ?></div>
+         <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Post@addAction'); ?>"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Add a post'); ?></a></li>
+         <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Category@addAction'); ?>"><i class="glyphicon glyphicon-folder-open"></i> <?php $this->show('Add category'); ?></a></li>
+         <a class="dropdown-item" href="<?php echo $this->url('Blog:Admin:Config@indexAction'); ?>"><i class="glyphicon glyphicon-th"></i> <?php $this->show('Configuration'); ?></a></li>
+         <div class="dropdown-divider"></div>
+         <div class="dropdown-header"><?php $this->show('Actions'); ?></div>
 
-             <?php if (!empty($posts)):?>
-             <a class="dropdown-item" href="#" data-button="save-changes" data-url="<?php echo $this->url('Blog:Admin:Post@tweakAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
-             <a class="dropdown-item" href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction', null); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
-             <?php else: ?>
-             <a class="dropdown-item disabled"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
-             <a class="dropdown-item disabled"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
-             <?php endif; ?>
-          </div>
-        </div>
+         <?php if (!empty($posts)):?>
+         <a class="dropdown-item" href="#" data-button="save-changes" data-url="<?php echo $this->url('Blog:Admin:Post@tweakAction'); ?>"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
+         <a class="dropdown-item" href="#" data-button="remove-selected" data-url="<?php echo $this->url('Blog:Admin:Post@deleteAction', null); ?>"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
+         <?php else: ?>
+         <a class="dropdown-item disabled"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save changes'); ?></a></li>
+         <a class="dropdown-item disabled"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('Remove selected'); ?></a></li>
+         <?php endif; ?>
+      </div>
     </div>
+</div>
 
+<div class="card">
     <?php $this->loadPartial('items-per-page', array('caption' => 'Latest posts')); ?>
 
     <form>
