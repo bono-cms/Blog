@@ -72,7 +72,8 @@ final class Post extends AbstractAdminController
         $post = $this->getPostManager()->fetchById($id, false, true);
 
         if ($post !== false) {
-            return $this->createForm($post, 'Edit the post');
+            $name = $this->getCurrentProperty($post, 'name');
+            return $this->createForm($post, $this->translator->translate('Edit the post "%s"', $name));
         } else {
             return false;
         }

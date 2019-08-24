@@ -80,7 +80,8 @@ final class Category extends AbstractAdminController
         $category = $this->getCategoryManager()->fetchById($id, true);
 
         if ($category !== false) {
-            return $this->createForm($category, 'Edit the category');
+            $name = $this->getCurrentProperty($category, 'name');
+            return $this->createForm($category, $this->translator->translate('Edit the category "%s"', $name));
         } else {
             return false;
         }
