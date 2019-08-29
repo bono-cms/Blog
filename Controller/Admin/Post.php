@@ -52,11 +52,16 @@ final class Post extends AbstractAdminController
         $this->view->getPluginBag()
                    ->load('preview');
 
+        // CMS configuration object
+        $config = $this->getService('Cms', 'configManager')->getEntity();
+
         $post = new VirtualEntity();
         $post->setDate(date('m/d/Y', time()))
              ->setPublished(true)
              ->setComments(true)
-             ->setSeo(true);
+             ->setSeo(true)
+             ->setChangeFreq($config->getSitemapFrequency())
+             ->setPriority($config->getSitemapPriority());
 
         return $this->createForm($post, 'Add a post');
     }

@@ -191,6 +191,8 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             ->setMetaDescription($category['meta_description'], CategoryEntity::FILTER_HTML)
             ->setPermanentUrl('/module/blog/category/'.$entity->getId())
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
+            ->setChangeFreq($category['changefreq'])
+            ->setPriority($category['priority'])
             ->setCover($category['cover']);
 
         return $entity;

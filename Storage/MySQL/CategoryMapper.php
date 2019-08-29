@@ -53,6 +53,8 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
             self::column('cover'),
             self::column('order'),
             WebPageMapper::column('slug'),
+            WebPageMapper::column('changefreq'),
+            WebPageMapper::column('priority')
         );
 
         if ($all) {
