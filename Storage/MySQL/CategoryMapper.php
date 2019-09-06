@@ -138,39 +138,6 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
     }
 
     /**
-     * Inserts a category
-     * 
-     * @param array $input Raw input data
-     * @return boolean
-     */
-    public function insert(array $input)
-    {
-        return $this->persist($this->getWithlang($input));
-    }
-
-    /**
-     * Updates a category
-     * 
-     * @param array $input Raw input data
-     * @return boolean
-     */
-    public function update(array $input)
-    {
-        return $this->persist($input);
-    }
-
-    /**
-     * Deletes a category by its associated id
-     * 
-     * @param string $id Category id
-     * @return boolean
-     */
-    public function deleteById($id)
-    {
-        return $this->deleteByPk($id);
-    }
-
-    /**
      * Fetches category data by its associated id
      * 
      * @param string $id Category id
