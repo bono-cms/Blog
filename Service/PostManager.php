@@ -16,7 +16,6 @@ use Cms\Service\AbstractManager;
 use Cms\Service\HistoryManagerInterface;
 use Blog\Storage\PostMapperInterface;
 use Blog\Storage\CategoryMapperInterface;
-use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 use Krystal\Image\Tool\ImageManagerInterface;
@@ -52,46 +51,20 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     private $imageManager;
 
     /**
-     * History manager to keep track
-     * 
-     * @var \Cms\Service\HistoryManagerInterface
-     */
-    private $historyManager;
-
-    /**
      * State initialization
      * 
      * @param \Blog\Storage\PostMapperInterface $postMapper
      * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
      * @param \Cms\Service\WebPageManagerInterface $webPageManager
      * @param \Krystal\Image\Tool\ImageManagerInterface $imageManager
-     * @param \Cms\Service\HistoryManagerInterface $historyManager
      * @return void
      */
-    public function __construct(
-        PostMapperInterface $postMapper, 
-        CategoryMapperInterface $categoryMapper,
-        WebPageManagerInterface $webPageManager,
-        ImageManagerInterface $imageManager,
-        HistoryManagerInterface $historyManager
-    ){
+    public function __construct(PostMapperInterface $postMapper, CategoryMapperInterface $categoryMapper, WebPageManagerInterface $webPageManager, ImageManagerInterface $imageManager)
+    {
         $this->postMapper = $postMapper;
         $this->categoryMapper = $categoryMapper;
         $this->webPageManager = $webPageManager;
         $this->imageManager = $imageManager;
-        $this->historyManager = $historyManager;
-    }
-
-    /**
-     * Tracks activity
-     * 
-     * @param string $message
-     * @param string $placeholder
-     * @return boolean
-     */
-    private function track($message, $placeholder)
-    {
-        return $this->historyManager->write('Blog', $message, $placeholder);
     }
 
     /**
@@ -335,7 +308,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface
             $this->imageManager->upload($this->getLastId(), $file);
         }
 
-        #$this->track('Post "%s" has been added', $input['name']);
         return true;
     }
 
@@ -366,12 +338,10 @@ final class PostManager extends AbstractManager implements PostManagerInterface
 
                 // And now upload a new one
                 $post['cover'] = $file->getUniqueName();
-
                 $this->imageManager->upload($post['id'], $file);
             }
         }
 
-        #$this->track('Category "%s" has been updated', $category['name']);
         return $this->savePage($input);
     }
 
@@ -405,23 +375,6 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     }
 
     /**
-     * Removes a post completely
-     * 
-     * @param integer $id Post ID
-     * @return boolean
-     */
-    private function removePost($id)
-    {
-        // Remove a post with its translations
-        $this->postMapper->deletePage($id);
-
-        // Remove a cover if present as well
-        $this->imageManager->delete($id);
-
-        return true;
-    }
-
-    /**
      * Removes a post by its associated id
      * 
      * @param string $id Post's id
@@ -429,14 +382,7 @@ final class PostManager extends AbstractManager implements PostManagerInterface
      */
     public function deleteById($id)
     {
-        #$name = Filter::escape($this->postMapper->fetchNameById($id));
-
-        if ($this->removePost($id)) {
-            #$this->track('Post "%s" has been removed', $name);
-            return true;
-        } else {
-            return false;
-        }
+        return $this->postMapper->deletePage($id) && $this->imageManager->delete($id);
     }
 
     /**
@@ -448,12 +394,11 @@ final class PostManager extends AbstractManager implements PostManagerInterface
     public function deleteByIds(array $ids)
     {
         foreach ($ids as $id) {
-            if (!$this->removePost($id)) {
+            if (!$this->deleteById($id)) {
                 return false;
             }
         }
 
-        #$this->track('Batch removal of %s posts', count($ids));
         return true;
     }
 }

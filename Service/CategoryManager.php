@@ -16,7 +16,6 @@ use Cms\Service\HistoryManagerInterface;
 use Cms\Service\WebPageManagerInterface;
 use Blog\Storage\CategoryMapperInterface;
 use Blog\Storage\PostMapperInterface;
-use Krystal\Security\Filter;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\TreeBuilder;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
@@ -54,34 +53,20 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     private $imageManager;
 
     /**
-     * History manager to keep tracks
-     * 
-     * @var \Cms\Service\HistoryManagerInterface
-     */
-    private $historyManager;
-
-    /**
      * State initialization
      * 
      * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
      * @param \Blog\Storage\PostMapperInterface $postMapper
      * @param \Cms\Service\WebPageManagerInterface $webPageManager
      * @param \Krystal\Image\ImageManagerInterface $imageManager
-     * @param \Cms\Service\HistoryManagerInterface $historyManager
      * @return void
      */
-    public function __construct(
-        CategoryMapperInterface $categoryMapper,
-        PostMapperInterface $postMapper,
-        WebPageManagerInterface $webPageManager,
-        ImageManagerInterface $imageManager,
-        HistoryManagerInterface $historyManager
-    ){
+    public function __construct(CategoryMapperInterface $categoryMapper, PostMapperInterface $postMapper, WebPageManagerInterface $webPageManager,ImageManagerInterface $imageManager)
+    {
         $this->categoryMapper = $categoryMapper;
         $this->postMapper = $postMapper;
         $this->webPageManager = $webPageManager;
         $this->imageManager = $imageManager;
-        $this->historyManager = $historyManager;
     }
 
     /**
@@ -117,7 +102,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
     public function getCategoriesTree($all)
     {
         $rows = $this->categoryMapper->fetchAll();
-
         $treeBuilder = new TreeBuilder($rows);
 
         if ($all == true) {
@@ -152,18 +136,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
                 'link' => $wm->surround($row['slug'], $row['lang_id'])
             );
         });
-    }
-
-    /**
-     * Tracks activity
-     * 
-     * @param string $message
-     * @param string $placeholder
-     * @return boolean
-     */
-    private function track($message, $placeholder)
-    {
-        return $this->historyManager->write('Blog', $message, $placeholder);
     }
 
     /**
@@ -248,15 +220,7 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
      */
     public function deleteById($id)
     {
-        // Grab category's name before we remove it
-        #$title = Filter::escape($this->categoryMapper->fetchNameById($id));
-
-        // Completely remove the post
-        $this->removeChildCategoriesByParentId($id);
-        $this->removeAllById($id);
-
-        #$this->track('Category "%s" has been removed', $title);
-        return true;
+        return $this->removeChildCategoriesByParentId($id) && $this->removeAllById($id);
     }
 
     /**
@@ -344,7 +308,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             $category['cover'] = $file->getUniqueName();
         }
 
-        #$this->track('Category "%s" has been created', $category['name']);
         return $this->savePage($input);
     }
 
@@ -380,7 +343,6 @@ final class CategoryManager extends AbstractManager implements CategoryManagerIn
             }
         }
 
-        #$this->track('Category "%s" has been updated', $category['name']);
         return $this->savePage($input);
     }
 }

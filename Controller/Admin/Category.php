@@ -100,11 +100,19 @@ final class Category extends AbstractAdminController
      */
     public function deleteAction($id)
     {
-        $service = $this->getModuleService('categoryManager');
-        $service->deleteById($id);
+        $categoryManager = $this->getModuleService('categoryManager');
+        $category = $categoryManager->fetchById($id, false);
 
-        $this->flashBag->set('success', 'Selected element has been removed successfully');
-        return '1';
+        if ($category !== false) {
+            // Save in the history
+            $historyService = $this->getService('Cms', 'historyManager');
+            $historyService->write('Blog', 'Category "%s" has been removed', $category->getName());
+
+            $categoryManager->deleteById($id);
+
+            $this->flashBag->set('success', 'Selected element has been removed successfully');
+            return '1';
+        }
     }
 
     /**
@@ -127,12 +135,18 @@ final class Category extends AbstractAdminController
         ));
 
         if (1) {
+            // Current page name
+            $name = $this->getCurrentProperty($this->request->getPost('translation'), 'name');
+
             $service = $this->getModuleService('categoryManager');
+            $historyService = $this->getService('Cms', 'historyManager');
 
             // Update
             if (!empty($data['id'])) {
                 if ($service->update($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been updated successfully');
+
+                    $historyService->write('Blog', 'Category "%s" has been updated', $name);
                     return '1';
                 }
 
@@ -140,6 +154,8 @@ final class Category extends AbstractAdminController
                 // Create
                 if ($service->add($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been created successfully');
+
+                    $historyService->write('Blog', 'Category "%s" has been created', $name);
                     return $service->getLastId();
                 }
             }

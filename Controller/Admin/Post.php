@@ -109,14 +109,18 @@ final class Post extends AbstractAdminController
      */
     public function deleteAction($id)
     {
+        $historyService = $this->getService('Cms', 'historyManager');
         $service = $this->getModuleService('postManager');
 
         // Batch removal
-        if ($this->request->hasPost('toDelete')) {
-            $ids = array_keys($this->request->getPost('toDelete'));
+        if ($this->request->hasPost('batch')) {
+            $ids = array_keys($this->request->getPost('batch'));
 
             $service->deleteByIds($ids);
             $this->flashBag->set('success', 'Selected elements have been removed successfully');
+
+            // Save in the history
+            $historyService->write('Blog', 'Batch removal of %s posts', count($ids));
 
         } else {
             $this->flashBag->set('warning', 'You should select at least one element to remove');
@@ -124,8 +128,13 @@ final class Post extends AbstractAdminController
 
         // Single removal
         if (!empty($id)) {
+            $post = $this->getPostManager()->fetchById($id, false, false);
+
             $service->deleteById($id);
             $this->flashBag->set('success', 'Selected element has been removed successfully');
+
+            // Save in the history
+            $historyService->write('Blog', 'Post "%s" has been removed', $post->getName());
         }
 
         return '1';
@@ -153,12 +162,18 @@ final class Post extends AbstractAdminController
         ));
 
         if (1) {
+            // Current page name
+            $name = $this->getCurrentProperty($this->request->getPost('translation'), 'name');
+
             $service = $this->getModuleService('postManager');
+            $historyService = $this->getService('Cms', 'historyManager');
 
             // Update
             if (!empty($input['id'])) {
                 if ($service->update($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been updated successfully');
+
+                    $historyService->write('Blog', 'Post "%s" has been updated', $name);
                     return '1';
                 }
 
@@ -166,6 +181,8 @@ final class Post extends AbstractAdminController
                 // Create
                 if ($service->add($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been created successfully');
+
+                    $historyService->write('Blog', 'Post "%s" has been added', $name);
                     return $service->getLastId();
                 }
             }
