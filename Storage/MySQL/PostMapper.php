@@ -173,16 +173,6 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     }
 
     /**
-     * Fetches post name by its associated id
-     * 
-     * @param string $id Post's id
-     * @return string
-     */
-    public function fetchNameById($id)
-    {
-    }
-
-    /**
      * Update settings
      * 
      * @param array $settings

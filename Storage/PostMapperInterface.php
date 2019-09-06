@@ -24,14 +24,6 @@ interface PostMapperInterface
     public function incrementViewCount($id);
 
     /**
-     * Fetches post name by its associated id
-     * 
-     * @param string $id Post id
-     * @return string
-     */
-    public function fetchNameById($id);
-
-    /**
      * Update settings
      * 
      * @param array $settings
