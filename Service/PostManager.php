@@ -20,7 +20,7 @@ use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 use Krystal\Image\Tool\ImageManagerInterface;
 
-final class PostManager extends AbstractManager implements PostManagerInterface
+final class PostManager extends AbstractManager
 {
     /**
      * Any compliant post mapper

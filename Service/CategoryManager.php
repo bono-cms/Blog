@@ -22,7 +22,7 @@ use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 use Krystal\Tree\AdjacencyList\Render;
 use Krystal\Image\Tool\ImageManagerInterface;
 
-final class CategoryManager extends AbstractManager implements CategoryManagerInterface
+final class CategoryManager extends AbstractManager
 {
     /**
      * Any compliant category mapper

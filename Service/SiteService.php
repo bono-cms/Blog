@@ -16,7 +16,7 @@ use Cms\Service\WebPageManagerInterface;
 use Blog\Storage\CategoryMapperInterface;
 use Krystal\Stdlib\VirtualEntity;
 
-final class SiteService extends AbstractManager implements SiteServiceInterface
+final class SiteService extends AbstractManager
 {
     /**
      * Any-compliant category mapper
@@ -28,7 +28,7 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
     /**
      * Post management service
      * 
-     * @var \Blog\Service\PostManagerInterface
+     * @var \Blog\Service\PostManager
      */
     private $postManager;
 
@@ -43,11 +43,11 @@ final class SiteService extends AbstractManager implements SiteServiceInterface
      * State initialization
      * 
      * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
-     * @param \Blog\Service\PostManagerInterface $postManager
-     * @param \Cms\Service\WebPageManagerInterface $webPageManager
+     * @param \Blog\Service\PostManager $postManager
+     * @param \Cms\Service\WebPageManager $webPageManager
      * @return void
      */
-    public function __construct(CategoryMapperInterface $categoryMapper, PostManagerInterface $postManager, WebPageManagerInterface $webPageManager)
+    public function __construct(CategoryMapperInterface $categoryMapper, PostManager $postManager, WebPageManagerInterface $webPageManager)
     {
         $this->categoryMapper = $categoryMapper;
         $this->postManager = $postManager;
