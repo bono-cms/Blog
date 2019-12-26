@@ -63,5 +63,7 @@ CREATE TABLE `bono_module_blog_posts_attached` (
     `master_id` INT NOT NULL COMMENT 'Primary Post ID',
     `slave_id` INT NOT NULL COMMENT 'Attached post ID',
 
-    FOREIGN KEY (id) REFERENCES master_id(id) ON DELETE CASCADE
+    FOREIGN KEY (`master_id`) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (`slave_id`) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE
+    
 ) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
