@@ -9,7 +9,7 @@
  * the license file that was distributed with this source code.
  */
 
-namespace News\Controller\Admin;
+namespace Blog\Controller\Admin;
 
 use Krystal\Stdlib\VirtualEntity;
 
