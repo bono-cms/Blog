@@ -16,6 +16,18 @@ use Krystal\Stdlib\VirtualEntity;
 final class PostEntity extends VirtualEntity
 {
     /**
+     * Checks whether current post has image gallery (i.e at least one attached image)
+     * 
+     * @return boolean
+     */
+    public function hasGallery()
+    {
+        $gallery = $this->getGallery();
+
+        return is_array($gallery) && !empty($gallery);
+    }
+
+    /**
      * Returns custom date format
      * 
      * @param string $format
