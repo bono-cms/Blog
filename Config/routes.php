@@ -43,6 +43,7 @@ return array(
         'controller'    => 'Admin:Browser@indexAction'
     ),
     
+    // Post
     '/%s/module/blog/post/add' => array(
         'controller' => 'Admin:Post@addAction'
     ),
@@ -60,6 +61,24 @@ return array(
         'controller' => 'Admin:Post@deleteAction',
         'disallow' => array('guest')
     ),
+    
+    // Post gallery
+    '/%s/module/blog/post/gallery/add/(:var)' => array(
+        'controller' => 'Admin:PostGallery@addAction'
+    ),
+
+    '/%s/module/blog/post/gallery/edit/(:var)' => array(
+        'controller' => 'Admin:PostGallery@editAction'
+    ),
+
+    '/%s/module/blog/post/gallery/delete/(:var)' => array(
+        'controller' => 'Admin:PostGallery@deleteAction'
+    ),
+
+    '/%s/module/blog/post/gallery/save' => array(
+        'controller' => 'Admin:PostGallery@saveAction'
+    ),
+    
     
     '/%s/module/blog/tweak' => array(
         'controller' => 'Admin:Post@tweakAction',
