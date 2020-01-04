@@ -13,6 +13,7 @@ namespace Blog;
 
 use Cms\AbstractCmsModule;
 use Blog\Service\PostManager;
+use Blog\Service\PostGalleryManager;
 use Blog\Service\CategoryManager;
 use Blog\Service\TaskManager;
 use Blog\Service\SiteService;
@@ -20,6 +21,31 @@ use Krystal\Image\Tool\ImageManager;
 
 final class Module extends AbstractCmsModule
 {
+    /**
+     * Builds gallery image manager service
+     * 
+     * @return \Krystal\Image\Tool\ImageManager
+     */
+    private function createGalleryImageManager()
+    {
+        $plugins = array(
+            'thumb' => array(
+                'quality' => 75,
+                'dimensions' => array(
+                    // For administration panel
+                    array(400, 400),
+                )
+            )
+        );
+
+        return new ImageManager(
+            '/data/uploads/module/blog/gallery/',
+            $this->appConfig->getRootDir(),
+            $this->appConfig->getRootUrl(),
+            $plugins
+        );
+    }
+
     /**
      * Returns album image manager for category
      * 
@@ -79,6 +105,7 @@ final class Module extends AbstractCmsModule
     {
         $postMapper = $this->getMapper('/Blog/Storage/MySQL/PostMapper');
         $categoryMapper = $this->getMapper('/Blog/Storage/MySQL/CategoryMapper');
+        $postGalleryMapper = $this->getMapper('/Blog/Storage/MySQL/PostGalleryMapper');
 
         $webPageManager = $this->getWebPageManager();
 
@@ -91,7 +118,8 @@ final class Module extends AbstractCmsModule
             'siteService' => $siteService,
             'configManager' => $this->createConfigService(),
             'postManager' => $postManager,
-            'categoryManager' => $categoryManager
+            'categoryManager' => $categoryManager,
+            'postGalleryManager' => new PostGalleryManager($postGalleryMapper, $this->createGalleryImageManager())
         );
     }
 }
