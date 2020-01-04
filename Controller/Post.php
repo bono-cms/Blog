@@ -25,6 +25,9 @@ final class Post extends AbstractBlogController
 
         // If $post isn't false, then $id is valid and $post itself is an instance of entity class
         if ($post !== false) {
+            // Set image gallery
+            $post->setGallery($this->getModuleService('postGalleryManager')->fetchAllByPostId($id));
+
             $this->loadSitePlugins();
             $this->view->getBreadcrumbBag()
                        ->add($this->getPostManager()->getBreadcrumbs($post));

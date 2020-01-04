@@ -24,6 +24,7 @@ final class Dropper extends AbstractStorageDropper
             PostMapper::getTableName(),
             PostMapper::getJunctionTableName(),
             PostMapper::getTranslationTable(),
+            PostGalleryMapper::getTableName(),
             CategoryMapper::getTableName(),
             CategoryMapper::getTranslationTable()
         );

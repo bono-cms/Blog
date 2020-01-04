@@ -67,3 +67,14 @@ CREATE TABLE `bono_module_blog_posts_attached` (
     FOREIGN KEY (`slave_id`) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE
     
 ) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+
+/* Post gallery */
+DROP TABLE IF EXISTS `bono_module_blog_posts_gallery`;
+CREATE TABLE `bono_module_blog_posts_gallery` (
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `post_id` INT NOT NULL COMMENT 'Attached post ID',
+    `order` INT NOT NULL COMMENT 'Sorting order',
+    `image` varchar(255) NOT NULL COMMENT 'Image file',
+
+    FOREIGN KEY (post_id) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
