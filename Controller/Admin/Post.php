@@ -25,6 +25,14 @@ final class Post extends AbstractAdminController
      */
     private function createForm($post, $title)
     {
+        // If coming from edit form, then grab ID to be excluded
+        if (is_array($post) && isset($post[0]['id'])) {
+            $id = $post[0]['id'];
+        } else {
+            // Coming from add form, no ID to be excluded
+            $id = null;
+        }
+
         // Load view plugins
         $this->view->getPluginBag()->appendScript('@Blog/admin/post.form.js')
                                    ->load(array($this->getWysiwygPluginName(), 'datepicker', 'chosen'));
@@ -37,7 +45,8 @@ final class Post extends AbstractAdminController
             'categories' => $this->getCategoryManager()->getCategoriesTree(false),
             // If you don't ability to attach similar posts, you can comment 'posts' key to reduce DB queries
             'posts' => $this->getCategoryManager()->fetchAllWithPosts(),
-            'post' => $post
+            'post' => $post,
+            'images' => $id !== null ? $this->getModuleService('postGalleryManager')->fetchAllByPostId($id) : array()
         ));
     }
 
