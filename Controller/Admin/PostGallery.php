@@ -36,7 +36,7 @@ final class PostGallery extends AbstractAdminController
             
             // Append breadcrumbs
             $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
-                                           ->addOne($title, $this->createUrl('News:Admin:Post@editAction', array($image->getPostId())))
+                                           ->addOne($title, $this->createUrl('Blog:Admin:Post@editAction', array($image->getPostId())))
                                            ->addOne($image->getId() ? 'Update image' : 'Add new image');
 
             return $this->view->render('gallery.form', array(
