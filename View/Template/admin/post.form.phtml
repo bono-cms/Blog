@@ -12,8 +12,8 @@ defined('KRYSTAL') or die;
 <?php if (!empty($categories)): ?>
 <form class="card" data-group="post" autocomplete="off">
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="nav-item active"><a class="nav-link" href="#data" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-file"></i> <?php $this->show('Data'); ?></a></li>
-        <li role="presentation" class="nav-item"><a class="nav-link" href="#configuration" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-th-list"></i> <?php $this->show('Configuration'); ?></a></li>
+        <li role="presentation" class="nav-item active"><a class="nav-link" href="#data" role="tab" data-toggle="tab"><i class="fas fa-edit"></i> <?php $this->show('Data'); ?></a></li>
+        <li role="presentation" class="nav-item"><a class="nav-link" href="#configuration" role="tab" data-toggle="tab"><i class="fas fa-tasks"></i> <?php $this->show('Configuration'); ?></a></li>
 
         <?php if (!is_object($post)): ?>
         <li role="presentation" class="nav-item"><a class="nav-link" href="#gallery" role="tab" data-toggle="tab"><i class="fas fa-camera-retro"></i> <?php $this->show('Gallery'); ?> <small class="text-muted">(<?= count($images); ?>)</small></a></li>

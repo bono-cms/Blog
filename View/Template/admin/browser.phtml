@@ -113,7 +113,7 @@ defined('KRYSTAL') or die;
 </div>
 
 <div class="card">
-    <h4><i class="glyphicon glyphicon-th-list"></i> <?php echo $this->translate('Categories'); ?> (<?php echo count($categories); ?>)</h4>
+    <h4 class="mb-3 mt-2"><i class="fas fa-tags"></i> <?php $this->show('Categories'); ?> <small>(<?php echo count($categories); ?>)</small></h4>
 
     <?= $this->widget(new GridViewWidget($categories, array(
         'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
