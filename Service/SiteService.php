@@ -71,6 +71,17 @@ final class SiteService extends AbstractManager
     }
 
     /**
+     * Gets random post entity
+     * 
+     * @param int $limit
+     * @return array
+     */
+    public function getRandom($limit)
+    {
+        return $this->postManager->fetchRandomPublished($limit);
+    }
+
+    /**
      * Returns recent blog post entities
      * 
      * @param integer $limit Limit of posts to be returned

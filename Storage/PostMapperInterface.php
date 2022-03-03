@@ -93,9 +93,10 @@ interface PostMapperInterface
     /**
      * Fetches randomly published post
      * 
+     * @param int $limit
      * @return array
      */
-    public function fetchRandomPublished();
+    public function fetchRandomPublished($limit);
 
     /**
      * Find a collection of post IDs attached to category ID

@@ -207,11 +207,12 @@ final class PostManager extends AbstractManager
     /**
      * Fetches randomly published post entity
      * 
-     * @return \Krystal\Stdlib\VirtualEntity
+     * @param int $limit
+     * @return array
      */
-    public function fetchRandomPublished()
+    public function fetchRandomPublished($limit)
     {
-        return $this->prepareResult($this->postMapper->fetchRandomPublished());
+        return $this->prepareResults($this->postMapper->fetchRandomPublished($limit), false);
     }
 
     /**

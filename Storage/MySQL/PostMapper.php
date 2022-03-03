@@ -343,16 +343,17 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     /**
      * Fetches randomly published post
      * 
+     * @param int $limit
      * @return array
      */
-    public function fetchRandomPublished()
+    public function fetchRandomPublished($limit)
     {
-        $rows = $this->findRecords(null, true, null, 1, function($db){
+        $rows = $this->findRecords(null, true, null, $limit, function($db){
             $db->orderBy()
                ->rand();
         });
 
-        return isset($rows[0]) ? $rows[0] : array();
+        return $rows;
     }
 
     /**
