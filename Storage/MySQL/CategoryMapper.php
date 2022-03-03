@@ -134,6 +134,7 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                     // Filtering condition
                     ->whereEquals(self::column('parent_id'), $parentId)
                     ->andWhereEquals(CategoryTranslationMapper::column('lang_id'), $this->getLangId())
+                    ->orderBy(new RawSqlFragment(sprintf('`order`, CASE WHEN `order` = 0 THEN %s END DESC', self::column('id'))))
                     ->queryAll();
     }
 
