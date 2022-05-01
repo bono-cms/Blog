@@ -184,7 +184,9 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
         }
 
         // Aggregate grouping
-        return $db->groupBy($columns)
-                  ->queryAll();
+        $db->groupBy($columns)
+           ->orderBy(self::column('order'));
+
+        return $db->queryAll();
     }
 }
