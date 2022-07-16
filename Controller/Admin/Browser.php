@@ -30,7 +30,7 @@ final class Browser extends AbstractAdminController
         $this->view->getBreadcrumbBag()
                    ->addOne('Blog');
 
-        return $this->view->render('browser', array(
+        return $this->view->render('index', array(
             'categoryId' => $categoryId,
             'posts' => $posts,
             'paginator' => $paginator,
