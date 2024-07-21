@@ -88,7 +88,8 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                         ))
                         // Post translation relation
                         ->innerJoin(PostTranslationMapper::getTableName(), array(
-                            PostMapper::column('id') => PostTranslationMapper::getRawColumn('id')
+                            PostMapper::column('id') => PostTranslationMapper::getRawColumn('id'),
+                            PostTranslationMapper::column('lang_id') => $this->getLangId()
                         ))
                         // Category translation relation
                         ->innerJoin(CategoryTranslationMapper::getTableName(), array(
