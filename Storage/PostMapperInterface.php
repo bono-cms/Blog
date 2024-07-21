@@ -32,22 +32,6 @@ interface PostMapperInterface
     public function updateSettings(array $settings);
 
     /**
-     * Inserts a post
-     * 
-     * @param array $data Post data
-     * @return boolean
-     */
-    public function insert(array $data);
-
-    /**
-     * Updates a post
-     * 
-     * @param array $data Post data
-     * @return boolean
-     */
-    public function update(array $data);
-
-    /**
      * Fetches post data by associated IDs
      * 
      * @param array $ids A collection of post IDs

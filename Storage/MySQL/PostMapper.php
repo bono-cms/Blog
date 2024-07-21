@@ -184,40 +184,32 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     }
 
     /**
-     * Adds a post
+     * Save attached ones
      * 
-     * @param array $input Raw input data
+     * @param array $input
      * @return boolean
      */
-    public function insert(array $input)
+    public function saveAttached(array $input)
     {
-        $this->persist($this->getWithLang(ArrayUtils::arrayWithout($input, array(self::PARAM_COLUMN_ATTACHED))));
-        $id = $this->getLastId();
+        if (!empty($input[$this->getPk()])) {
+            // UPDATE operation
+            // Synchronize relations if provided
+            if (isset($input[self::PARAM_COLUMN_ATTACHED])) {
+                $this->syncWithJunction(self::getJunctionTableName(), $input[$this->getPk()], $input[self::PARAM_COLUMN_ATTACHED]);
+            } else {
+                $this->removeFromJunction(self::getJunctionTableName(), $input[$this->getPk()]);
+            }
+        } else {
+            // INSERT operation
+            $id = $this->getLastId();
 
-        // Insert relational posts if provided
-        if (isset($input[self::PARAM_COLUMN_ATTACHED])) {
-            $this->insertIntoJunction(self::getJunctionTableName(), $id, $input[self::PARAM_COLUMN_ATTACHED]);
+            // Insert relational posts if provided
+            if (isset($input[self::PARAM_COLUMN_ATTACHED])) {
+                $this->insertIntoJunction(self::getJunctionTableName(), $id, $input[self::PARAM_COLUMN_ATTACHED]);
+            }
         }
 
         return true;
-    }
-
-    /**
-     * Updates a post
-     * 
-     * @param array $input Raw input data
-     * @return boolean
-     */
-    public function update(array $input)
-    {
-        // Synchronize relations if provided
-        if (isset($input[self::PARAM_COLUMN_ATTACHED])) {
-            $this->syncWithJunction(self::getJunctionTableName(), $input[$this->getPk()], $input[self::PARAM_COLUMN_ATTACHED]);
-        } else {
-            $this->removeFromJunction(self::getJunctionTableName(), $input[$this->getPk()]);
-        }
-
-        return $this->persist(ArrayUtils::arrayWithout($input, array(self::PARAM_COLUMN_ATTACHED)));
     }
 
     /**

@@ -282,9 +282,11 @@ final class PostManager extends AbstractManager
         }
 
         // Remove extra keys
-        $post = ArrayUtils::arrayWithout($post, array('date', 'slug', 'remove_cover'));
+        $data = ArrayUtils::arrayWithout($post, array('attached', 'date', 'slug', 'remove_cover'));
 
-        return $this->postMapper->savePage('Blog (Posts)', 'Blog:Post@indexAction', $post, $translations);
+        return
+            $this->postMapper->savePage('Blog (Posts)', 'Blog:Post@indexAction', $data, $translations) &&
+            $this->postMapper->saveAttached($post);
     }
 
     /**
