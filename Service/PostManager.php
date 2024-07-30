@@ -141,7 +141,7 @@ final class PostManager extends AbstractManager
             ->setImageBag($imageBag)
             ->setLangId($post['lang_id'], PostEntity::FILTER_INT)
             ->setWebPageId($post['web_page_id'], PostEntity::FILTER_INT)
-            ->setIntroduction($post['introduction'], PostEntity::FILTER_SAFE_TAGS)
+            ->setIntroduction($post['introduction'])
             ->setName($post['name'], PostEntity::FILTER_HTML)
             ->setCategoryName($post['category_name'], PostEntity::FILTER_HTML)
             ->setTimestamp($post['timestamp'], PostEntity::FILTER_INT)
@@ -152,7 +152,8 @@ final class PostManager extends AbstractManager
             ->setSlug($post['slug'])
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
             ->setChangeFreq($post['changefreq'])
-            ->setPriority($post['priority']);
+            ->setPriority($post['priority'])
+            ->setDate(date($this->getTimeFormat(), $entity->getTimestamp()));
 
         if ($full === true) {
             // Attached ones if available
@@ -163,11 +164,10 @@ final class PostManager extends AbstractManager
             $entity->setTitle($post['title'], PostEntity::FILTER_HTML)
                    ->setKeywords($post['keywords'], PostEntity::FILTER_HTML)
                    ->setMetaDescription($post['meta_description'], PostEntity::FILTER_HTML)
-                   ->setDate(date($this->getTimeFormat(), $entity->getTimestamp()))
                    ->setCategoryId($post['category_id'], PostEntity::FILTER_INT)
                    ->setViewsCount($post['views'], PostEntity::FILTER_INT)
                    ->setPermanentUrl('/module/blog/post/'.$entity->getId())
-                   ->setFull($post['full'], PostEntity::FILTER_SAFE_TAGS);
+                   ->setFull($post['full']);
         }
 
         return $entity;
@@ -365,7 +365,7 @@ final class PostManager extends AbstractManager
             $entity = $this->prepareResult($this->postMapper->fetchById($id));
 
             if ($entity !== false) {
-                if ($withAttached === true) {
+                if ($withAttached === true && !empty($entity->getAttachedIds())) {
                     $rows = $this->postMapper->fetchByIds($entity->getAttachedIds());
                     $entity->setAttachedPosts($this->prepareResults($rows, false));
                 }
