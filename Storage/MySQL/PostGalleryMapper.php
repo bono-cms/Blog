@@ -11,6 +11,7 @@
 
 namespace Blog\Storage\MySQL;
 
+use Krystal\Db\Sql\RawSqlFragment;
 use Cms\Storage\MySQL\AbstractMapper;
 use Blog\Storage\PostGalleryMapperInterface;
 
@@ -35,8 +36,7 @@ final class PostGalleryMapper extends AbstractMapper implements PostGalleryMappe
         $db = $this->db->select('*')
                        ->from(self::getTableName())
                        ->whereEquals('post_id', $postId)
-                       ->orderBy('id')
-                       ->desc();
+                       ->orderBy(new RawSqlFragment(sprintf('`order`, CASE WHEN `order` = 0 THEN %s END DESC', self::column('id'))));
 
         return $db->queryAll();
     }
