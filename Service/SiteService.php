@@ -13,17 +13,16 @@ namespace Blog\Service;
 
 use Cms\Service\AbstractManager;
 use Cms\Service\WebPageManagerInterface;
-use Blog\Storage\CategoryMapperInterface;
 use Krystal\Stdlib\VirtualEntity;
 
 final class SiteService extends AbstractManager
 {
     /**
-     * Any-compliant category mapper
+     * CategoryService
      * 
-     * @var \Blog\Storage\CategoryMapperInterface
+     * @var \Blog\Service\CategoryService
      */
-    private $categoryMapper;
+    private $categoryManager;
 
     /**
      * Post management service
@@ -42,32 +41,19 @@ final class SiteService extends AbstractManager
     /**
      * State initialization
      * 
-     * @param \Blog\Storage\CategoryMapperInterface $categoryMapper
+     * @param \Blog\Service\CategoryManager $categoryManager
      * @param \Blog\Service\PostManager $postManager
      * @param \Cms\Service\WebPageManager $webPageManager
      * @return void
      */
-    public function __construct(CategoryMapperInterface $categoryMapper, PostManager $postManager, WebPageManagerInterface $webPageManager)
-    {
-        $this->categoryMapper = $categoryMapper;
+    public function __construct(
+        CategoryManager $categoryManager,
+        PostManager $postManager,
+        WebPageManagerInterface $webPageManager
+    ){
+        $this->categoryManager = $categoryManager;
         $this->postManager = $postManager;
         $this->webPageManager = $webPageManager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function toEntity(array $category)
-    {
-        $entity = new VirtualEntity();
-        $entity->setId($category['id'])
-               ->setLangId($category['lang_id'])
-               ->setCount($category['post_count'])
-               ->setSlug($category['slug'])
-               ->setTitle($category['name'] . sprintf(' (%s) ', $entity->getCount()))
-               ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()));
-
-        return $entity;
     }
 
     /**
@@ -111,6 +97,6 @@ final class SiteService extends AbstractManager
      */
     public function getAllCategoriesWithCount()
     {
-        return $this->prepareResults($this->categoryMapper->fetchAll(true));
+        return $this->categoryManager->fetchAll(true);
     }
 }
