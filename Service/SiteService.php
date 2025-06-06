@@ -99,4 +99,14 @@ final class SiteService extends AbstractManager
     {
         return $this->categoryManager->fetchAll(true);
     }
+
+    /**
+     * Returns top parent categories
+     * 
+     * @return array
+     */
+    public function getTopCategories()
+    {
+        return $this->categoryManager->fetchChildrenByParentId(0);
+    }
 }
