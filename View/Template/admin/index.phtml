@@ -8,111 +8,128 @@ defined('KRYSTAL') or die;
 
 ?>
 
-<div class="btn-toolbar">
-    <?php $this->loadPartial('menu', [
-        'items' => [
-            'Blog:Admin:Browser@indexAction' => isset($categoryId) ? 'Go home' : null,
-            'Blog:Admin:Post@addAction' => 'Add a post',
-            'Blog:Admin:Category@addAction' => 'Add category',
-            'Blog:Admin:Config@indexAction' => 'Configuration'
-        ],
-
-        'actions' => [
-            'data' => $posts,
-            'save' => 'Blog:Admin:Post@tweakAction',
-            'delete' => 'Blog:Admin:Post@deleteAction'
-        ]
-    ]); ?>
-</div>
-
-<div class="card">
-    <?php $this->loadPartial('items-per-page', ['caption' => 'Latest posts']); ?>
-
-    <form class="table-responsive">
-        <?= $this->widget(new GridViewWidget($posts, [
-            'batch' => true,
-            'pk' => 'id',
-            'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
-            'columns' => [
-                [
-                    'column' => 'id',
-                    'label' => '#'
+<form>
+    <div class="btn-toolbar" role="toolbar" >
+        <div class="btn-group mr-2" role="group">
+            <?php $this->loadPartial('menu', [
+                'items' => [
+                    'Blog:Admin:Browser@indexAction' => isset($categoryId) ? 'Go home' : null,
+                    'Blog:Admin:Post@addAction' => 'Add a post',
+                    'Blog:Admin:Category@addAction' => 'Add category',
+                    'Blog:Admin:Config@indexAction' => 'Configuration'
                 ],
 
-                [
-                    'column' => 'name',
-                    'filter' => true,
-                    'attributes' => [
-                        'class' => null
+                'actions' => [
+                    'data' => $posts,
+                    'save' => 'Blog:Admin:Post@tweakAction',
+                    'delete' => 'Blog:Admin:Post@deleteAction'
+                ]
+            ]); ?>
+        </div>
+
+        <div class="btn-group mr-2">
+            <button class="btn btn-primary" type="submit"><?= $this->translate('Filter'); ?></button>
+        </div>
+
+        <?php if ($hasFilter): ?>
+        <div class="btn-group mr-2">
+            <a class="btn btn-danger" href="<?= $this->url('Blog:Admin:Browser@indexAction'); ?>"><?= $this->translate('Reset filter'); ?></a>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="card">
+        <?php $this->loadPartial('items-per-page', ['caption' => 'Latest posts']); ?>
+
+        <div class="table-responsive">
+            <?= $this->widget(new GridViewWidget($posts, [
+                'batch' => true,
+                'pk' => 'id',
+                'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
+                'columns' => [
+                    [
+                        'column' => 'id',
+                        'label' => '#'
+                    ],
+
+                    [
+                        'column' => 'name',
+                        'filter' => true,
+                        'attributes' => [
+                            'class' => null
+                        ]
+                    ],
+
+                    [
+                        'column' => 'timestamp',
+                        'label' => 'Date',
+                        'value' => function($post){
+                            return date('d-m-Y', $post->getTimestamp());
+                        }
+                    ],
+
+                    [
+                        'name' => 'category_id',
+                        'column' => 'category_name',
+                        'label' => 'Category',
+                        'type' => 'select',
+                        'filter' => $tree,
+                    ],
+
+                    [
+                        'column' => 'published',
+                        'value' => function($post){
+                            return Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished());
+                        }
+                    ],
+
+                    [
+                        'column' => 'comments',
+                        'value' => function($post){
+                            return Element::checkbox(sprintf('comments[%s]', $post->getId()), $post->getComments());
+                        }
+                    ],
+
+                    [
+                        'column' => 'seo',
+                        'label' => 'Enable SEO',
+                        'value' => function($post){
+                            return Element::checkbox(sprintf('seo[%s]', $post->getId()), $post->getSeo());
+                        }
                     ]
                 ],
 
-                [
-                    'column' => 'timestamp',
-                    'label' => 'Date',
-                    'value' => function($post){
-                        return date('d-m-Y', $post->getTimestamp());
-                    }
-                ],
+                'actions' => [
+                    'view' => function($post){
+                        return Icon::view($post->getUrl(), $this->translate('View this post'));
+                    },
 
-                [
-                    'column' => 'category_name',
-                    'label' => 'Category'
-                ],
+                    'edit' => function($post){
+                        return Icon::edit(
+                            $this->url('Blog:Admin:Post@editAction', $post->getId()),
+                            $this->translate('Edit this post')
+                        );
+                    },
 
-                [
-                    'column' => 'published',
-                    'value' => function($post){
-                        return Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished());
-                    }
-                ],
-
-                [
-                    'column' => 'comments',
-                    'value' => function($post){
-                        return Element::checkbox(sprintf('comments[%s]', $post->getId()), $post->getComments());
-                    }
-                ],
-
-                [
-                    'column' => 'seo',
-                    'label' => 'Enable SEO',
-                    'value' => function($post){
-                        return Element::checkbox(sprintf('seo[%s]', $post->getId()), $post->getSeo());
+                    'remove' => function($post){
+                        return Icon::remove(
+                            $this->url('Blog:Admin:Post@deleteAction', $post->getId()),
+                            $this->translate('Remove this post')
+                        );
                     }
                 ]
-            ],
+            ])); ?>
 
-            'actions' => [
-                'view' => function($post){
-                    return Icon::view($post->getUrl(), $this->translate('View this post'));
-                },
-
-                'edit' => function($post){
-                    return Icon::edit(
-                        $this->url('Blog:Admin:Post@editAction', $post->getId()),
-                        $this->translate('Edit this post')
-                    );
-                },
-
-                'remove' => function($post){
-                    return Icon::remove(
-                        $this->url('Blog:Admin:Post@deleteAction', $post->getId()),
-                        $this->translate('Remove this post')
-                    );
-                }
-            ]
-        ])); ?>
-
-        <?php if (empty($posts)): ?>
-        <div class="center-block">
-            <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
+            <?php if (empty($posts)): ?>
+            <div class="center-block">
+                <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
-    </form>
 
-    <?php $this->loadPartial('paginator'); ?>
-</div>
+        <?php $this->loadPartial('paginator'); ?>
+    </div>
+</form>
 
 <div class="card">
     <h4 class="mb-3 mt-2"><i class="fas fa-tags"></i> <?php $this->show('Categories'); ?> <small>(<?php echo count($categories); ?>)</small></h4>
@@ -145,18 +162,18 @@ defined('KRYSTAL') or die;
         ],
 
         'actions' => [
-            'view' => function($category){
+            function($category){
                 return Icon::view($category['url'], $this->translate('View this category on site'));
             },
 
-            'edit' => function($category){
+            function($category){
                 return Icon::edit(
                     $this->url('Blog:Admin:Category@editAction', $category['id']),
                     $this->translate('Edit this category')
                 );
             },
 
-            'remove' => function($category){
+            function($category){
                 return Icon::remove(
                     $this->url('Blog:Admin:Category@deleteAction', $category['id']),
                     $this->translate('Remove this category')
@@ -166,8 +183,8 @@ defined('KRYSTAL') or die;
     ])); ?>
 
     <?php if (empty($categories)): ?>
-    <div class="center-block">
-        <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No categories'); ?></h2>
+    <div class="text-center">
+        <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?= $this->translate('No categories'); ?></h2>
     </div>
     <?php endif; ?>
 </div>

@@ -31,9 +31,11 @@ final class Browser extends AbstractAdminController
                    ->addOne('Blog');
 
         return $this->view->render('index', array(
+            'hasFilter' => $this->request->hasQuery('filter'),
             'categoryId' => $categoryId,
             'posts' => $posts,
             'paginator' => $paginator,
+            'tree' => $this->getCategoryManager()->getCategoriesTree(false),
             'categories' => $this->getCategoryManager()->getCategoriesTree(true)
         ));
     }
