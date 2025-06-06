@@ -91,3 +91,55 @@ Then find `paramBag` key and override `home_controller` to `Blog:Home@indexActio
 ## Comments
 
 Most websites today integrate social plugins (such as Facebook, Disqus, etc.) for comments instead of implementing their own comment systems. As a result, there is currently no built-in comment system.
+
+
+
+## Global methods
+
+### Getting random posts
+
+`$blog->getRandom(int $limit): array`
+
+Returns a list of random blog posts.  
+
+Parameters: `int $limit` – The number of posts to retrieve.  
+Returns: An array of random blog posts. 
+
+### Getting recent blog posts
+
+`$blog->getRecent(int $limit, ?int $categoryId = null): array`
+
+Returns the most recent blog posts, optionally filtered by category.  
+
+**Parameters:**
+
+-   `int $limit` – The number of posts to retrieve.
+    
+-   `int|null $categoryId` – (Optional) A category ID to filter the posts.  
+
+**Returns:** An array of recent blog posts.
+
+### Getting mostly viewed posts
+
+`$blog->getMostlyViewed(int $limit): array`
+
+Returns blog posts with the highest view counts.  
+
+**Parameters:**
+
+-   `int $limit` – The number of top-viewed posts to retrieve.  
+ 
+ **Returns:** An array of blog posts sorted by view count.
+
+### Getting top categories
+
+`$blog->getTopCategories(): array`
+
+Returns top-level blog categories (i.e., categories with no parent).  
+
+**Parameters:**
+
+-   None  
+
+
+**Returns:**  An array of top-level categories.
