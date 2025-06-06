@@ -82,6 +82,26 @@ Basic example with post gallery:
     </div>
     <?php endif; ?>
 
+## Getting attached posts
+
+You can attach multiple posts to a single post without limitation. Retrieving available posts is handled exclusively within the post template file, which returns post entities with the same accessible methods.
+
+    <?php if ($post->hasAttachedPosts()): ?>
+    <h3 class="mb-3">You may also like</h3>
+    
+    <div class="row">
+        <?php foreach ($post->getAttachedPosts() as $attached): ?>
+        <div class="col-lg-4">
+            <h3><?= $attached->getName(); ?></h3>
+            <div class="py-3">
+                <?= $attached->getIntroduction(); ?>
+            </div>
+            <a href="<?= $attached->getUrl(); ?>">Learn more</a>
+        </div>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
 ## Recent posts on home page
 
 In case you want to showcase recent posts on your home page, you need to override default controller. To do so, open a file at root foder located at `/config/app.php`
