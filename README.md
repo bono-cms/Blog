@@ -106,6 +106,9 @@ For posts:
 
 ## Global methods
 
+Additionally, you can use predefined global methods to display blog-related data anywhere within your template.
+
+
 ### Getting random posts
 
 `$blog->getRandom(int $limit): array`
