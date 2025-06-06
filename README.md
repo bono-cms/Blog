@@ -98,9 +98,11 @@ Most websites today integrate social plugins (such as Facebook, Disqus, etc.) fo
 You can generate URLs for a specific category or post by passing the corresponding ID and content type to the `createUrl()` method.
 
 For categories:
+
 `$cms->createUrl(1, 'Blog (Categories)'); // 1 - Assuming category ID`
 
 For posts:
+
 `$cms->createUrl(2, 'Blog (Posts)'); // 2 - Assuming post ID`
 
 
