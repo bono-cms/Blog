@@ -105,8 +105,13 @@ final class CategoryManager extends AbstractManager
      */
     public function getCategoriesTree($all)
     {
-        $rows = $this->categoryMapper->fetchAll();
-        $treeBuilder = new TreeBuilder($rows);
+        static $treeBuilder = null;
+
+        // Cache method calls
+        if (is_null($treeBuilder)){
+            $rows = $this->categoryMapper->fetchAll();
+            $treeBuilder = new TreeBuilder($rows);
+        }
 
         if ($all == true) {
             $rows = $treeBuilder->render(new Render\Merge('name'));
