@@ -16,6 +16,16 @@ use Krystal\Stdlib\VirtualEntity;
 final class PostEntity extends VirtualEntity
 {
     /**
+     * Checks whether current post has at least one attached post
+     * 
+     * @return boolean
+     */
+    public function hasAttachedPosts()
+    {
+        return (bool) $this->getAttachedPosts();
+    }
+
+    /**
      * Checks whether current post has image gallery (i.e at least one attached image)
      * 
      * @return boolean
