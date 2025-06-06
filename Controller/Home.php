@@ -27,7 +27,9 @@ final class Home extends AbstractBlogController
         $this->view->getBreadcrumbBag()->clear();
 
         $postManager = $this->getPostManager();
-        $posts = $postManager->fetchAllByPage(true, $pageNumber, $this->getConfig()->getPerPageCount());
+        $posts = $postManager->fetchAllByPage($pageNumber, $this->getConfig()->getPerPageCount(), [
+            'published' => true
+        ]);
 
         // Tweak pagination
         $paginator = $postManager->getPaginator();
