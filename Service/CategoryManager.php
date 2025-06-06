@@ -11,16 +11,16 @@
 
 namespace Blog\Service;
 
-use Cms\Service\AbstractManager;
-use Cms\Service\HistoryManagerInterface;
-use Cms\Service\WebPageManagerInterface;
-use Blog\Storage\CategoryMapperInterface;
-use Blog\Storage\PostMapperInterface;
 use Krystal\Stdlib\ArrayUtils;
 use Krystal\Tree\AdjacencyList\TreeBuilder;
 use Krystal\Tree\AdjacencyList\BreadcrumbBuilder;
 use Krystal\Tree\AdjacencyList\Render;
 use Krystal\Image\Tool\ImageManagerInterface;
+use Cms\Service\AbstractManager;
+use Cms\Service\HistoryManagerInterface;
+use Cms\Service\WebPageManagerInterface;
+use Blog\Storage\CategoryMapperInterface;
+use Blog\Storage\PostMapperInterface;
 
 final class CategoryManager extends AbstractManager
 {
@@ -61,8 +61,12 @@ final class CategoryManager extends AbstractManager
      * @param \Krystal\Image\ImageManagerInterface $imageManager
      * @return void
      */
-    public function __construct(CategoryMapperInterface $categoryMapper, PostMapperInterface $postMapper, WebPageManagerInterface $webPageManager,ImageManagerInterface $imageManager)
-    {
+    public function __construct(
+        CategoryMapperInterface $categoryMapper,
+        PostMapperInterface $postMapper,
+        WebPageManagerInterface $webPageManager,
+        ImageManagerInterface $imageManager
+    ){
         $this->categoryMapper = $categoryMapper;
         $this->postMapper = $postMapper;
         $this->webPageManager = $webPageManager;
@@ -306,13 +310,13 @@ final class CategoryManager extends AbstractManager
         $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
         // If there's a file, then it needs to uploaded as a cover
-        if ($file) {
-            $this->imageManager->upload($this->getLastId(), $file);
-            // Override empty cover's value now
-            $category['cover'] = $file->getUniqueName();
-        }
+        $category['cover'] = $file ? $file->getUniqueName() : '';
 
-        return $this->savePage($input);
+        if ($this->savePage($input)) {
+            return $this->imageManager->upload($this->getLastId(), $file);
+        } else {
+            return false;
+        }
     }
 
     /**
