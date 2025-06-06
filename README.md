@@ -93,6 +93,16 @@ Then find `paramBag` key and override `home_controller` to `Blog:Home@indexActio
 Most websites today integrate social plugins (such as Facebook, Disqus, etc.) for comments instead of implementing their own comment systems. As a result, there is currently no built-in comment system.
 
 
+## URL Generation
+
+You can generate URLs for a specific category or post by passing the corresponding ID and content type to the `createUrl()` method.
+
+For categories:
+`$cms->createUrl(1, 'Blog (Categories)'); // 1 - Assuming category ID`
+
+For posts:
+`$cms->createUrl(2, 'Blog (Posts)'); // 2 - Assuming post ID`
+
 
 ## Global methods
 
