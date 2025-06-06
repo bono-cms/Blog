@@ -230,15 +230,14 @@ final class PostManager extends AbstractManager
     /**
      * Fetches all posts filtered by pagination
      * 
-     * @param boolean $published Whether to fetch only published records
      * @param integer $page Current page
      * @param integer $itemsPerPage Items per page count
-     * @param integer $categoryId Optional category id filter
+     * @param array $filters Optional filters
      * @return array
      */
-    public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId = null)
+    public function fetchAllByPage($page, $itemsPerPage, array $filters = [])
     {
-        return $this->prepareResults($this->postMapper->fetchAllByPage($published, $page, $itemsPerPage, $categoryId), false);
+        return $this->prepareResults($this->postMapper->fetchAllByPage($page, $itemsPerPage, $filters), false);
     }
 
     /**

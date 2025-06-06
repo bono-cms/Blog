@@ -109,11 +109,10 @@ interface PostMapperInterface
     /**
      * Fetches all posts filtered by pagination
      * 
-     * @param boolean $published Whether to fetch only published records
      * @param integer $page Current page
      * @param integer $itemsPerPage Per page count
-     * @param string $categoryId Optional category id filter
+     * @param array $filters Optional filter
      * @return array
      */
-    public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId);
+    public function fetchAllByPage($page, $itemsPerPage, array $filters = []);
 }

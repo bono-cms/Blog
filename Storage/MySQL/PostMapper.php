@@ -88,14 +88,13 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     /**
      * Fetches all posts filtered by pagination
      * 
-     * @param string $categoryId Category ID
-     * @param boolean $published Whether to fetch only published records
      * @param integer $page Current page
      * @param integer $itemsPerPage Per page count
      * @param \Closure $orderCallback Callback to generate ORDER BY condition
+     * @param array $filters Optional filters
      * @return array
      */
-    private function findRecords($categoryId, $published, $page, $itemsPerPage, Closure $orderCallback)
+    private function findRecords($page, $itemsPerPage, Closure $orderCallback, array $filters = [])
     {
         $db = $this->db->select($this->getSharedColumns(false))
                        ->from(self::getTableName())
@@ -122,13 +121,19 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
                             $this->getLangId()
                         );
 
-        // Append category ID if provided
-        if ($categoryId !== null) {
-            $db->andWhereEquals(self::column('category_id'), $categoryId);
+        // Filter: Category ID
+        if (isset($filters['category_id'])) {
+            $db->andWhereEquals(self::column('category_id'), $filters['category_id']);
         }
 
-        if ($published) {
+        // Filter: Published state
+        if (isset($filters['published']) && $filters['published'] == true) {
             $db->andWhereEquals(self::column('published'), '1');
+        }
+
+        // Filter: Name
+        if (isset($filters['name'])) {
+            $db->andWhereLike(PostTranslationMapper::column('name'), '%' . $filters['name'] . '%');
         }
 
         // Apply order callback
@@ -312,10 +317,14 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function fetchMostlyViewed($limit)
     {
-        return $this->findRecords(null, true, null, $limit, function($db){
+        $filters = [
+            'published' => true
+        ];
+
+        return $this->findRecords(null, $limit, function($db){
             $db->orderBy('views')
                ->desc();
-        });
+        }, $filters);
     }
 
     /**
@@ -340,10 +349,14 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function fetchRandomPublished($limit)
     {
-        $rows = $this->findRecords(null, true, null, $limit, function($db){
+        $filters = [
+            'published' => true
+        ];
+
+        $rows = $this->findRecords(null, $limit, function($db){
             $db->orderBy()
                ->rand();
-        });
+        }, $filters);
 
         return $rows;
     }
@@ -355,12 +368,16 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function fetchAllPublished()
     {
-        return $this->findRecords(null, true, null, null, function($db){
+        $filters = [
+            'published' => true
+        ];
+
+        return $this->findRecords(null, null, function($db){
             $db->orderBy(array(
                 self::column('timestamp') => 'DESC', 
                 self::column('id') => 'DESC'
             ));
-        });
+        }, $filters);
     }
 
     /**
@@ -372,23 +389,28 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function fetchRecent($limit, $categoryId = null)
     {
-        return $this->fetchAllByPage(true, null, $limit, $categoryId);
+        $filters = [];
+
+        if (is_numeric($categoryId)) {
+            $filters['category_id'] = $categoryId;
+        }
+
+        return $this->fetchAllByPage(null, $limit, $filters);
     }
 
     /**
      * Fetches all posts filtered by pagination
      * 
-     * @param boolean $published Whether to fetch only published records
      * @param integer $page Current page
      * @param integer $itemsPerPage Per page count
-     * @param string $categoryId Optional category id filter
+     * @param array $filtes Optional filters
      * @return array
      */
-    public function fetchAllByPage($published, $page, $itemsPerPage, $categoryId)
+    public function fetchAllByPage($page, $itemsPerPage, array $filters = [])
     {
-        return $this->findRecords($categoryId, $published, $page, $itemsPerPage, function($db) use ($published){
+        return $this->findRecords($page, $itemsPerPage, function($db) use ($filters){
             // If needed to fetch by published, then sort by time
-            if ($published) {
+            if (isset($filters['published'])) {
                 $db->orderBy(array(
                         self::column('timestamp') => 'DESC', 
                         self::column('id') => 'DESC'
@@ -397,6 +419,6 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
                 $db->orderBy(self::column('id'))
                    ->desc();
             }
-        });
+        }, $filters);
     }
 }
