@@ -43,7 +43,7 @@ final class Home extends AbstractBlogController
             'paginator' => $paginator,
             'page' => $page,
             'posts' => $posts,
-            'languages' => $this->getService('Pages', 'pageManager')->getSwitchUrls(null)            
+            'languages' => $this->getService('Cms', 'languageManager')->fetchAll(true)
         ));
     }
 }
