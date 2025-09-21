@@ -389,7 +389,9 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function fetchRecent($limit, $categoryId = null)
     {
-        $filters = [];
+        $filters = [
+            'published' => true
+        ];
 
         if (is_numeric($categoryId)) {
             $filters['category_id'] = $categoryId;
