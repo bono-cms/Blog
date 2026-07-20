@@ -178,3 +178,17 @@ Returns top-level blog categories (i.e., categories with no parent).
 
 
 **Returns:**  An array of top-level categories.
+
+
+### Getting posts by category id
+
+`$blog->getByCategoryId(): array`
+
+Return posts by associated category id 
+
+**Parameters:**
+
+-   id (category id)
+
+
+**Returns:**  An array of category posts.
