@@ -177,7 +177,7 @@ final class CategoryManager extends AbstractManager
             ->setCover($category['cover']);
 
         if (isset($category['post_count'])) {
-            $category->setCount($category['post_count']);
+            $entity->setCount($category['post_count']);
         }
 
         return $entity;
