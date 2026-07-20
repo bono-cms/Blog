@@ -109,4 +109,15 @@ final class SiteService extends AbstractManager
     {
         return $this->categoryManager->fetchChildrenByParentId(0);
     }
+
+    /**
+     * Fetches items by their category ID.
+     *
+     * @param int|string $id The category ID
+     * @return array
+     */
+    public function getByCategoryId($id)
+    {
+        return $this->postManager->fetchAllByPage(null, null, ['category_id' => $id]);
+    }
 }
