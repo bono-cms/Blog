@@ -7,7 +7,7 @@ CREATE TABLE `bono_module_blog_categories` (
 	`seo` varchar(1) NOT NULL COMMENT 'Whether SEO enabled or not',
 	`order` INT NOT NULL COMMENT 'Sort order',
     `cover` varchar(50) NOT NULL COMMENT 'Image file basename'
-) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `bono_module_blog_categories_translations`;
 CREATE TABLE `bono_module_blog_categories_translations` (
@@ -23,7 +23,7 @@ CREATE TABLE `bono_module_blog_categories_translations` (
     FOREIGN KEY (id) REFERENCES bono_module_blog_categories(id) ON DELETE CASCADE,
     FOREIGN KEY (lang_id) REFERENCES bono_module_cms_languages(id) ON DELETE CASCADE,
     FOREIGN KEY (web_page_id) REFERENCES bono_module_cms_webpages(id) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Blog posts */
 DROP TABLE IF EXISTS `bono_module_blog_posts`;
@@ -38,7 +38,7 @@ CREATE TABLE `bono_module_blog_posts` (
     `views` INT NOT NULL,
 
     FOREIGN KEY (category_id) REFERENCES bono_module_blog_categories(id) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `bono_module_blog_posts_translations`;
 CREATE TABLE `bono_module_blog_posts_translations` (
@@ -55,18 +55,16 @@ CREATE TABLE `bono_module_blog_posts_translations` (
     FOREIGN KEY (id) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE,
     FOREIGN KEY (lang_id) REFERENCES bono_module_cms_languages(id) ON DELETE CASCADE,
     FOREIGN KEY (web_page_id) REFERENCES bono_module_cms_webpages(id) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Post attachments */
 DROP TABLE IF EXISTS `bono_module_blog_posts_attached`;
 CREATE TABLE `bono_module_blog_posts_attached` (
     `master_id` INT NOT NULL COMMENT 'Primary Post ID',
     `slave_id` INT NOT NULL COMMENT 'Attached post ID',
-
     FOREIGN KEY (`master_id`) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE,
     FOREIGN KEY (`slave_id`) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE
-    
-) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /* Post gallery */
 DROP TABLE IF EXISTS `bono_module_blog_posts_gallery`;
@@ -77,4 +75,4 @@ CREATE TABLE `bono_module_blog_posts_gallery` (
     `image` varchar(255) NOT NULL COMMENT 'Image file',
 
     FOREIGN KEY (post_id) REFERENCES bono_module_blog_posts(id) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = UTF8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
