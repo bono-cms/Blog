@@ -11,6 +11,7 @@
 
 namespace Blog\Controller\Admin;
 
+use Krystal\Validation\Validator;
 use Krystal\Stdlib\VirtualEntity;
 
 final class PostGallery extends AbstractAdminController
@@ -33,16 +34,16 @@ final class PostGallery extends AbstractAdminController
 
             // Generate a title for breadcrumbs
             $title = $this->translator->translate('Edit the post "%s"', $post->getName());
-            
+
             // Append breadcrumbs
             $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
                                            ->addOne($title, $this->createUrl('Blog:Admin:Post@editAction', array($image->getPostId())))
                                            ->addOne($image->getId() ? 'Update image' : 'Add new image');
 
-            return $this->view->render('gallery.form', array(
+            return $this->view->render('gallery.form', [
                 'image' => $image
-            ));
-            
+            ]);
+
         } else {
             return false;
         }
@@ -90,7 +91,9 @@ final class PostGallery extends AbstractAdminController
         $this->getModuleService('postGalleryManager')->deleteById($id);
         $this->flashBag->set('success', 'Selected element has been removed successfully');
 
-        return 1;
+        return $this->json([
+            'refresh' => true
+        ]);
     }
 
     /**
@@ -101,18 +104,39 @@ final class PostGallery extends AbstractAdminController
     public function saveAction()
     {
         $input = $this->request->getPost('image');
-        $service = $this->getModuleService('postGalleryManager');
 
-        if (!empty($input['id'])) {
-            $service->update($this->request->getAll());
-            $this->flashBag->set('success', 'The element has been updated successfully');
+        $validator = new Validator(
+            $this->request->getPost(),
+            $this->request->getFiles()
+        );
 
-            return 1;
+        $validator->file('file')
+                  ->required(null, empty($input['id']));
+
+        if ($validator->isPassed()) {
+            $service = $this->getModuleService('postGalleryManager');
+
+            if (!empty($input['id'])) {
+                $service->update($this->request->getAll());
+                $this->flashBag->set('success', 'The element has been updated successfully');
+
+                return $this->json([
+                    'refresh' => true
+                ]);
+
+            } else {
+                $service->add($this->request->getAll());
+                $this->flashBag->set('success', 'The element has been created successfully');
+
+                return $this->json([
+                    'redirect' => $this->createUrl('Blog:Admin:PostGallery@editAction', [$service->getLastId()]),
+                ]);
+            }
+
         } else {
-            $service->add($this->request->getAll());
-            $this->flashBag->set('success', 'The element has been created successfully');
-
-            return $service->getLastId();
+            return $this->json([
+                'errors' => $validator->getErrors()
+            ]);
         }
     }
 }
