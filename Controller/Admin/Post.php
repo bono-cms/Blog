@@ -11,7 +11,7 @@
 
 namespace Blog\Controller\Admin;
 
-use Krystal\Validate\Pattern;
+use Krystal\Validation\Validator;
 use Krystal\Stdlib\VirtualEntity;
 
 final class Post extends AbstractAdminController
@@ -41,13 +41,13 @@ final class Post extends AbstractAdminController
         $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
                                        ->addOne($title);
 
-        return $this->view->render('post.form', array(
+        return $this->view->render('post.form', [
             'categories' => $this->getCategoryManager()->getCategoriesTree(false),
             // If you don't ability to attach similar posts, you can comment 'posts' key to reduce DB queries
             'posts' => $this->getCategoryManager()->fetchAllWithPosts(),
             'post' => $post,
             'images' => $id !== null ? $this->getModuleService('postGalleryManager')->fetchAllByPostId($id) : array()
-        ));
+        ]);
     }
 
     /**
@@ -106,7 +106,10 @@ final class Post extends AbstractAdminController
             $postManager->updateSettings($this->request->getPost());
 
             $this->flashBag->set('success', 'Post settings have been updated');
-            return '1';
+
+            return $this->json([
+                'refresh' => true
+            ]);
         }
     }
 
@@ -146,7 +149,9 @@ final class Post extends AbstractAdminController
             $historyService->write('Blog', 'Post "%s" has been removed', $post->getName());
         }
 
-        return '1';
+        return $this->json([
+            'refresh' => true
+        ]);
     }
 
     /**
@@ -156,26 +161,35 @@ final class Post extends AbstractAdminController
      */
     public function saveAction()
     {
-        $input = $this->request->getPost('post');
+        $validator = new Validator(
+            $this->request->getPost(),
+            $this->request->getFiles()
+        );
 
-        $formValidator = $this->createValidator(array(
-            'input' => array(
-                'source' => $input,
-                'definition' => array(
-                    'name' => new Pattern\Name(),
-                    'introduction' => new Pattern\IntroText(),
-                    'full' => new Pattern\FullText(),
-                    'date' => new Pattern\DateFormat('m/d/Y')
-                )
-            )
-        ));
+        $validator->field('translation.*.name', 'Name')
+                  ->required()
+                  ->addRule('minlength', null, ['min' => 2]);
 
-        if (1) {
+        $validator->field('translation.*.introduction', 'Introduction')
+                  ->required()
+                  ->addRule('minlength', null, ['min' => 2]);
+
+        $validator->field('translation.*.full', 'Full')
+                  ->required()
+                  ->addRule('minlength', null, ['min' => 2]);
+
+        $validator->field('post.date', 'Date')
+                  ->required()
+                  ->addRule('dateformat', null, ['format' => 'm/d/Y']);
+
+        if ($validator->isPassed()) {
             // Current page name
             $name = $this->getCurrentProperty($this->request->getPost('translation'), 'name');
 
             $service = $this->getModuleService('postManager');
             $historyService = $this->getService('Cms', 'historyManager');
+
+            $input = $this->request->getPost('post');
 
             // Update
             if (!empty($input['id'])) {
@@ -183,21 +197,27 @@ final class Post extends AbstractAdminController
                     $this->flashBag->set('success', 'The element has been updated successfully');
 
                     $historyService->write('Blog', 'Post "%s" has been updated', $name);
-                    return '1';
-                }
 
+                    return $this->json([
+                        'refresh' => true
+                    ]);
+                }
             } else {
                 // Create
                 if ($service->add($this->request->getAll())) {
                     $this->flashBag->set('success', 'The element has been created successfully');
 
                     $historyService->write('Blog', 'Post "%s" has been added', $name);
-                    return $service->getLastId();
+                    return $this->json([
+                        'redirect' => $this->createUrl('Blog:Admin:Post@editAction', [$service->getLastId()]),
+                    ]);
                 }
             }
 
         } else {
-            return $formValidator->getErrors();
+            return $this->json([
+                'errors' => $validator->getErrors()
+            ]);
         }
     }
 }
