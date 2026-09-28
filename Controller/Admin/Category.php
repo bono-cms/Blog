@@ -11,8 +11,7 @@
 
 namespace Blog\Controller\Admin;
 
-use Blog\Controller\Admin\AbstractAdminController;
-use Krystal\Validate\Pattern;
+use Krystal\Validation\Validator;
 use Krystal\Stdlib\VirtualEntity;
 
 final class Category extends AbstractAdminController
@@ -111,7 +110,10 @@ final class Category extends AbstractAdminController
             $categoryManager->deleteById($id);
 
             $this->flashBag->set('success', 'Selected element has been removed successfully');
-            return '1';
+
+            return $this->json([
+                'refresh' => true
+            ]);
         }
     }
 
@@ -123,18 +125,18 @@ final class Category extends AbstractAdminController
     public function saveAction()
     {
         $input = $this->request->getAll();
-        $data = $input['data']['category'];
+        $data = $input['data']['category'] ?? [];
 
-        $formValidator = $this->createValidator(array(
-            'input' => array(
-                'source' => $data,
-                'definition' => array(
-                    'name' => new Pattern\Name()
-                )
-            )
-        ));
+        $validator = new Validator(
+            $this->request->getPost(),
+            $this->request->getFiles()
+        );
 
-        if (1) {
+        $validator->field('translation.*.name', 'Name')
+                  ->required()
+                  ->addRule('minlength', null, ['min' => 2]);
+
+        if ($validator->isPassed()) {
             // Current page name
             $name = $this->getCurrentProperty($this->request->getPost('translation'), 'name');
 
@@ -147,7 +149,10 @@ final class Category extends AbstractAdminController
                     $this->flashBag->set('success', 'The element has been updated successfully');
 
                     $historyService->write('Blog', 'Category "%s" has been updated', $name);
-                    return '1';
+
+                    return $this->json([
+                        'refresh' => true
+                    ]);
                 }
 
             } else {
@@ -156,12 +161,15 @@ final class Category extends AbstractAdminController
                     $this->flashBag->set('success', 'The element has been created successfully');
 
                     $historyService->write('Blog', 'Category "%s" has been created', $name);
-                    return $service->getLastId();
+                    return $this->json([
+                        'redirect' => $this->createUrl('Blog:Admin:Category@editAction', [$service->getLastId()]),
+                    ]);
                 }
             }
-
         } else {
-            return $formValidator->getErrors();
+            return $this->json([
+                'errors' => $validator->getErrors()
+            ]);
         }
     }
 }
