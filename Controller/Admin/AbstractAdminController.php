@@ -44,14 +44,4 @@ abstract class AbstractAdminController extends AbstractController
     {
         return $this->getModuleService('categoryManager');
     }
-
-    /**
-     * Returns task manager
-     * 
-     * @return \Blog\Service\TaskManager
-     */
-    final protected function getTaskManager()
-    {
-        return $this->getModuleService('taskManager');
-    }
 }
