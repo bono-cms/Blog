@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -28,15 +26,15 @@ final class Module extends AbstractCmsModule
      */
     private function createGalleryImageManager()
     {
-        $plugins = array(
-            'thumb' => array(
+        $plugins = [
+            'thumb' => [
                 'quality' => 75,
-                'dimensions' => array(
+                'dimensions' => [
                     // For administration panel
-                    array(400, 400),
-                )
-            )
-        );
+                    [400, 400],
+                ]
+            ]
+        ];
 
         return new ImageManager(
             '/data/uploads/module/blog/gallery/',
@@ -49,20 +47,20 @@ final class Module extends AbstractCmsModule
     /**
      * Returns album image manager for category
      * 
-     * @return \Krystal\Image\ImageManager
+     * @return \Krystal\Image\Tool\ImageManager
      */
     private function createCategoryImageManager()
     {
-        $plugins = array(
-            'thumb' => array(
-                'dimensions' => array(
+        $plugins = [
+            'thumb' => [
+                'dimensions' => [
                     // Dimensions for administration panel
-                    array(200, 200),
+                    [200, 200],
                     // Dimensions for the site
-                    array(500, 500)
-                )
-            )
-        );
+                    [500, 500]
+                ]
+            ]
+        ];
 
         return new ImageManager(
             '/data/uploads/module/blog/categories',
@@ -75,20 +73,20 @@ final class Module extends AbstractCmsModule
     /**
      * Returns album image manager for post
      * 
-     * @return \Krystal\Image\ImageManager
+     * @return \Krystal\Image\Tool\ImageManager
      */
     private function createPostImageManager()
     {
-        $plugins = array(
-            'thumb' => array(
-                'dimensions' => array(
+        $plugins = [
+            'thumb' => [
+                'dimensions' => [
                     // Dimensions for administration panel
-                    array(200, 200),
+                    [200, 200],
                     // Dimensions for the site
-                    array(500, 500)
-                )
-            )
-        );
+                    [500, 500]
+                ]
+            ]
+        ];
 
         return new ImageManager(
             '/data/uploads/module/blog/posts',
@@ -114,12 +112,12 @@ final class Module extends AbstractCmsModule
 
         $siteService = new SiteService($categoryManager, $postManager, $webPageManager);
 
-        return array(
+        return [
             'siteService' => $siteService,
             'configManager' => $this->createConfigService(),
             'postManager' => $postManager,
             'categoryManager' => $categoryManager,
             'postGalleryManager' => new PostGalleryManager($postGalleryMapper, $this->createGalleryImageManager())
-        );
+        ];
     }
 }
