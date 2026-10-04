@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -80,23 +78,23 @@ final class PostManager extends AbstractManager
 
         // Previous breadcrumb
         $breadcrumbs = $builder->makeAll(function($row) use ($wm) {
-            return array(
+            return [
                 'name' => $row['name'],
                 'link' => $wm->surround($row['slug'], $row['lang_id'])
-            );
+            ];
         });
 
         // Merge previous ones with last one
-        return array_merge($breadcrumbs, array(
-            array(
+        return array_merge($breadcrumbs, [
+            [
                 'name' => $post->getName(),
                 'link' => '#'
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
-     * Increments view count by post id
+     * Increments view count by post ID
      * 
      * @param string $id
      * @return boolean
@@ -166,7 +164,7 @@ final class PostManager extends AbstractManager
                    ->setMetaDescription($post['meta_description'], PostEntity::FILTER_HTML)
                    ->setCategoryId($post['category_id'], PostEntity::FILTER_INT)
                    ->setViewsCount($post['views'], PostEntity::FILTER_INT)
-                   ->setPermanentUrl('/module/blog/post/'.$entity->getId())
+                   ->setPermanentUrl('/module/blog/post/' . $entity->getId())
                    ->setFull($post['full']);
         }
 
@@ -184,7 +182,7 @@ final class PostManager extends AbstractManager
     }
 
     /**
-     * Returns last post id
+     * Returns last post ID
      * 
      * @return integer
      */
@@ -275,13 +273,13 @@ final class PostManager extends AbstractManager
         // Convert a date to UNIX-timestamp
         $post['timestamp'] = (int) strtotime($post['date']);
 
-        // No views by defaults
+        // No views by default
         if (!isset($post['views'])) {
             $post['views'] = 0;
         }
 
         // Remove extra keys
-        $data = ArrayUtils::arrayWithout($post, array('attached', 'date', 'slug', 'remove_cover'));
+        $data = ArrayUtils::arrayWithout($post, ['attached', 'date', 'slug', 'remove_cover']);
 
         return
             $this->postMapper->savePage('Blog (Posts)', 'Blog:Post@indexAction', $data, $translations) &&
@@ -324,7 +322,7 @@ final class PostManager extends AbstractManager
         $post =& $input['data']['post'];
         $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
-        // Allow to remove a cover, only it case it exists and checkbox was checked
+        // Allow to remove a cover, only in case it exists and checkbox was checked
         if (isset($post['remove_cover'])) {
             // Remove a cover, but not a dir itself
             $this->imageManager->delete($post['id']);
@@ -348,7 +346,7 @@ final class PostManager extends AbstractManager
     }
 
     /**
-     * Fetches post entity by its associated id
+     * Fetches post entity by its associated ID
      * 
      * @param string $id Post ID
      * @param boolean $withAttached Whether to grab attached entities
@@ -377,9 +375,9 @@ final class PostManager extends AbstractManager
     }
 
     /**
-     * Removes a post by its associated id
+     * Removes a post by its associated ID
      * 
-     * @param string $id Post's id
+     * @param string $id Post's ID
      * @return boolean
      */
     public function deleteById($id)
@@ -388,7 +386,7 @@ final class PostManager extends AbstractManager
     }
 
     /**
-     * Removes posts by their associated ids
+     * Removes posts by their associated IDs
      * 
      * @param array $ids
      * @return boolean

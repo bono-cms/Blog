@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -14,9 +12,9 @@ namespace Blog\Controller;
 final class Post extends AbstractBlogController
 {
     /**
-     * Shows a post by its associated id
+     * Shows a post by its associated ID
      * 
-     * @param string $id Post's id
+     * @param string $id Post's ID
      * @return string
      */
     public function indexAction($id)
@@ -32,11 +30,11 @@ final class Post extends AbstractBlogController
             $this->view->getBreadcrumbBag()
                        ->add($this->getPostManager()->getBreadcrumbs($post));
 
-            $response = $this->view->render('blog-post', array(
+            $response = $this->view->render('blog-post', [
                 'page' => $post,
                 'post' => $post,
                 'languages' => $this->getPostManager()->getSwitchUrls($id)
-            ));
+            ]);
 
             $this->getPostManager()->incrementViewCount($id);
             return $response;

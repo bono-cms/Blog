@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -30,14 +28,14 @@ final class Browser extends AbstractAdminController
         $this->view->getBreadcrumbBag()
                    ->addOne('Blog');
 
-        return $this->view->render('index', array(
+        return $this->view->render('index', [
             'hasFilter' => $this->request->hasQuery('filter'),
             'categoryId' => $categoryId,
             'posts' => $posts,
             'paginator' => $paginator,
             'tree' => $this->getCategoryManager()->getCategoriesTree(false),
             'categories' => $this->getCategoryManager()->getCategoriesTree(true)
-        ));
+        ]);
     }
 
     /**
@@ -51,15 +49,15 @@ final class Browser extends AbstractAdminController
         $filters = $this->request->getQuery('filter', []);
 
         $posts = $this->getPostManager()->fetchAllByPage($page, $this->getSharedPerPageCount(), $filters);
-        $url = $this->createUrl('Blog:Admin:Browser@indexAction', array(), 1);
+        $url = $this->createUrl('Blog:Admin:Browser@indexAction', [], 1);
 
         return $this->createGrid($posts, $url, null);
     }
 
     /**
-     * Renders a grid filtered by particular category id
+     * Renders a grid filtered by particular category ID
      * 
-     * @param string $id Category id
+     * @param string $id Category ID
      * @param integer $page
      * @return string
      */
@@ -70,7 +68,7 @@ final class Browser extends AbstractAdminController
         ];
 
         $posts = $this->getPostManager()->fetchAllByPage($this->getSharedPerPageCount(), $filters);
-        $url = $this->createUrl('Blog:Admin:Browser@categoryAction', array($id), 1);
+        $url = $this->createUrl('Blog:Admin:Browser@categoryAction', [$id], 1);
 
         return $this->createGrid($posts, $url, $id);
     }

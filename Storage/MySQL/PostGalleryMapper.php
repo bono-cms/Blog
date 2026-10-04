@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -33,7 +31,7 @@ final class PostGalleryMapper extends AbstractMapper implements PostGalleryMappe
      */
     public function fetchAllByPostId($postId)
     {
-        $db = $this->db->select('*')
+        $db =$this->db->select('*')
                        ->from(self::getTableName())
                        ->whereEquals('post_id', $postId)
                        ->orderBy(new RawSqlFragment(sprintf('`order`, CASE WHEN `order` = 0 THEN %s END DESC', self::column('id'))));
@@ -50,24 +48,24 @@ final class PostGalleryMapper extends AbstractMapper implements PostGalleryMappe
     public function fetchById($id)
     {
         // Columns to be selected
-        $columns = array(
+        $columns = [
             self::column('id'),
             self::column('post_id'),
             PostTranslationMapper::column('name') => 'post',
             self::column('order'),
             self::column('image'),
-        );
+        ];
 
         $db = $this->db->select($columns)
                        ->from(self::getTableName())
                        // Post relation
-                       ->innerJoin(PostMapper::getTableName(), array(
-                            PostMapper::column('id') => self::getRawColumn('post_id')
-                       ))
+                       ->innerJoin(PostMapper::getTableName(), [
+                           PostMapper::column('id') => self::getRawColumn('post_id')
+                       ])
                        // Post translation relation
-                       ->leftJoin(PostTranslationMapper::getTableName(), array(
-                            PostTranslationMapper::column('id') => PostMapper::getRawColumn('id')
-                       ))
+                       ->leftJoin(PostTranslationMapper::getTableName(), [
+                           PostTranslationMapper::column('id') => PostMapper::getRawColumn('id')
+                       ])
                        // Constraints
                        ->whereEquals(self::column('id'), $id)
                        ->andWhereEquals(PostTranslationMapper::column('lang_id'), $this->getLangId());

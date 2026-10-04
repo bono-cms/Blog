@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -146,9 +144,9 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      * @param boolean $withTranslations Whether to fetch translations or not
      * @return array
      */
-    public function fetchById($id, $withTranslations)
+    public function fetchById($id,$withTranslations)
     {
-        return $this->findWebPage($this->getSharedColumns(true), $id, $withTranslations);
+        return $this->findWebPage($this->getSharedColumns(true), $id,$withTranslations);
     }
 
     /**
@@ -159,7 +157,7 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
      */
     public function fetchAll($countOnlyPublished = false)
     {
-        $columns = $this->getSharedColumns(false);
+        $columns =$this->getSharedColumns(false);
 
         $db = $this->db->select($columns)
                         ->count(PostMapper::column('id'), 'post_count')
@@ -180,8 +178,7 @@ final class CategoryMapper extends AbstractMapper implements CategoryMapperInter
                             WebPageMapper::column('lang_id') => CategoryTranslationMapper::getRawColumn('lang_id')
                         ));
 
-        if ($countOnlyPublished == true) {
-            $db->whereEquals(PostMapper::column('published'), '1');
+        if ($countOnlyPublished == true) {$db->whereEquals(PostMapper::column('published'), '1');
         }
 
         // Aggregate grouping

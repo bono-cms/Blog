@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -98,7 +96,7 @@ final class PostGalleryManager extends AbstractManager
     }
 
     /**
-     * Finds image by its associated id
+     * Finds image by its associated ID
      * 
      * @param int $id Image ID
      * @return mixed

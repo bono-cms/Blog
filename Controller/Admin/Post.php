@@ -3,15 +3,12 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
 
 namespace Blog\Controller\Admin;
 
-use Krystal\Validation\Validator;
 use Krystal\Stdlib\VirtualEntity;
 
 final class Post extends AbstractAdminController
@@ -161,24 +158,21 @@ final class Post extends AbstractAdminController
      */
     public function saveAction()
     {
-        $validator = new Validator(
-            $this->request->getPost(),
-            $this->request->getFiles()
-        );
+        $validator = $this->createValidation();
 
-        $validator->field('translation.*.name', 'Name')
+        $validator->field('translation.*.name')
                   ->required()
                   ->addRule('minlength', null, ['min' => 2]);
 
-        $validator->field('translation.*.introduction', 'Introduction')
+        $validator->field('translation.*.introduction')
                   ->required()
                   ->addRule('minlength', null, ['min' => 2]);
 
-        $validator->field('translation.*.full', 'Full')
+        $validator->field('translation.*.full')
                   ->required()
                   ->addRule('minlength', null, ['min' => 2]);
 
-        $validator->field('post.date', 'Date')
+        $validator->field('post.date')
                   ->required()
                   ->addRule('dateformat', null, ['format' => 'm/d/Y']);
 

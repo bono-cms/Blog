@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -66,7 +64,7 @@ final class CategoryManager extends AbstractManager
         PostMapperInterface $postMapper,
         WebPageManagerInterface $webPageManager,
         ImageManagerInterface $imageManager
-    ){
+    ) {
         $this->categoryMapper = $categoryMapper;
         $this->postMapper = $postMapper;
         $this->webPageManager = $webPageManager;
@@ -98,7 +96,7 @@ final class CategoryManager extends AbstractManager
     }
 
     /**
-     * Returns albums tree
+     * Returns categories tree
      * 
      * @param boolean $all Whether to fetch as a pair or a collection
      * @return array
@@ -108,7 +106,7 @@ final class CategoryManager extends AbstractManager
         static $treeBuilder = null;
 
         // Cache method calls
-        if (is_null($treeBuilder)){
+        if (is_null($treeBuilder)) {
             $rows = $this->categoryMapper->fetchAll();
             $treeBuilder = new TreeBuilder($rows);
         }
@@ -140,10 +138,10 @@ final class CategoryManager extends AbstractManager
         $wm = $this->webPageManager;
 
         return $builder->makeAll(function($row) use ($wm) {
-            return array(
+            return [
                 'name' => $row['name'],
                 'link' => $wm->surround($row['slug'], $row['lang_id'])
-            );
+            ];
         });
     }
 
@@ -170,7 +168,7 @@ final class CategoryManager extends AbstractManager
             ->setOrder($category['order'], CategoryEntity::FILTER_INT)
             ->setKeywords($category['keywords'], CategoryEntity::FILTER_HTML)
             ->setMetaDescription($category['meta_description'], CategoryEntity::FILTER_HTML)
-            ->setPermanentUrl('/module/blog/category/'.$entity->getId())
+            ->setPermanentUrl('/module/blog/category/' . $entity->getId())
             ->setUrl($this->webPageManager->surround($entity->getSlug(), $entity->getLangId()))
             ->setChangeFreq($category['changefreq'])
             ->setPriority($category['priority'])
@@ -184,7 +182,7 @@ final class CategoryManager extends AbstractManager
     }
 
     /**
-     * Returns last category's id
+     * Returns last category's ID
      * 
      * @return integer
      */
@@ -196,7 +194,7 @@ final class CategoryManager extends AbstractManager
     /**
      * Removes a category and its associated posts
      * 
-     * @param string $id Category's id
+     * @param string $id Category's ID
      * @return boolean
      */
     private function removeAllById($id)
@@ -205,7 +203,7 @@ final class CategoryManager extends AbstractManager
     }
 
     /**
-     * Removes child albums that belong to provided id
+     * Removes child categories that belong to provided ID
      * 
      * @param string $parentId
      * @return boolean
@@ -215,7 +213,7 @@ final class CategoryManager extends AbstractManager
         $treeBuilder = new TreeBuilder($this->categoryMapper->fetchAll());
         $ids = $treeBuilder->findChildNodeIds($parentId);
 
-        // If there's at least one child id, then start working next
+        // If there's at least one child ID, then start working next
         if (!empty($ids)) {
             foreach ($ids as $id) {
                 $this->removeAllById($id);
@@ -226,9 +224,9 @@ final class CategoryManager extends AbstractManager
     }
 
     /**
-     * Removes a category by its associated id
+     * Removes a category by its associated ID
      * 
-     * @param string $id Category's id
+     * @param string $id Category's ID
      * @return boolean
      */
     public function deleteById($id)
@@ -237,7 +235,7 @@ final class CategoryManager extends AbstractManager
     }
 
     /**
-     * Fetches child categories by parent id
+     * Fetches child categories by parent ID
      * 
      * @param string $parentId
      * @return array
@@ -248,7 +246,7 @@ final class CategoryManager extends AbstractManager
     }
 
     /**
-     * Fetches category's entity by its associated id
+     * Fetches category's entity by its associated ID
      * 
      * @param string $id
      * @param boolean $withTranslations Whether to fetch translations or not
@@ -298,7 +296,7 @@ final class CategoryManager extends AbstractManager
         $category['parent_id'] = (int) $category['parent_id'];
         $category['order'] = (int) $category['order'];
 
-        $category = ArrayUtils::arrayWithout($category, array('slug', 'remove_cover'));
+        $category = ArrayUtils::arrayWithout($category, ['slug', 'remove_cover']);
         return $this->categoryMapper->savePage('Blog (Categories)', 'Blog:Category@indexAction', $category, $input['data']['translation']);
     }
 
@@ -335,7 +333,7 @@ final class CategoryManager extends AbstractManager
         $category =& $input['data']['category'];
         $file = isset($input['files']['file']) ? $input['files']['file'] : false;
 
-        // Allow to remove a cover, only it case it exists and checkbox was checked
+        // Allow to remove a cover, only in case it exists and checkbox was checked
         if (isset($category['remove_cover'])) {
             // Remove a cover, but not a dir itself
             $this->imageManager->delete($category['id']);

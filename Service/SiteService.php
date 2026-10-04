@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -50,7 +48,7 @@ final class SiteService extends AbstractManager
         CategoryManager $categoryManager,
         PostManager $postManager,
         WebPageManagerInterface $webPageManager
-    ){
+    ) {
         $this->categoryManager = $categoryManager;
         $this->postManager = $postManager;
         $this->webPageManager = $webPageManager;
@@ -118,6 +116,8 @@ final class SiteService extends AbstractManager
      */
     public function getByCategoryId($id)
     {
-        return $this->postManager->fetchAllByPage(null, null, ['category_id' => $id]);
+        return $this->postManager->fetchAllByPage(null, null, [
+            'category_id' => $id
+        ]);
     }
 }

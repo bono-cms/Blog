@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -18,7 +16,7 @@ final class Category extends AbstractBlogController
     /**
      * Renders blog category
      * 
-     * @param string $id Blog category's id
+     * @param string $id Blog category's ID
      * @param integer $pageNumber Current page number
      * @param string $code Optional language code
      * @param string $slug Optional slug
@@ -46,13 +44,13 @@ final class Category extends AbstractBlogController
             }
 
             // Template variables
-            $vars = array(
+            $vars = [
                 'page' => $category,
                 'category' => $category,
                 'posts' => $posts,
                 'paginator' => $paginator,
                 'languages' => $this->getCategoryManager()->getSwitchUrls($id)
-            );
+            ];
 
             // Try to find child nodes
             $children = $this->getCategoryManager()->fetchChildrenByParentId($id);

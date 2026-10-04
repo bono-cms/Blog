@@ -3,8 +3,6 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
@@ -53,7 +51,7 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     private function getSharedColumns($all)
     {
         // Basic columns to be selected
-        $columns = array(
+        $columns = [
             self::column('id'),
             self::column('timestamp'),
             self::column('comments'),
@@ -68,10 +66,10 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
             WebPageMapper::column('changefreq'),
             WebPageMapper::column('priority'),
             CategoryTranslationMapper::column('name') => 'category_name'
-        );
+        ];
 
         if ($all) {
-            $columns = array_merge($columns, array(
+            $columns = array_merge($columns, [
                 self::column('category_id'),
                 self::column('views'),
                 self::column('timestamp'),
@@ -79,7 +77,7 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
                 PostTranslationMapper::column('full'),
                 PostTranslationMapper::column('keywords'),
                 PostTranslationMapper::column('meta_description')
-            ));
+            ]);
         }
 
         return $columns;
@@ -99,22 +97,22 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         $db = $this->db->select($this->getSharedColumns(false))
                        ->from(self::getTableName())
                        // Translation relation
-                       ->innerJoin(PostTranslationMapper::getTableName(), array(
-                            PostTranslationMapper::column('id') => self::getRawColumn('id')
-                       ))
+                       ->innerJoin(PostTranslationMapper::getTableName(), [
+                           PostTranslationMapper::column('id') => self::getRawColumn('id')
+                       ])
                         // Category translation
-                        ->innerJoin(CategoryTranslationMapper::getTableName(), array(
+                        ->innerJoin(CategoryTranslationMapper::getTableName(), [
                             self::column('category_id') => CategoryTranslationMapper::getRawColumn('id'),
                             CategoryTranslationMapper::column('lang_id') => PostTranslationMapper::getRawColumn('lang_id')
-                        ))
+                        ])
                         // Category relation
-                        ->innerJoin(CategoryMapper::getTableName(), array(
+                        ->innerJoin(CategoryMapper::getTableName(), [
                             CategoryMapper::column('id') => CategoryTranslationMapper::getRawColumn('id')
-                        ))
+                        ])
                         // Web page relation
-                        ->innerJoin(WebPageMapper::getTableName(), array(
+                        ->innerJoin(WebPageMapper::getTableName(), [
                             WebPageMapper::column('id') => PostTranslationMapper::getRawColumn('web_page_id')
-                        ))
+                        ])
                         // Filtering condition
                         ->whereEquals(
                             PostTranslationMapper::column('lang_id'), 
@@ -185,7 +183,7 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function updateSettings(array $settings)
     {
-        return $this->updateColumns($settings, array('comments', 'seo', 'published'));
+        return $this->updateColumns($settings, ['comments', 'seo', 'published']);
     }
 
     /**
@@ -229,16 +227,16 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
     {
         $db = $this->createWebPageSelect($this->getSharedColumns(true))
                     // Category relation
-                    ->innerJoin(CategoryMapper::getTableName(), array(
+                    ->innerJoin(CategoryMapper::getTableName(), [
                         CategoryMapper::column('id') => self::getRawColumn('category_id')
-                    ))
+                    ])
                    // Category translating relation
                    ->innerJoin(CategoryTranslationMapper::getTableName())
                    ->on()
                    ->equals(
-                        CategoryTranslationMapper::column('id'), 
-                        new RawSqlFragment(self::column('category_id'))
-                    );
+                       CategoryTranslationMapper::column('id'), 
+                       new RawSqlFragment(self::column('category_id'))
+                   );
 
         if ($withTranslations === false) {
             $db->rawAnd()
@@ -251,11 +249,11 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         $db->whereIn(self::column('id'), $ids);
 
         if ($withTranslations === false) {
-			$db->andWhereEquals(
-				PostTranslationMapper::column('lang_id'), 
-				$this->getLangId()
-			);
-		}
+            $db->andWhereEquals(
+                PostTranslationMapper::column('lang_id'), 
+                $this->getLangId()
+            );
+        }
 
         if ($relational === true) {
             $db->asManyToMany(self::PARAM_COLUMN_ATTACHED, self::getJunctionTableName(), self::PARAM_JUNCTION_MASTER_COLUMN, self::getTableName(), 'id', 'id');
@@ -273,7 +271,7 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      */
     public function fetchById($id, $withTranslations = false)
     {
-        $row = $this->fetchByIds(array($id), true, $withTranslations);
+        $row = $this->fetchByIds([$id], true, $withTranslations);
 
         if ($withTranslations == true) {
             return $row;
@@ -282,7 +280,7 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         if (isset($row[0])) {
             return $row[0];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -373,10 +371,10 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         ];
 
         return $this->findRecords(null, null, function($db){
-            $db->orderBy(array(
+            $db->orderBy([
                 self::column('timestamp') => 'DESC', 
                 self::column('id') => 'DESC'
-            ));
+            ]);
         }, $filters);
     }
 
@@ -405,7 +403,7 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
      * 
      * @param integer $page Current page
      * @param integer $itemsPerPage Per page count
-     * @param array $filtes Optional filters
+     * @param array $filters Optional filters
      * @return array
      */
     public function fetchAllByPage($page, $itemsPerPage, array $filters = [])
@@ -413,10 +411,10 @@ final class PostMapper extends AbstractMapper implements PostMapperInterface
         return $this->findRecords($page, $itemsPerPage, function($db) use ($filters){
             // If needed to fetch by published, then sort by time
             if (isset($filters['published'])) {
-                $db->orderBy(array(
+                $db->orderBy([
                         self::column('timestamp') => 'DESC', 
                         self::column('id') => 'DESC'
-                    ));
+                    ]);
             } else {
                 $db->orderBy(self::column('id'))
                    ->desc();

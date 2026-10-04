@@ -3,15 +3,12 @@
 /**
  * This file is part of the Bono CMS
  * 
- * Copyright (c) No Global State Lab
- * 
  * For the full copyright and license information, please view
  * the license file that was distributed with this source code.
  */
 
 namespace Blog\Controller\Admin;
 
-use Krystal\Validation\Validator;
 use Krystal\Stdlib\VirtualEntity;
 
 final class Category extends AbstractAdminController
@@ -46,10 +43,10 @@ final class Category extends AbstractAdminController
         $this->view->getBreadcrumbBag()->addOne('Blog', 'Blog:Admin:Browser@indexAction')
                                        ->addOne($title);
 
-        return $this->view->render('category.form', array(
+        return $this->view->render('category.form', [
             'category' => $category,
             'categories' => $this->createCategoriesTree()
-        ));
+        ]);
     }
 
     /**
@@ -127,12 +124,9 @@ final class Category extends AbstractAdminController
         $input = $this->request->getAll();
         $data = $input['data']['category'] ?? [];
 
-        $validator = new Validator(
-            $this->request->getPost(),
-            $this->request->getFiles()
-        );
+        $validator = $this->createValidation();
 
-        $validator->field('translation.*.name', 'Name')
+        $validator->field('translation.*.name')
                   ->required()
                   ->addRule('minlength', null, ['min' => 2]);
 
