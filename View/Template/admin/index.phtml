@@ -4,13 +4,11 @@ use Krystal\Form\Element;
 use Krystal\Widget\GridView\GridViewWidget;
 use Cms\View\Icon;
 
-defined('KRYSTAL') or die;
-
 ?>
 
 <form>
-    <div class="btn-toolbar" role="toolbar" >
-        <div class="btn-group mr-2" role="group">
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group me-2" role="group">
             <?php $this->loadPartial('menu', [
                 'items' => [
                     'Blog:Admin:Browser@indexAction' => isset($categoryId) ? 'Go home' : null,
@@ -27,13 +25,13 @@ defined('KRYSTAL') or die;
             ]); ?>
         </div>
 
-        <div class="btn-group mr-2">
-            <button class="btn btn-primary" type="submit"><?= $this->translate('Filter'); ?></button>
+        <div class="btn-group me-2">
+            <button class="btn btn-primary" type="submit"><?= $this->translate('Filter') ?></button>
         </div>
 
         <?php if ($hasFilter): ?>
-        <div class="btn-group mr-2">
-            <a class="btn btn-danger" href="<?= $this->url('Blog:Admin:Browser@indexAction'); ?>"><?= $this->translate('Reset filter'); ?></a>
+        <div class="btn-group me-2">
+            <a class="btn btn-danger" href="<?= $this->url('Blog:Admin:Browser@indexAction') ?>"><?= $this->translate('Reset filter') ?></a>
         </div>
         <?php endif; ?>
     </div>
@@ -45,7 +43,7 @@ defined('KRYSTAL') or die;
             <?= $this->widget(new GridViewWidget($posts, [
                 'batch' => true,
                 'pk' => 'id',
-                'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
+                'tableClass' => 'table table-hover table-bordered table-striped align-middle',
                 'columns' => [
                     [
                         'column' => 'id',
@@ -64,7 +62,7 @@ defined('KRYSTAL') or die;
                     [
                         'column' => 'timestamp',
                         'label' => 'Date',
-                        'value' => function($post){
+                        'value' => function ($post) {
                             return date('d-m-Y', $post->getTimestamp());
                         }
                     ],
@@ -80,40 +78,40 @@ defined('KRYSTAL') or die;
 
                     [
                         'column' => 'published',
-                        'value' => function($post){
-                            return Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished());
+                        'value' => function ($post) {
+                            return Element::checkbox(sprintf('published[%s]', $post->getId()), $post->getPublished(), ['class' => 'form-check-input']);
                         }
                     ],
 
                     [
                         'column' => 'comments',
-                        'value' => function($post){
-                            return Element::checkbox(sprintf('comments[%s]', $post->getId()), $post->getComments());
+                        'value' => function ($post) {
+                            return Element::checkbox(sprintf('comments[%s]', $post->getId()), $post->getComments(), ['class' => 'form-check-input']);
                         }
                     ],
 
                     [
                         'column' => 'seo',
                         'label' => 'Enable SEO',
-                        'value' => function($post){
-                            return Element::checkbox(sprintf('seo[%s]', $post->getId()), $post->getSeo());
+                        'value' => function ($post) {
+                            return Element::checkbox(sprintf('seo[%s]', $post->getId()), $post->getSeo(), ['class' => 'form-check-input']);
                         }
                     ]
                 ],
 
                 'actions' => [
-                    'view' => function($post){
+                    function ($post) {
                         return Icon::view($post->getUrl(), $this->translate('View this post'));
                     },
 
-                    'edit' => function($post){
+                    function ($post) {
                         return Icon::edit(
                             $this->url('Blog:Admin:Post@editAction', $post->getId()),
                             $this->translate('Edit this post')
                         );
                     },
 
-                    'remove' => function($post){
+                    function ($post) {
                         return Icon::remove(
                             $this->url('Blog:Admin:Post@deleteAction', $post->getId()),
                             $this->translate('Remove this post')
@@ -123,8 +121,8 @@ defined('KRYSTAL') or die;
             ])); ?>
 
             <?php if (empty($posts)): ?>
-            <div class="center-block">
-                <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?php $this->show('No posts'); ?></h2>
+            <div class="text-center my-4">
+                <h2 class="text-center text-muted"><i class="bi bi-x-circle"></i> <?= $this->translate('No posts') ?></h2>
             </div>
             <?php endif; ?>
         </div>
@@ -133,14 +131,14 @@ defined('KRYSTAL') or die;
     </div>
 </form>
 
-<div class="card">
-    <h4 class="mb-3 mt-2"><i class="fas fa-tags"></i> <?php $this->show('Categories'); ?> <small>(<?php echo count($categories); ?>)</small></h4>
+<div class="card mt-3">
+    <h4 class="mb-3 mt-2"><i class="fas fa-tags"></i> <?= $this->translate('Categories') ?> <small class="text-muted">(<?= count($categories) ?>)</small></h4>
 
     <?= $this->widget(new GridViewWidget($categories, [
-        'tableClass' => 'table table-hover table-bordered table-striped table-condensed',
+        'tableClass' => 'table table-hover table-bordered table-striped align-middle',
         'rowAttributes' => [
-            'class' => function($row) use ($categoryId){
-                return $row['id'] == $categoryId ? 'success' : null;
+            'class' => function ($row) use ($categoryId) {
+                return $row['id'] == $categoryId ? 'table-success' : null;
             }
         ],
 
@@ -164,18 +162,18 @@ defined('KRYSTAL') or die;
         ],
 
         'actions' => [
-            function($category){
+            function ($category) {
                 return Icon::view($category['url'], $this->translate('View this category on site'));
             },
 
-            function($category){
+            function ($category) {
                 return Icon::edit(
                     $this->url('Blog:Admin:Category@editAction', $category['id']),
                     $this->translate('Edit this category')
                 );
             },
 
-            function($category){
+            function ($category) {
                 return Icon::remove(
                     $this->url('Blog:Admin:Category@deleteAction', $category['id']),
                     $this->translate('Remove this category')
@@ -185,8 +183,8 @@ defined('KRYSTAL') or die;
     ])); ?>
 
     <?php if (empty($categories)): ?>
-    <div class="text-center">
-        <h2 class="text-center text-muted"><i class="glyphicon glyphicon-remove"></i> <?= $this->translate('No categories'); ?></h2>
+    <div class="text-center my-4">
+        <h2 class="text-center text-muted"><i class="bi bi-x-circle"></i> <?= $this->translate('No categories') ?></h2>
     </div>
     <?php endif; ?>
 </div>

@@ -1,24 +1,23 @@
 <?php
 
 use Krystal\Form\Element;
-defined('KRYSTAL') or die;
 
 ?>
 
-<form class="card" data-group="config" autocomplete="off">
-    <div class="form-group">
-        <label class="col-lg-2 control-label"><?php $this->show('Per page count'); ?></label>
+<form class="card" autocomplete="off">
+    <div class="mb-3 row">
+        <label class="col-lg-2 col-form-label"><?= $this->translate('Per page count') ?></label>
         <div class="col-lg-10">
-            <div class="input-group date">
-                <?= Element::number('config[per_page_count]', $config->getPerPageCount(), ['class' => 'form-control', 'min' => '1']); ?>
-                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+            <div class="input-group">
+                <?= Element::number('config[per_page_count]', $config->getPerPageCount(), ['class' => 'form-control', 'min' => '1']) ?>
+                <span class="input-group-text"><i class="bi bi-pencil"></i></span>
             </div>
-            <span class="help-block"><?php $this->show('How many posts you want to be displayed per page in each category on the site?'); ?></span>
+            <small class="form-text text-muted"><?= $this->translate('How many posts you want to be displayed per page in each category on the site?') ?></small>
         </div>
     </div>
 
     <div class="actions">
-        <button data-button="save" data-url="<?php echo $this->url('Blog:Admin:Config@saveAction'); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-save"></i> <?php $this->show('Save'); ?></button>
-        <button data-button="cancel" data-url="<?php echo $this->url('Blog:Admin:Browser@indexAction'); ?>" class="btn btn-default"><i class="glyphicon glyphicon-open"></i> <?php $this->show('Cancel'); ?></button>
+        <button data-button="save" data-url="<?= $this->url('Blog:Admin:Config@saveAction') ?>" class="btn btn-primary"><i class="bi bi-save"></i> <?= $this->translate('Save') ?></button>
+        <button data-button="cancel" data-url="<?= $this->url('Blog:Admin:Browser@indexAction') ?>" class="btn btn-secondary"><i class="bi bi-box-arrow-up-right"></i> <?= $this->translate('Cancel') ?></button>
     </div>
 </form>

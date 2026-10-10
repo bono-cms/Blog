@@ -1,43 +1,42 @@
 <?php
 
 use Krystal\Form\Element;
-defined('KRYSTAL') or die;
 
 ?>
 
-<form class="card" data-group="image" autocomplete="off">
-    <?= Element::hidden('image[id]', $image->getId()); ?>
-    <?= Element::hidden('image[image]', $image->getImage()); ?>
-    <?= Element::hidden('image[post_id]', $image->getPostId()); ?>
+<form class="card" autocomplete="off">
+    <?= Element::hidden('image[id]', $image->getId()) ?>
+    <?= Element::hidden('image[image]', $image->getImage()) ?>
+    <?= Element::hidden('image[post_id]', $image->getPostId()) ?>
 
-    <div class="form-group">
-        <label class="col-lg-2 control-label"><?php $this->show('Image'); ?></label>
+    <div class="mb-3 row">
+        <label class="col-lg-2 col-form-label"><?= $this->translate('Image') ?></label>
         <div class="col-lg-10">
             <p>
-                <img data-image="<?= $image->getId() ? null : 'preview'; ?>" src="<?= $image->getImageUrl('400x400'); ?>" />
+                <img data-image="<?= $image->getId() ? null : 'preview' ?>" src="<?= $image->getImageUrl('400x400') ?>" class="img-fluid" />
             </p>
 
-            <a class="btn btn-primary" data-button="upload" data-target="[name='file']" href="#"><i class="glyphicon glyphicon-picture"></i> <?php $this->show('Upload a file'); ?></a>
-            <?= Element::file('file', 'image/x-png, image/gif, image/jpeg', array('class' => 'hidden', 'data-plugin' => 'preview')); ?>
+            <a class="btn btn-primary" data-button="upload" data-target="[name='file']" href="#"><i class="bi bi-image"></i> <?= $this->translate('Upload a file') ?></a>
+            <?= Element::file('file', 'image/x-png, image/gif, image/jpeg', ['class' => 'd-none', 'data-plugin' => 'preview']) ?>
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-lg-2 control-label"><?php $this->show('Order'); ?></label>
+    <div class="mb-3 row">
+        <label class="col-lg-2 col-form-label"><?= $this->translate('Order') ?></label>
         <div class="col-lg-10">
             <div class="input-group">
-                <?= Element::text('image[order]', $image->getOrder(), array('class' => 'form-control', 'placeholder' => $this->translate('Sorting order'))); ?>
-                <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                <?= Element::text('image[order]', $image->getOrder(), ['class' => 'form-control', 'placeholder' => $this->translate('Sorting order')]) ?>
+                <span class="input-group-text"><i class="bi bi-pencil"></i></span>
             </div>
         </div>
     </div>
 
     <?php $this->loadPartial('actions', [
         'new' => !$image->getId(),
-        'add' => array('Blog:Admin:PostGallery@addAction', $image->getPostId()),
+        'add' => ['Blog:Admin:PostGallery@addAction', $image->getPostId()],
         'edit' => 'Blog:Admin:PostGallery@editAction',
         'save' => 'Blog:Admin:PostGallery@saveAction',
-        'cancel' => array('Blog:Admin:Post@editAction', $image->getPostId())
+        'cancel' => ['Blog:Admin:Post@editAction', $image->getPostId()]
     ]); ?>
 
 </form>
